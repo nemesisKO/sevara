@@ -1,0 +1,28 @@
+<?php
+
+namespace Database\Factories;
+
+use App\Models\Blog;
+use App\Models\BlogBlock;
+use Illuminate\Database\Eloquent\Factories\Factory;
+
+/**
+ * @extends Factory<BlogBlock>
+ */
+class BlogBlockFactory extends Factory
+{
+    /**
+     * Define the model's default state.
+     *
+     * @return array<string, mixed>
+     */
+    public function definition(): array
+    {
+        return [
+            'blog_id' => Blog::factory(),
+            'type' => 'article',
+            'order' => 0,
+            'body' => '<p>'.fake()->paragraph().'</p>',
+        ];
+    }
+}
