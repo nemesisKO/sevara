@@ -14,8 +14,8 @@ class PrivateLabelInquiryController extends Controller
         $inquiry = PrivateLabelInquiry::create($request->validated());
 
         if (config('services.n8n.auth_header_value')) {
-            Http::withHeaders([
-                'X-Api-Key' => config('services.n8n.auth_header_value'),
+            $response = Http::withHeaders([
+                'X-Sevara-Webhook' => 'SDAFHJJHsJKJsdkjgkjkjs@nn',
             ])->post(config('services.n8n.lead_webhook_url'), [
                 'submission_id' => $inquiry->id,
                 'form_type' => null,
@@ -28,6 +28,11 @@ class PrivateLabelInquiryController extends Controller
                 'estimated_quantity' => $inquiry->estimated_quantity,
                 'message' => $inquiry->message,
             ]);
+
+        } else {
+            // dd([
+            //     'message' => 'n8n request was not sent because N8N_AUTH_HEADER_VALUE is empty.',
+            // ]);
         }
 
         return back();

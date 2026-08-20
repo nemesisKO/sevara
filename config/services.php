@@ -38,7 +38,7 @@ return [
     'n8n' => [
         'lead_webhook_url' => env(
             'N8N_LEAD_WEBHOOK_URL',
-            'https://reza2026.app.n8n.cloud/webhook-test/sevara-lead',
+            'https://reza2026.app.n8n.cloud/webhook/sevara-lead',
         ),
         'auth_header_value' => env('N8N_AUTH_HEADER_VALUE'),
     ],
