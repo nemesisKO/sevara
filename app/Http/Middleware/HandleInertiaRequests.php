@@ -44,6 +44,7 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'settings' => [
+                'catalogue_url' => Setting::current()->catalogue_url,
                 'logo_url' => Setting::current()->logo_url,
             ],
             'seo' => [

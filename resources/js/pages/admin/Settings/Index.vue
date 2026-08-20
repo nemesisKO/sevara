@@ -72,13 +72,40 @@ defineOptions({
                 <InputError :message="errors.logo" />
             </div>
 
+            <div class="grid gap-2 border-t pt-5">
+                <Label for="catalogue">Catalogue PDF</Label>
+                <a
+                    v-if="setting.catalogue_url"
+                    :href="setting.catalogue_url"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="w-fit text-sm font-medium text-primary underline-offset-4 hover:underline"
+                >
+                    View current catalogue
+                </a>
+                <p v-else class="text-sm text-muted-foreground">
+                    No catalogue uploaded yet.
+                </p>
+                <input
+                    id="catalogue"
+                    type="file"
+                    name="catalogue"
+                    accept="application/pdf,.pdf"
+                    class="h-10 w-full rounded-md border border-input bg-transparent text-sm file:mr-3 file:h-10 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground"
+                />
+                <p class="text-xs text-muted-foreground">
+                    Sent as an attachment when a visitor requests the catalogue. PDF, up to 10 MB.
+                </p>
+                <InputError :message="errors.catalogue" />
+            </div>
+
             <Button
                 type="submit"
                 size="lg"
                 class="w-fit"
                 :disabled="processing || !isDirty"
             >
-                Save logo
+                Save settings
             </Button>
         </Form>
     </div>

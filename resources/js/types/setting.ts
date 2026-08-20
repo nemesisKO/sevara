@@ -1,5 +1,7 @@
 export type Setting = {
     id: number;
+    catalogue_path: string | null;
+    catalogue_url: string | null;
     logo_path: string | null;
     logo_url: string | null;
     created_at: string;
@@ -7,6 +9,7 @@ export type Setting = {
 };
 
 export type SiteSettings = {
+    catalogue_url: string | null;
     logo_url: string | null;
 };
 

@@ -24,6 +24,7 @@ class UpdateSettingRequest extends FormRequest
     {
         return [
             'logo' => ['nullable', 'image:allow_svg', 'max:2048'],
+            'catalogue' => ['nullable', 'file', 'mimes:pdf', 'mimetypes:application/pdf', 'max:10240'],
         ];
     }
 }

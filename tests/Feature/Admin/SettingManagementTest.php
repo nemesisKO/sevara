@@ -79,6 +79,45 @@ test('the logo must be an image', function () {
     $response->assertSessionHasErrors(['logo']);
 });
 
+test('admins can upload a catalogue PDF', function () {
+    Storage::fake('public');
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+
+    $response = $this->actingAs($admin)->put(route('admin.settings.update'), [
+        'catalogue' => UploadedFile::fake()->create('catalogue.pdf', 500, 'application/pdf'),
+    ]);
+
+    $response->assertRedirect(route('admin.settings.edit'));
+
+    $setting = Setting::current();
+    expect($setting->catalogue_path)->not->toBeNull();
+    Storage::disk('public')->assertExists($setting->catalogue_path);
+});
+
+test('replacing the catalogue deletes the old file', function () {
+    Storage::fake('public');
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $oldPath = UploadedFile::fake()->create('old-catalogue.pdf', 500, 'application/pdf')->store('catalogues', 'public');
+    Setting::current()->update(['catalogue_path' => $oldPath]);
+
+    $this->actingAs($admin)->put(route('admin.settings.update'), [
+        'catalogue' => UploadedFile::fake()->create('new-catalogue.pdf', 500, 'application/pdf'),
+    ]);
+
+    Storage::disk('public')->assertMissing($oldPath);
+    Storage::disk('public')->assertExists(Setting::current()->fresh()->catalogue_path);
+});
+
+test('the catalogue must be a PDF', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+
+    $response = $this->actingAs($admin)->put(route('admin.settings.update'), [
+        'catalogue' => UploadedFile::fake()->image('catalogue.png'),
+    ]);
+
+    $response->assertSessionHasErrors(['catalogue']);
+});
+
 test('the logo url is shared with every page', function () {
     Storage::fake('public');
     Setting::current()->update([
@@ -87,5 +126,7 @@ test('the logo url is shared with every page', function () {
 
     $response = $this->get('/');
 
-    $response->assertInertia(fn ($page) => $page->where('settings.logo_url', Setting::current()->logo_url));
+    $response->assertInertia(fn ($page) => $page
+        ->where('settings.logo_url', Setting::current()->logo_url)
+        ->where('settings.catalogue_url', Setting::current()->catalogue_url));
 });

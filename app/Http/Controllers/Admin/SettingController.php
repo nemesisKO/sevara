@@ -22,16 +22,27 @@ class SettingController extends Controller
     public function update(UpdateSettingRequest $request): RedirectResponse
     {
         $setting = Setting::current();
+        $updates = [];
 
         if ($request->hasFile('logo')) {
             if ($setting->logo_path) {
                 Storage::disk('public')->delete($setting->logo_path);
             }
 
-            $setting->update(['logo_path' => $request->file('logo')->store('branding', 'public')]);
+            $updates['logo_path'] = $request->file('logo')->store('branding', 'public');
         }
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Logo updated.']);
+        if ($request->hasFile('catalogue')) {
+            if ($setting->catalogue_path) {
+                Storage::disk('public')->delete($setting->catalogue_path);
+            }
+
+            $updates['catalogue_path'] = $request->file('catalogue')->store('catalogues', 'public');
+        }
+
+        $setting->update($updates);
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Settings updated.']);
 
         return to_route('admin.settings.edit');
     }

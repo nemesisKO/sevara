@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\BlogController;
 use App\Http\Controllers\BrandNetworkController;
+use App\Http\Controllers\CatalogueRequestController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PrivateLabelController;
@@ -22,6 +23,10 @@ Route::post('private-label/inquiries', [PrivateLabelInquiryController::class, 's
 Route::inertia('about', 'About')->name('about');
 
 Route::get('contact', [ContactController::class, 'index'])->name('contact');
+
+Route::post('catalogue-requests', CatalogueRequestController::class)
+    ->middleware('throttle:5,1')
+    ->name('catalogue-requests.store');
 
 Route::inertia('request-catalog', 'ComingSoon', ['title' => 'Request Catalog'])->name('catalog.request');
 

@@ -9,15 +9,17 @@ use Illuminate\Support\Carbon;
 
 /**
  * @property int $id
+ * @property string|null $catalogue_path
  * @property string|null $logo_path
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
+ * @property-read string|null $catalogue_url
  * @property-read string|null $logo_url
  */
-#[Fillable(['logo_path'])]
+#[Fillable(['catalogue_path', 'logo_path'])]
 class Setting extends Model
 {
-    protected $appends = ['logo_url'];
+    protected $appends = ['catalogue_url', 'logo_url'];
 
     /**
      * Get the single settings row, creating it if it doesn't exist yet.
@@ -31,6 +33,13 @@ class Setting extends Model
     {
         return Attribute::make(
             get: fn (): ?string => $this->logo_path ? '/storage/'.$this->logo_path : null,
+        );
+    }
+
+    protected function catalogueUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?string => $this->catalogue_path ? '/storage/'.$this->catalogue_path : null,
         );
     }
 }

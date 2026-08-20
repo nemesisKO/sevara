@@ -1,9 +1,27 @@
 <script setup lang="ts">
-import { Link, usePage } from '@inertiajs/vue3';
-import { ArrowRight, BookOpen, ChevronDown, Menu, X } from '@lucide/vue';
+import { Form, Link, usePage } from '@inertiajs/vue3';
+import {
+    ArrowRight,
+    BookOpen,
+    ChevronDown,
+    CircleCheck,
+    Mail,
+    Menu,
+    X,
+} from '@lucide/vue';
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import CatalogueRequestController from '@/actions/App/Http/Controllers/CatalogueRequestController';
+import InputError from '@/components/InputError.vue';
 import LazyImage from '@/components/LazyImage.vue';
 import { Button } from '@/components/ui/button';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+} from '@/components/ui/dialog';
+import { Input } from '@/components/ui/input';
 import {
     Sheet,
     SheetContent,
@@ -11,7 +29,6 @@ import {
     SheetTrigger,
 } from '@/components/ui/sheet';
 import { about, contact, home, privateLabel } from '@/routes';
-import { request as requestCatalog } from '@/routes/catalog';
 import { index as productsIndex } from '@/routes/products';
 
 const navItems = [
@@ -69,7 +86,13 @@ function stopSlideshow(): void {
 }
 
 onMounted(startSlideshow);
-onBeforeUnmount(stopSlideshow);
+onBeforeUnmount(() => {
+    stopSlideshow();
+
+    if (catalogueModalTimer) {
+        clearTimeout(catalogueModalTimer);
+    }
+});
 
 const isProductsMenuOpen = ref(false);
 let closeMenuTimer: ReturnType<typeof setTimeout> | null = null;
@@ -98,6 +121,21 @@ function scheduleCloseProductsMenu(): void {
 }
 
 const isMobileMenuOpen = ref(false);
+const isCatalogueRequestModalOpen = ref(false);
+let catalogueModalTimer: ReturnType<typeof setTimeout> | null = null;
+
+function openCatalogueRequestModal(): void {
+    isMobileMenuOpen.value = false;
+
+    if (catalogueModalTimer) {
+        clearTimeout(catalogueModalTimer);
+    }
+
+    catalogueModalTimer = setTimeout(() => {
+        isCatalogueRequestModalOpen.value = true;
+        catalogueModalTimer = null;
+    }, 100);
+}
 
 const currentPath = computed(() => page.url.split('?')[0] ?? '/');
 
@@ -319,13 +357,12 @@ function isActive(paths: string[]): boolean {
 
             <div class="hidden md:block">
                 <Button
-                    as-child
                     class="h-9 rounded-xs bg-[#0f1c3f] text-xs font-semibold tracking-[0.15em] text-lightGold uppercase hover:bg-[#0f1c3f]/90"
+                    type="button"
+                    @click="openCatalogueRequestModal"
                 >
-                    <Link :href="requestCatalog()">
-                        <BookOpen />
-                        Request Catalog
-                    </Link>
+                    <BookOpen />
+                    Request Catalog
                 </Button>
             </div>
 
@@ -404,16 +441,112 @@ function isActive(paths: string[]): boolean {
                     </nav>
 
                     <div class="mt-auto border-t border-[#e7e1d4] p-6">
-                        <Link
-                            :href="requestCatalog()"
+                        <button
+                            type="button"
                             class="flex items-center justify-center gap-2 bg-primeBlue px-6 py-3 text-xs font-semibold tracking-[0.15em] text-lightGold uppercase transition hover:bg-primeBlue/90"
+                            @click="openCatalogueRequestModal"
                         >
                             <BookOpen class="size-4" />
                             Request Catalog
-                        </Link>
+                        </button>
                     </div>
                 </SheetContent>
             </Sheet>
         </div>
+
+        <Dialog v-model:open="isCatalogueRequestModalOpen">
+            <DialogContent
+                class="overflow-hidden rounded-[1.5rem] border-[#d4af37]/30 bg-[#fdfbf6] p-0 shadow-[0_28px_80px_-32px_rgba(15,28,63,0.5)] sm:max-w-md"
+            >
+                <Form
+                    v-bind="CatalogueRequestController.form()"
+                    :options="{ preserveScroll: true }"
+                    reset-on-success
+                    class="p-7 sm:p-8"
+                    v-slot="{ errors, processing, wasSuccessful }"
+                >
+                    <div
+                        v-if="wasSuccessful"
+                        class="flex flex-col items-center py-5 text-center"
+                    >
+                        <span
+                            class="flex size-14 items-center justify-center rounded-full bg-[#d4af37]/15 text-[#a8842b]"
+                        >
+                            <CircleCheck class="size-7" />
+                        </span>
+                        <DialogTitle
+                            class="mt-5 font-serif text-3xl text-[#0f1c3f]"
+                        >
+                            Catalogue sent
+                        </DialogTitle>
+                        <DialogDescription
+                            class="mt-2 max-w-xs text-sm leading-6 text-[#6b6558]"
+                        >
+                            Please check your inbox for your Sevara catalogue.
+                        </DialogDescription>
+                        <Button
+                            type="button"
+                            class="mt-6 bg-[#0f1c3f] text-lightGold hover:bg-[#162851]"
+                            @click="isCatalogueRequestModalOpen = false"
+                        >
+                            Close
+                        </Button>
+                    </div>
+
+                    <template v-else>
+                        <DialogHeader class="items-center text-center">
+                            <span
+                                class="flex size-11 items-center justify-center rounded-full bg-[#d4af37]/15 text-[#a8842b]"
+                            >
+                                <BookOpen class="size-5" />
+                            </span>
+                            <DialogTitle
+                                class="mt-3 font-serif text-3xl text-[#0f1c3f]"
+                            >
+                                Request the catalogue
+                            </DialogTitle>
+                            <DialogDescription
+                                class="max-w-sm text-sm leading-6 text-[#6b6558]"
+                            >
+                                Enter your email and we’ll send the latest Sevara catalogue straight to your inbox.
+                            </DialogDescription>
+                        </DialogHeader>
+
+                        <div class="mt-7 grid gap-2">
+                            <label
+                                for="catalogue-request-email"
+                                class="text-xs font-semibold tracking-[0.15em] text-[#3a3a35] uppercase"
+                            >
+                                Email address
+                            </label>
+                            <div class="relative">
+                                <Mail
+                                    class="pointer-events-none absolute top-1/2 left-4 size-4 -translate-y-1/2 text-[#a8842b]"
+                                />
+                                <Input
+                                    id="catalogue-request-email"
+                                    name="email"
+                                    type="email"
+                                    autocomplete="email"
+                                    placeholder="you@company.com"
+                                    :aria-invalid="Boolean(errors.email)"
+                                    class="h-12 border-[#d9d2c3] bg-white pl-11 text-[#0f1c3f] placeholder:text-[#9a9386] focus-visible:border-[#d4af37] focus-visible:ring-[#d4af37]/20"
+                                />
+                            </div>
+                            <InputError :message="errors.email" />
+                        </div>
+
+                        <Button
+                            type="submit"
+                            :disabled="processing"
+                            class="mt-6 h-12 w-full bg-[#0f1c3f] text-xs font-semibold tracking-[0.16em] text-lightGold uppercase hover:bg-[#162851]"
+                        >
+                            <BookOpen class="size-4" />
+                            {{ processing ? 'Sending…' : 'Send catalogue' }}
+                        </Button>
+                    </template>
+                </Form>
+            </DialogContent>
+        </Dialog>
     </header>
 </template>
