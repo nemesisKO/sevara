@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\BlogCategoryController;
 use App\Http\Controllers\Admin\BlogController;
 use App\Http\Controllers\Admin\BlogTagController;
 use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\NewsletterSubscriberController;
 use App\Http\Controllers\Admin\PackagingFormatController;
 use App\Http\Controllers\Admin\PrivateLabelController;
 use App\Http\Controllers\Admin\PrivateLabelInquiryController;
@@ -49,6 +50,11 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
         ->only(['index', 'store', 'destroy']);
 
     Route::resource('blogs', BlogController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+
+    Route::get('newsletter-subscribers', [NewsletterSubscriberController::class, 'index'])
+        ->name('newsletter-subscribers.index');
+    Route::delete('newsletter-subscribers/{subscriber}', [NewsletterSubscriberController::class, 'destroy'])
+        ->name('newsletter-subscribers.destroy');
 
     Route::post('blogs/{blog}/blocks', [BlogBlockController::class, 'store'])->name('blogs.blocks.store');
     Route::patch('blogs/{blog}/blocks/{block}', [BlogBlockController::class, 'update'])->name('blogs.blocks.update');

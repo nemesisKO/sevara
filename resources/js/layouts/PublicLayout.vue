@@ -3,6 +3,7 @@ import { Head, usePage } from '@inertiajs/vue3';
 import { computed } from 'vue';
 import Footer from '@/components/public/Footer.vue';
 import PublicHeader from '@/components/public/PublicHeader.vue';
+import { Toaster } from '@/components/ui/sonner';
 
 const page = usePage();
 
@@ -71,6 +72,7 @@ const canonical = computed(
     </Head>
 
     <div class="flex min-h-screen flex-col bg-[#fdfbf6]">
+        <Toaster position="top-center" class="public-toaster" />
         <PublicHeader />
         <main class="flex-1">
             <slot />
@@ -78,3 +80,33 @@ const canonical = computed(
         <Footer />
     </div>
 </template>
+
+<style>
+.public-toaster {
+    top: 50% !important;
+    transform: translateX(-50%) !important;
+}
+
+.public-toaster [data-sonner-toast] {
+    transform: var(--y) translateY(-50%);
+}
+
+.public-toaster [data-sonner-toast].newsletter-toast {
+    right: auto;
+    left: 50%;
+    width: max-content;
+    transform: var(--y) translate(-50%, -50%);
+}
+
+@media (max-width: 600px) {
+    .public-toaster {
+        left: 50% !important;
+        right: auto !important;
+        width: min(var(--width), calc(100vw - 2rem)) !important;
+    }
+
+    .public-toaster [data-sonner-toast].newsletter-toast {
+        width: min(420px, calc(100vw - 2rem));
+    }
+}
+</style>

@@ -6,6 +6,7 @@ import {
     Images,
     Inbox,
     LayoutGrid,
+    MailPlus,
     Newspaper,
     Package,
     Settings,
@@ -31,6 +32,7 @@ import { dashboard } from '@/routes';
 import { index as blogCategoriesIndex } from '@/routes/admin/blog-categories';
 import { index as blogsIndex } from '@/routes/admin/blogs';
 import { index as brandsIndex } from '@/routes/admin/brands';
+import { index as subscribersIndex } from '@/routes/admin/newsletter-subscribers';
 import { index as privateLabelIndex } from '@/routes/admin/private-label';
 import { index as inquiriesIndex } from '@/routes/admin/private-label/inquiries';
 import { index as productsIndex } from '@/routes/admin/products';
@@ -74,6 +76,11 @@ const mainNavItems = computed<NavItem[]>(() => {
             title: 'Inquiries',
             href: inquiriesIndex(),
             icon: Inbox,
+        });
+        items.push({
+            title: 'Newsletter subscribers',
+            href: subscribersIndex(),
+            icon: MailPlus,
         });
         items.push({
             title: 'Blog',

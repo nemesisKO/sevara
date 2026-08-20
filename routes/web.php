@@ -5,6 +5,7 @@ use App\Http\Controllers\BrandNetworkController;
 use App\Http\Controllers\CatalogueRequestController;
 use App\Http\Controllers\ContactController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\NewsletterSubscriptionController;
 use App\Http\Controllers\PrivateLabelController;
 use App\Http\Controllers\PrivateLabelInquiryController;
 use App\Http\Controllers\ProductController;
@@ -27,6 +28,10 @@ Route::get('contact', [ContactController::class, 'index'])->name('contact');
 Route::post('catalogue-requests', CatalogueRequestController::class)
     ->middleware('throttle:5,1')
     ->name('catalogue-requests.store');
+
+Route::post('newsletter/subscribe', [NewsletterSubscriptionController::class, 'store'])
+    ->middleware('throttle:5,1')
+    ->name('newsletter.subscribe');
 
 Route::inertia('request-catalog', 'ComingSoon', ['title' => 'Request Catalog'])->name('catalog.request');
 

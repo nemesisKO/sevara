@@ -20,6 +20,7 @@ class PrivateLabelInquiryFactory extends Factory
         return [
             'full_name' => fake()->name(),
             'email' => fake()->safeEmail(),
+            'phone' => fake()->optional()->phoneNumber(),
             'country' => fake()->randomElement(PrivateLabelInquiry::MARKETS),
             'product_format' => fake()->words(2, true),
             'estimated_quantity' => fake()->numberBetween(1, 50).',000 units',

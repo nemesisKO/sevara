@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { Link, usePage } from '@inertiajs/vue3';
+import { Form, Link, usePage } from '@inertiajs/vue3';
 import { Mail, MapPin, Phone, Send } from '@lucide/vue';
 import { computed } from 'vue';
+import NewsletterSubscriptionController from '@/actions/App/Http/Controllers/NewsletterSubscriptionController';
 import LazyImage from '@/components/LazyImage.vue';
 import { about, contact, home, privateLabel } from '@/routes';
 import { index as blogIndex } from '@/routes/blog';
@@ -66,21 +67,43 @@ const currentYear = new Date().getFullYear();
                         Exclusive updates and product insights.
                     </p>
 
-                    <form class="mt-4 flex max-w-xs" @submit.prevent>
-                        <input
-                            type="email"
-                            required
-                            placeholder="Enter your email"
-                            class="w-full border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-[#aab0c2] focus:border-[#d4af37] focus:outline-none"
-                        />
-                        <button
-                            type="submit"
-                            aria-label="Subscribe"
-                            class="flex shrink-0 items-center justify-center bg-[#d4af37] px-4 text-[#0f1c3f] transition hover:bg-[#c9a233]"
+                    <Form
+                        v-bind="NewsletterSubscriptionController.store.form()"
+                        reset-on-success
+                        class="mt-4 max-w-xs"
+                        v-slot="{ errors, processing, wasSuccessful }"
+                    >
+                        <div class="flex">
+                            <input
+                                type="email"
+                                name="email"
+                                required
+                                placeholder="Enter your email"
+                                class="w-full border border-white/15 bg-white/5 px-4 py-2.5 text-sm text-white placeholder:text-[#aab0c2] focus:border-[#d4af37] focus:outline-none"
+                                :disabled="processing || wasSuccessful"
+                            />
+                            <button
+                                type="submit"
+                                aria-label="Subscribe"
+                                :disabled="processing || wasSuccessful"
+                                class="flex shrink-0 items-center justify-center bg-[#d4af37] px-4 text-[#0f1c3f] transition hover:bg-[#c9a233]"
+                            >
+                                <Send class="size-4" />
+                            </button>
+                        </div>
+                        <p
+                            v-if="errors.email"
+                            class="mt-2 text-xs text-red-200"
                         >
-                            <Send class="size-4" />
-                        </button>
-                    </form>
+                            {{ errors.email }}
+                        </p>
+                        <p
+                            v-else-if="wasSuccessful"
+                            class="mt-2 text-xs text-emerald-200"
+                        >
+                            You’re on the list. Thank you.
+                        </p>
+                    </Form>
 
                     <div class="mt-6 flex items-center gap-3">
                         <a

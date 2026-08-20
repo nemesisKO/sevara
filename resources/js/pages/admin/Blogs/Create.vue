@@ -152,6 +152,21 @@ const selectClass =
                 <InputError :message="errors.meta_description" />
             </div>
 
+            <div class="grid gap-2">
+                <Label for="image">Main picture (optional)</Label>
+                <input
+                    id="image"
+                    type="file"
+                    name="image"
+                    accept="image/*"
+                    class="h-11 w-full rounded-md border border-input bg-transparent px-4 text-sm text-foreground file:mr-3 file:h-11 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground"
+                />
+                <p class="text-xs text-muted-foreground">
+                    Included in the new-blog email when provided.
+                </p>
+                <InputError :message="errors.image" />
+            </div>
+
             <Button
                 type="submit"
                 size="lg"

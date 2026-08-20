@@ -94,7 +94,8 @@ defineOptions({
                     class="h-10 w-full rounded-md border border-input bg-transparent text-sm file:mr-3 file:h-10 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground"
                 />
                 <p class="text-xs text-muted-foreground">
-                    Sent as an attachment when a visitor requests the catalogue. PDF, up to 10 MB.
+                    Sent as an attachment when a visitor requests the catalogue.
+                    PDF, up to 10 MB.
                 </p>
                 <InputError :message="errors.catalogue" />
             </div>

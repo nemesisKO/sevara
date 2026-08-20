@@ -15,13 +15,14 @@ class PrivateLabelInquiryController extends Controller
 
         if (config('services.n8n.auth_header_value')) {
             $response = Http::withHeaders([
-                'X-Sevara-Webhook' => 'SDAFHJJHsJKJsdkjgkjkjs@nn',
+                'X-Api-Key' => config('services.n8n.auth_header_value'),
             ])->post(config('services.n8n.lead_webhook_url'), [
                 'submission_id' => $inquiry->id,
                 'form_type' => null,
                 'full_name' => $inquiry->full_name,
                 'company_name' => null,
                 'email' => $inquiry->email,
+                'phone' => $inquiry->phone,
                 'product' => $inquiry->product_format,
                 'private_label' => null,
                 'country' => $inquiry->country,

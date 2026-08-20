@@ -2,6 +2,7 @@ export * from './auth';
 export * from './blog';
 export * from './brand';
 export * from './navigation';
+export * from './newsletter';
 export * from './private-label';
 export * from './product';
 export * from './setting';

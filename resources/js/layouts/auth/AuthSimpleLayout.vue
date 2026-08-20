@@ -1,7 +1,12 @@
 <script setup lang="ts">
-import { Link } from '@inertiajs/vue3';
-import AppLogoIcon from '@/components/AppLogoIcon.vue';
+import { Link, usePage } from '@inertiajs/vue3';
+import { computed } from 'vue';
+
+import LazyImage from '@/components/LazyImage.vue';
 import { home } from '@/routes';
+
+const page = usePage();
+const logoUrl = computed(() => page.props.settings.logo_url);
 
 defineProps<{
     title?: string;
@@ -20,14 +25,19 @@ defineProps<{
                         :href="home()"
                         class="flex flex-col items-center gap-2 font-medium"
                     >
-                        <div
-                            class="mb-1 flex h-9 w-9 items-center justify-center rounded-md"
+                        <LazyImage
+                            v-if="logoUrl"
+                            :src="logoUrl"
+                            alt="Sevara"
+                            class="h-10 max-w-48 object-contain"
+                        />
+                        <span
+                            v-else
+                            class="font-serif text-3xl tracking-[0.3em] text-[#0f1c3f] dark:text-white"
                         >
-                            <AppLogoIcon
-                                class="size-9 fill-current text-[var(--foreground)] dark:text-white"
-                            />
-                        </div>
-                        <span class="sr-only">{{ title }}</span>
+                            SEVARA
+                        </span>
+                        <span class="sr-only">Sevara</span>
                     </Link>
                     <div class="space-y-2 text-center">
                         <h1 class="text-xl font-medium">{{ title }}</h1>

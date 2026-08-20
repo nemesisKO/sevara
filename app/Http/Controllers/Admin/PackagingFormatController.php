@@ -7,6 +7,7 @@ use App\Http\Requests\Admin\StorePackagingFormatRequest;
 use App\Http\Requests\Admin\UpdatePackagingFormatRequest;
 use App\Models\PackagingFormat;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -24,7 +25,7 @@ class PackagingFormatController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Packaging format added.']);
 
-        return to_route('admin.private-label.index');
+        return $this->redirectAfterChange($request);
     }
 
     public function update(UpdatePackagingFormatRequest $request, PackagingFormat $packagingFormat): RedirectResponse
@@ -43,10 +44,10 @@ class PackagingFormatController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Packaging format saved.']);
 
-        return to_route('admin.private-label.index');
+        return $this->redirectAfterChange($request);
     }
 
-    public function destroy(PackagingFormat $packagingFormat): RedirectResponse
+    public function destroy(Request $request, PackagingFormat $packagingFormat): RedirectResponse
     {
         if ($packagingFormat->image_path) {
             Storage::disk('public')->delete($packagingFormat->image_path);
@@ -56,27 +57,27 @@ class PackagingFormatController extends Controller
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Packaging format deleted.']);
 
-        return to_route('admin.private-label.index');
+        return $this->redirectAfterChange($request);
     }
 
-    public function moveUp(PackagingFormat $packagingFormat): RedirectResponse
+    public function moveUp(Request $request, PackagingFormat $packagingFormat): RedirectResponse
     {
         $this->swapOrder($packagingFormat, PackagingFormat::where('is_featured', $packagingFormat->is_featured)
             ->where('order', '<', $packagingFormat->order)
             ->orderByDesc('order')
             ->first());
 
-        return to_route('admin.private-label.index');
+        return $this->redirectAfterChange($request);
     }
 
-    public function moveDown(PackagingFormat $packagingFormat): RedirectResponse
+    public function moveDown(Request $request, PackagingFormat $packagingFormat): RedirectResponse
     {
         $this->swapOrder($packagingFormat, PackagingFormat::where('is_featured', $packagingFormat->is_featured)
             ->where('order', '>', $packagingFormat->order)
             ->orderBy('order')
             ->first());
 
-        return to_route('admin.private-label.index');
+        return $this->redirectAfterChange($request);
     }
 
     private function swapOrder(PackagingFormat $format, ?PackagingFormat $sibling): void
@@ -89,5 +90,12 @@ class PackagingFormatController extends Controller
 
         $format->update(['order' => $siblingOrder]);
         $sibling->update(['order' => $formatOrder]);
+    }
+
+    private function redirectAfterChange(Request $request): RedirectResponse
+    {
+        return to_route($request->query('return_to') === 'settings'
+            ? 'admin.settings.edit'
+            : 'admin.private-label.index');
     }
 }

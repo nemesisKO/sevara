@@ -25,7 +25,10 @@ test('admins can view the settings page', function () {
 
     $response = $this->actingAs($admin)->get(route('admin.settings.edit'));
 
-    $response->assertOk();
+    $response->assertOk()->assertInertia(fn ($page) => $page
+        ->component('admin/Settings/Index')
+        ->missing('packagingFormats')
+    );
 });
 
 test('admins can upload a website logo', function () {

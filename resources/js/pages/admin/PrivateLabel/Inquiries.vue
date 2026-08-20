@@ -156,6 +156,21 @@ function formatDate(value: string): string {
                             {{ inquiry.product_format }}
                         </dd>
                     </div>
+                    <div v-if="inquiry.phone">
+                        <dt
+                            class="text-xs font-medium tracking-wide text-neutral-500 uppercase"
+                        >
+                            Phone
+                        </dt>
+                        <dd class="mt-1 text-sm text-neutral-900">
+                            <a
+                                :href="`tel:${inquiry.phone}`"
+                                class="underline-offset-2 hover:underline"
+                            >
+                                {{ inquiry.phone }}
+                            </a>
+                        </dd>
+                    </div>
                     <div>
                         <dt
                             class="text-xs font-medium tracking-wide text-neutral-500 uppercase"

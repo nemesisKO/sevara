@@ -144,6 +144,27 @@ const fieldClasses =
                         </p>
                     </div>
 
+                    <div v-if="!wasSuccessful">
+                        <label for="phone" class="sr-only">
+                            Phone number (optional)
+                        </label>
+                        <input
+                            id="phone"
+                            name="phone"
+                            type="tel"
+                            maxlength="50"
+                            autocomplete="tel"
+                            placeholder="Phone Number (Optional)"
+                            :class="fieldClasses"
+                        />
+                        <p
+                            v-if="errors.phone"
+                            class="mt-1 text-xs text-red-300"
+                        >
+                            {{ errors.phone }}
+                        </p>
+                    </div>
+
                     <div v-if="!wasSuccessful" class="sm:col-span-2">
                         <label for="country" class="sr-only">
                             Country / market

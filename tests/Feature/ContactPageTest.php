@@ -29,6 +29,7 @@ test('a visitor can send an inquiry from the contact page', function () {
     $response = $this->from(route('contact'))->post(route('private-label.inquiries.store'), [
         'full_name' => 'Amina Yusuf',
         'email' => 'amina@example.com',
+        'phone' => '+971 50 123 4567',
         'country' => 'Qatar',
         'product_format' => '250g Retail Pouch',
         'estimated_quantity' => '10,000 units',
@@ -52,6 +53,7 @@ test('a visitor can send an inquiry from the contact page', function () {
                 'full_name' => 'Amina Yusuf',
                 'company_name' => null,
                 'email' => 'amina@example.com',
+                'phone' => '+971 50 123 4567',
                 'product' => '250g Retail Pouch',
                 'private_label' => null,
                 'country' => 'Qatar',

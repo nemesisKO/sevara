@@ -33,6 +33,7 @@ class StoreBlogRequest extends FormRequest
             'read_duration' => ['nullable', 'string', 'max:50'],
             'mini_review' => ['nullable', 'string', 'max:1000'],
             'meta_description' => ['nullable', 'string', 'max:1000'],
+            'image' => ['nullable', 'image', 'max:5120'],
         ];
     }
 }

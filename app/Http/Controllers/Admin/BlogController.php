@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Actions\SendBlogAnnouncement;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreBlogRequest;
 use App\Http\Requests\Admin\UpdateBlogRequest;
@@ -31,7 +32,17 @@ class BlogController extends Controller
 
     public function store(StoreBlogRequest $request): RedirectResponse
     {
-        $blog = Blog::create($request->validated());
+        $data = $request->safe()->except('image');
+
+        if ($request->hasFile('image')) {
+            $data['image_path'] = $request->file('image')->store('blogs', 'public');
+        }
+
+        $blog = Blog::create($data);
+
+        app()->terminating(function () use ($blog): void {
+            app(SendBlogAnnouncement::class)($blog);
+        });
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Blog post created.']);
 

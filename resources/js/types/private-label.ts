@@ -28,6 +28,7 @@ export type PrivateLabelInquiry = {
     id: number;
     full_name: string;
     email: string;
+    phone: string | null;
     country: string;
     product_format: string;
     estimated_quantity: string;

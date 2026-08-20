@@ -1,11 +1,14 @@
 <?php
 
 use App\Enums\UserRole;
+use App\Mail\BlogPublished;
 use App\Models\Blog;
 use App\Models\BlogCategory;
+use App\Models\NewsletterSubscriber;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 
 function validBlogPayload(array $overrides = []): array
@@ -55,6 +58,28 @@ test('admins can create a blog post', function () {
     $response->assertRedirect(route('admin.blogs.edit', $blog));
     expect($blog->title)->toBe('The Future of Chocolate Dates in Global Retail');
     expect($blog->slug)->toBe('future-of-chocolate-dates-in-global-retail');
+});
+
+test('creating a blog announces it to newsletter subscribers in one bulk email', function () {
+    Storage::fake('public');
+    Mail::fake();
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    NewsletterSubscriber::factory()->create(['email' => 'first@example.com']);
+    NewsletterSubscriber::factory()->create(['email' => 'second@example.com']);
+
+    $response = $this->actingAs($admin)->post(
+        route('admin.blogs.store'),
+        validBlogPayload(['image' => UploadedFile::fake()->image('cover.jpg')]),
+    );
+
+    $blog = Blog::sole();
+    $response->assertRedirect(route('admin.blogs.edit', $blog));
+
+    Mail::assertSent(BlogPublished::class, function (BlogPublished $mail) use ($blog): bool {
+        return $mail->blog->is($blog)
+            && $mail->hasBcc('first@example.com')
+            && $mail->hasBcc('second@example.com');
+    });
 });
 
 test('regular users cannot create a blog post', function () {

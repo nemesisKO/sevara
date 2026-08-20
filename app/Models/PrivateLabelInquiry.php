@@ -12,6 +12,7 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $full_name
  * @property string $email
+ * @property string|null $phone
  * @property string $country
  * @property string $product_format
  * @property string $estimated_quantity
@@ -20,7 +21,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['full_name', 'email', 'country', 'product_format', 'estimated_quantity', 'message', 'read_at'])]
+#[Fillable(['full_name', 'email', 'phone', 'country', 'product_format', 'estimated_quantity', 'message', 'read_at'])]
 class PrivateLabelInquiry extends Model
 {
     /** @use HasFactory<PrivateLabelInquiryFactory> */

@@ -9,11 +9,14 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import type { PackagingFormat } from '@/types';
 
-const { format } = defineProps<{
+const { format, returnTo } = defineProps<{
     format: PackagingFormat;
     index: number;
     total: number;
+    returnTo: 'private-label' | 'settings';
 }>();
+
+const redirectOptions = { query: { return_to: returnTo } } as const;
 
 function confirmDelete(event: MouseEvent): void {
     if (!confirm('Delete this packaging format?')) {
@@ -34,7 +37,12 @@ function confirmDelete(event: MouseEvent): void {
             <div class="flex shrink-0 items-center gap-1">
                 <Link
                     preserve-scroll
-                    :href="PackagingFormatController.moveUp(format.id)"
+                    :href="
+                        PackagingFormatController.moveUp(
+                            format.id,
+                            redirectOptions,
+                        )
+                    "
                     method="patch"
                     as="button"
                     :disabled="index === 0"
@@ -47,7 +55,12 @@ function confirmDelete(event: MouseEvent): void {
                 </Link>
                 <Link
                     preserve-scroll
-                    :href="PackagingFormatController.moveDown(format.id)"
+                    :href="
+                        PackagingFormatController.moveDown(
+                            format.id,
+                            redirectOptions,
+                        )
+                    "
                     method="patch"
                     as="button"
                     :disabled="index === total - 1"
@@ -60,7 +73,12 @@ function confirmDelete(event: MouseEvent): void {
                 </Link>
                 <Form
                     :options="{ preserveScroll: true }"
-                    v-bind="PackagingFormatController.destroy.form(format.id)"
+                    v-bind="
+                        PackagingFormatController.destroy.form(
+                            format.id,
+                            redirectOptions,
+                        )
+                    "
                     v-slot="{ processing }"
                 >
                     <Button
@@ -79,7 +97,12 @@ function confirmDelete(event: MouseEvent): void {
 
         <Form
             :options="{ preserveScroll: true }"
-            v-bind="PackagingFormatController.update.form(format.id)"
+            v-bind="
+                PackagingFormatController.update.form(
+                    format.id,
+                    redirectOptions,
+                )
+            "
             class="flex flex-col gap-4 p-4"
             v-slot="{ errors, processing, isDirty }"
         >

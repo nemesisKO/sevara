@@ -56,6 +56,7 @@ test('a visitor can send a private label inquiry', function () {
     $response = $this->from(route('private-label'))->post(route('private-label.inquiries.store'), [
         'full_name' => 'Amina Yusuf',
         'email' => 'amina@example.com',
+        'phone' => '+966 50 123 4567',
         'country' => 'Saudi Arabia',
         'product_format' => '250g Retail Pouch',
         'estimated_quantity' => '10,000 units',
@@ -67,6 +68,7 @@ test('a visitor can send a private label inquiry', function () {
     $inquiry = PrivateLabelInquiry::sole();
     expect($inquiry->full_name)->toBe('Amina Yusuf')
         ->and($inquiry->email)->toBe('amina@example.com')
+        ->and($inquiry->phone)->toBe('+966 50 123 4567')
         ->and($inquiry->country)->toBe('Saudi Arabia')
         ->and($inquiry->estimated_quantity)->toBe('10,000 units')
         ->and($inquiry->read_at)->toBeNull();
