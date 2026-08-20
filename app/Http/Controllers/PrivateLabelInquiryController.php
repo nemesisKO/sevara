@@ -5,15 +5,30 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePrivateLabelInquiryRequest;
 use App\Models\PrivateLabelInquiry;
 use Illuminate\Http\RedirectResponse;
-use Inertia\Inertia;
+use Illuminate\Support\Facades\Http;
 
 class PrivateLabelInquiryController extends Controller
 {
     public function store(StorePrivateLabelInquiryRequest $request): RedirectResponse
     {
-        PrivateLabelInquiry::create($request->validated());
+        $inquiry = PrivateLabelInquiry::create($request->validated());
 
-        Inertia::flash('toast', ['type' => 'success', 'message' => 'Thank you. Our export team will review your inquiry and contact you.']);
+        if (config('services.n8n.auth_header_value')) {
+            Http::withHeaders([
+                'X-Api-Key' => config('services.n8n.auth_header_value'),
+            ])->post(config('services.n8n.lead_webhook_url'), [
+                'submission_id' => $inquiry->id,
+                'form_type' => null,
+                'full_name' => $inquiry->full_name,
+                'company_name' => null,
+                'email' => $inquiry->email,
+                'product' => $inquiry->product_format,
+                'private_label' => null,
+                'country' => $inquiry->country,
+                'estimated_quantity' => $inquiry->estimated_quantity,
+                'message' => $inquiry->message,
+            ]);
+        }
 
         return back();
     }

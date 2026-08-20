@@ -96,13 +96,13 @@
       "_useForwardExpose-pXrgwU-Q.js"
     ]
   },
-  "_PrivateLabelInquiryForm-Cr1FzR_O.js": {
-    "file": "assets/PrivateLabelInquiryForm-Cr1FzR_O.js",
+  "_PrivateLabelInquiryForm-Dbba-2gF.js": {
+    "file": "assets/PrivateLabelInquiryForm-Dbba-2gF.js",
     "name": "PrivateLabelInquiryForm",
     "imports": [
       "_dist-DFf6bLdG.js",
       "_createLucideIcon-8V8zmVjP.js",
-      "_mail-Bj4MImLe.js",
+      "_mail-C5yAKWo0.js",
       "_package-WtXvlM7p.js",
       "_wayfinder-Dp7PqxvV.js",
       "_LazyImage-CLEdH9dQ.js"
@@ -403,8 +403,8 @@
       "_wayfinder-Dp7PqxvV.js"
     ]
   },
-  "_mail-Bj4MImLe.js": {
-    "file": "assets/mail-Bj4MImLe.js",
+  "_mail-C5yAKWo0.js": {
+    "file": "assets/mail-C5yAKWo0.js",
     "name": "mail",
     "imports": [
       "_createLucideIcon-8V8zmVjP.js"
@@ -578,7 +578,7 @@
     ]
   },
   "resources/css/app.css": {
-    "file": "assets/app-Dga3NGiJ.css",
+    "file": "assets/app-BjBvO5W1.css",
     "name": "app",
     "names": [
       "app.css"
@@ -587,7 +587,7 @@
     "isEntry": true
   },
   "resources/js/app.ts": {
-    "file": "assets/app-DtBPHXym.js",
+    "file": "assets/app-BBRQm5eV.js",
     "name": "app",
     "src": "resources/js/app.ts",
     "isEntry": true,
@@ -606,9 +606,9 @@
       "_catalog-CiMhyaBB.js",
       "_chevron-down-CuHJRRGB.js",
       "_chevron-right-BO-NuLh4.js",
+      "_mail-C5yAKWo0.js",
       "_inbox--CvRq-Bj.js",
       "_loader-circle-DM4F3wMP.js",
-      "_mail-Bj4MImLe.js",
       "_phone-CtL0AFdm.js",
       "_package-WtXvlM7p.js",
       "_tag-hY7liEWJ.js",
@@ -747,18 +747,18 @@
     ]
   },
   "resources/js/pages/Contact.vue": {
-    "file": "assets/Contact-BmdnOguJ.js",
+    "file": "assets/Contact-CdMTz4zM.js",
     "name": "Contact",
     "src": "resources/js/pages/Contact.vue",
     "isDynamicEntry": true,
     "imports": [
       "_dist-DFf6bLdG.js",
       "_catalog-CiMhyaBB.js",
+      "_mail-C5yAKWo0.js",
       "_clock-CwLcN6zG.js",
       "_diamond-BIWEmWzE.js",
-      "_mail-Bj4MImLe.js",
       "_phone-CtL0AFdm.js",
-      "_PrivateLabelInquiryForm-Cr1FzR_O.js",
+      "_PrivateLabelInquiryForm-Dbba-2gF.js",
       "_routes-COJbcAlo.js",
       "_LazyImage-CLEdH9dQ.js",
       "_JsonLd-DuhUDDnW.js",
@@ -776,7 +776,7 @@
     ]
   },
   "resources/js/pages/PrivateLabel.vue": {
-    "file": "assets/PrivateLabel-D6HSm9Yo.js",
+    "file": "assets/PrivateLabel-CBPaqFos.js",
     "name": "PrivateLabel",
     "src": "resources/js/pages/PrivateLabel.vue",
     "isDynamicEntry": true,
@@ -789,7 +789,7 @@
       "_diamond-BIWEmWzE.js",
       "_globe-CnRdNFsZ.js",
       "_package-WtXvlM7p.js",
-      "_PrivateLabelInquiryForm-Cr1FzR_O.js",
+      "_PrivateLabelInquiryForm-Dbba-2gF.js",
       "_users-B6MVfyVw.js",
       "_routes-COJbcAlo.js",
       "_LazyImage-CLEdH9dQ.js",
@@ -991,7 +991,7 @@
     ]
   },
   "resources/js/pages/admin/PrivateLabel/Inquiries.vue": {
-    "file": "assets/Inquiries-S9iSchjx.js",
+    "file": "assets/Inquiries-BxPuFaSU.js",
     "name": "Inquiries",
     "src": "resources/js/pages/admin/PrivateLabel/Inquiries.vue",
     "isDynamicEntry": true,
@@ -1064,7 +1064,7 @@
     ]
   },
   "resources/js/pages/admin/Settings/Index.vue": {
-    "file": "assets/Index-DiH6S5zq.js",
+    "file": "assets/Index-D4LlnE3b.js",
     "name": "Index",
     "src": "resources/js/pages/admin/Settings/Index.vue",
     "isDynamicEntry": true,

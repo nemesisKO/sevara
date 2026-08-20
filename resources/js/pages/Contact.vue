@@ -257,50 +257,68 @@ function scrollToInquiry(): void {
         panel-image="/images/private-label-kit.webp"
     />
 
-    <section class="bg-[#f7f3e8]/70 py-20 lg:py-24">
+    <section class="bg-[#f7f3e8] py-20 lg:py-28">
         <div class="mx-auto max-w-6xl px-6 lg:px-10">
             <RevealOnScroll>
                 <div class="text-center">
                     <p
                         class="text-xs font-semibold tracking-[0.3em] text-primeGold uppercase"
                     >
-                        What Happens Next
+                        Your Inquiry Journey
                     </p>
+                    <h2
+                        class="mt-4 font-serif text-4xl leading-tight text-primeBlue sm:text-5xl"
+                    >
+                        What Happens Next
+                    </h2>
                     <div class="mt-5 flex items-center justify-center gap-4">
-                        <span class="h-px w-12 bg-[#d4af37]/40" />
-                        <Diamond class="size-2.5 text-[#d4af37]" />
-                        <span class="h-px w-12 bg-[#d4af37]/40" />
+                        <span class="h-px w-14 bg-[#d4af37]/45" />
+                        <Diamond class="size-3 text-[#d4af37]" />
+                        <span class="h-px w-14 bg-[#d4af37]/45" />
                     </div>
+                    <p
+                        class="mx-auto mt-5 max-w-xl text-base leading-7 text-[#625d52]"
+                    >
+                        From your first message to sample approval, our export
+                        team keeps every step clear and personal.
+                    </p>
                 </div>
             </RevealOnScroll>
 
-            <div class="mt-14 grid gap-12 sm:grid-cols-3">
+            <div class="mt-14 grid gap-5 sm:grid-cols-3 sm:gap-6">
                 <RevealOnScroll
                     v-for="(step, index) in nextSteps"
                     :key="step.title"
                     :delay="index * 120"
                 >
-                    <div class="flex flex-col items-center gap-3 text-center">
-                        <p class="font-serif text-2xl text-primeGold">
+                    <article
+                        class="flex h-full flex-col items-center border border-[#d4af37]/25 bg-[#fdfbf6] px-6 py-8 text-center shadow-[0_16px_34px_-30px_rgba(15,28,63,0.7)] sm:px-7"
+                    >
+                        <span
+                            class="flex size-13 items-center justify-center rounded-full border border-[#d4af37]/50 bg-[#f7f3e8] font-serif text-2xl text-primeGold"
+                        >
                             {{ String(index + 1).padStart(2, '0') }}
-                        </p>
-                        <p
-                            class="text-[11px] font-semibold tracking-[0.2em] text-[#0f1c3f] uppercase"
+                        </span>
+                        <h3
+                            class="mt-6 text-sm font-bold tracking-[0.18em] text-primeBlue uppercase"
                         >
                             {{ step.title }}
-                        </p>
-                        <p class="max-w-56 text-sm text-[#6b6558]">
+                        </h3>
+                        <span class="mt-4 h-px w-10 bg-[#d4af37]/45" />
+                        <p
+                            class="mt-4 max-w-60 text-[15px] leading-7 text-[#625d52]"
+                        >
                             {{ step.description }}
                         </p>
-                    </div>
+                    </article>
                 </RevealOnScroll>
             </div>
 
             <RevealOnScroll :delay="360">
                 <div
-                    class="mt-14 flex items-center justify-center gap-3 text-sm text-[#6b6558]"
+                    class="mx-auto mt-14 flex w-fit items-center justify-center gap-3 border-y border-[#d4af37]/25 px-5 py-4 text-sm font-medium text-primeBlue sm:text-base"
                 >
-                    <Clock class="size-4 text-primeGold" />
+                    <Clock class="size-5 text-primeGold" :stroke-width="1.5" />
                     <span>
                         Replies within two business days, Sunday to Thursday.
                     </span>

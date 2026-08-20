@@ -26,7 +26,7 @@ class StorePrivateLabelInquiryRequest extends FormRequest
     {
         return [
             'full_name' => ['required', 'string', 'max:255'],
-            'company_name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'email', 'max:255'],
             'country' => ['required', 'string', Rule::in(PrivateLabelInquiry::MARKETS)],
             'product_format' => ['required', 'string', 'max:255'],
             'estimated_quantity' => ['required', 'string', 'max:255'],

@@ -128,7 +128,7 @@ function isActive(paths: string[]): boolean {
 <template>
     <header class="relative border-b border-[#e7e1d4] bg-white">
         <div
-            class="relative mx-auto flex w-full flex-wrap items-center justify-between gap-y-3 px-2 py-4 md:px-6 lg:px-24"
+            class="relative mx-auto flex w-full flex-wrap items-center justify-between gap-y-2 px-2 py-3 md:px-6 lg:px-16 xl:px-20 2xl:px-24"
         >
             <Link :href="home()" class="flex items-center">
                 <LazyImage
@@ -136,7 +136,7 @@ function isActive(paths: string[]): boolean {
                     loading="eager"
                     :src="logoUrl"
                     alt="Sevara"
-                    class="h-10 max-w-40 object-contain"
+                    class="h-9 max-w-40 object-contain"
                 />
                 <span
                     v-else
@@ -147,12 +147,12 @@ function isActive(paths: string[]): boolean {
             </Link>
 
             <nav
-                class="order-last hidden w-full items-center justify-center gap-4 md:order-0 md:flex md:w-auto md:gap-6 lg:gap-10"
+                class="order-last hidden w-full items-center justify-center gap-4 md:order-0 md:flex md:w-auto md:gap-6 lg:mr-auto lg:ml-24 lg:gap-10 xl:ml-32"
             >
                 <div
                     v-for="item in navItems"
                     :key="item.title"
-                    class="relative py-2"
+                    class="relative py-1.5"
                     @mouseenter="item.dropdown && openProductsMenu()"
                     @mousemove="item.dropdown && openProductsMenu()"
                     @mouseleave="item.dropdown && scheduleCloseProductsMenu()"
@@ -182,27 +182,29 @@ function isActive(paths: string[]): boolean {
 
                     <Transition
                         v-if="item.dropdown"
-                        enter-active-class="transition duration-200 ease-out"
-                        enter-from-class="-translate-y-1 scale-98 opacity-0"
+                        enter-active-class="transition duration-300 ease-out"
+                        enter-from-class="-translate-y-2 scale-[0.98] opacity-0"
                         enter-to-class="translate-y-0 scale-100 opacity-100"
-                        leave-active-class="transition duration-150 ease-in"
+                        leave-active-class="transition duration-200 ease-in"
                         leave-from-class="translate-y-0 scale-100 opacity-100"
-                        leave-to-class="-translate-y-1 scale-98 opacity-0"
+                        leave-to-class="-translate-y-2 scale-[0.98] opacity-0"
                     >
                         <div
                             v-if="isProductsMenuOpen"
-                            class="absolute top-full left-0 z-50 origin-top pt-1.5"
+                            class="absolute top-full left-0 z-50 w-104 origin-top pt-3 lg:w-152 xl:w-[calc(100vw-36rem)] 2xl:w-[calc(100vw-40rem)]"
                             @mouseenter="openProductsMenu"
                             @mouseleave="scheduleCloseProductsMenu"
                         >
                             <div
-                                class="w-88 overflow-hidden rounded-xl border border-[#e7e1d4] bg-white shadow-[0_28px_60px_-24px_rgba(15,28,63,0.45)] lg:w-152 xl:w-168"
+                                class="overflow-hidden rounded-2xl border border-[#d4af37]/30 bg-[#fdfbf6] shadow-[0_24px_70px_-28px_rgba(15,28,63,0.45),0_8px_24px_-16px_rgba(15,28,63,0.3)]"
                             >
-                                <div class="lg:flex lg:items-stretch">
+                                <div
+                                    class="lg:grid lg:min-h-96 lg:grid-cols-[minmax(18rem,0.82fr)_minmax(0,1.18fr)]"
+                                >
                                     <Link
                                         v-if="currentSlide"
                                         :href="currentSlide.href"
-                                        class="relative block h-36 shrink-0 overflow-hidden bg-[#0f1c3f] lg:h-auto lg:w-60"
+                                        class="group/feature relative block h-52 overflow-hidden bg-[#0f1c3f] lg:h-auto"
                                     >
                                         <LazyImage
                                             v-for="(slide, index) in slides"
@@ -217,47 +219,70 @@ function isActive(paths: string[]): boolean {
                                             "
                                         />
                                         <div
-                                            class="absolute inset-0 bg-linear-to-t from-[#0f1c3f] via-[#0f1c3f]/25 to-transparent"
+                                            class="absolute inset-0 bg-linear-to-t from-[#0f1c3f] via-[#0f1c3f]/35 to-transparent"
                                         />
                                         <div
-                                            class="absolute inset-x-0 bottom-0 p-4"
+                                            class="absolute inset-x-0 bottom-0 p-6 lg:p-7"
                                         >
                                             <p
-                                                class="text-[9px] font-semibold tracking-[0.3em] text-[#d4af37] uppercase"
+                                                class="text-[10px] font-semibold tracking-[0.3em] text-[#e9d9ae] uppercase"
                                             >
-                                                Featured
+                                                Featured collection
                                             </p>
                                             <p
-                                                class="mt-1 font-serif text-base leading-snug text-white"
+                                                class="mt-2 font-serif text-2xl leading-tight text-white"
                                             >
                                                 {{ currentSlide.title }}
                                             </p>
+                                            <span
+                                                class="mt-5 inline-flex items-center gap-2 text-[10px] font-semibold tracking-[0.2em] text-[#d4af37] uppercase"
+                                            >
+                                                Explore collection
+                                                <ArrowRight
+                                                    class="size-3.5 transition-transform duration-300 group-hover/feature:translate-x-1"
+                                                />
+                                            </span>
                                         </div>
                                     </Link>
 
-                                    <div class="min-w-0 flex-1 p-3 lg:p-4">
+                                    <div
+                                        class="min-w-0 px-5 py-6 sm:px-6 lg:px-8 lg:py-7"
+                                    >
                                         <p
-                                            class="px-2 text-[10px] font-semibold tracking-[0.3em] text-[#b99a45] uppercase"
+                                            class="text-[10px] font-semibold tracking-[0.3em] text-[#b99a45] uppercase"
                                         >
                                             Our Collections
+                                        </p>
+                                        <p
+                                            class="mt-2 font-serif text-2xl text-primeBlue"
+                                        >
+                                            Discover Sevara dates
+                                        </p>
+                                        <p
+                                            class="mt-2 text-sm leading-6 text-[#6b6558]"
+                                        >
+                                            Crafted for everyday ritual and
+                                            exceptional gifting.
                                         </p>
 
                                         <p
                                             v-if="navProducts.length === 0"
-                                            class="px-2 py-6 text-sm text-[#8a8a7f]"
+                                            class="py-8 text-sm text-[#8a8a7f]"
                                         >
                                             Coming soon.
                                         </p>
 
-                                        <div class="mt-2 flex flex-col">
+                                        <div
+                                            class="mt-6 grid gap-2 sm:grid-cols-2"
+                                        >
                                             <Link
                                                 v-for="product in navProducts"
                                                 :key="product.href"
                                                 :href="product.href"
-                                                class="group/item flex items-center gap-3 rounded-lg p-2 text-[#3a3a35] transition-colors duration-200 hover:bg-[#f7f3e8] hover:text-[#0f1c3f]"
+                                                class="group/item flex items-center gap-3 rounded-xl border border-[#e7e1d4] bg-white/60 p-3 text-[#3a3a35] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#d4af37]/60 hover:bg-[#f7f3e8] hover:shadow-[0_14px_24px_-20px_rgba(15,28,63,0.5)]"
                                             >
                                                 <span
-                                                    class="size-11 shrink-0 overflow-hidden rounded-md border border-[#efe9db] bg-[#f7f3e8]/60"
+                                                    class="size-13 shrink-0 overflow-hidden rounded-lg border border-[#d4af37]/20 bg-[#f7f3e8]/60"
                                                 >
                                                     <LazyImage
                                                         v-if="product.image_url"
@@ -267,12 +292,12 @@ function isActive(paths: string[]): boolean {
                                                     />
                                                 </span>
                                                 <span
-                                                    class="min-w-0 flex-1 truncate font-serif text-[15px] tracking-wide"
+                                                    class="min-w-0 flex-1 font-serif text-base leading-snug tracking-wide"
                                                 >
                                                     {{ product.title }}
                                                 </span>
                                                 <ArrowRight
-                                                    class="size-4 shrink-0 -translate-x-1 text-[#d4af37] opacity-0 transition-all duration-200 group-hover/item:translate-x-0 group-hover/item:opacity-100"
+                                                    class="size-4 shrink-0 -translate-x-1 text-[#d4af37] opacity-0 transition-all duration-300 group-hover/item:translate-x-0 group-hover/item:opacity-100"
                                                 />
                                             </Link>
                                         </div>
@@ -281,12 +306,10 @@ function isActive(paths: string[]): boolean {
 
                                 <Link
                                     :href="productsIndex()"
-                                    class="flex items-center justify-between gap-2 border-t border-[#efe9db] bg-[#fdfbf6] px-5 py-3.5 text-[11px] font-semibold tracking-[0.15em] text-[#0f1c3f] uppercase transition-colors hover:bg-[#f7f3e8]"
+                                    class="flex items-center justify-between gap-2 border-t border-[#d4af37]/30 bg-[#0f1c3f] px-6 py-4 text-[11px] font-semibold tracking-[0.2em] text-[#e9d9ae] uppercase transition-colors hover:bg-[#162851] lg:px-8"
                                 >
-                                    Shop all products
-                                    <ArrowRight
-                                        class="size-3.5 text-[#d4af37]"
-                                    />
+                                    Explore the full collection
+                                    <ArrowRight class="size-4 text-[#d4af37]" />
                                 </Link>
                             </div>
                         </div>
@@ -297,7 +320,7 @@ function isActive(paths: string[]): boolean {
             <div class="hidden md:block">
                 <Button
                     as-child
-                    class="rounded-xs bg-[#0f1c3f] text-xs font-semibold tracking-[0.15em] text-lightGold uppercase hover:bg-[#0f1c3f]/90"
+                    class="h-9 rounded-xs bg-[#0f1c3f] text-xs font-semibold tracking-[0.15em] text-lightGold uppercase hover:bg-[#0f1c3f]/90"
                 >
                     <Link :href="requestCatalog()">
                         <BookOpen />

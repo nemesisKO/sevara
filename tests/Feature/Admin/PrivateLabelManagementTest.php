@@ -288,7 +288,10 @@ test('reordering a format never swaps it across the slider and other lists', fun
 
 test('admins can read the inquiries sent from the public form', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
-    PrivateLabelInquiry::factory()->create(['full_name' => 'Amina Yusuf']);
+    PrivateLabelInquiry::factory()->create([
+        'full_name' => 'Amina Yusuf',
+        'email' => 'amina@example.com',
+    ]);
 
     $response = $this->actingAs($admin)->get(route('admin.private-label.inquiries.index'));
 
@@ -297,6 +300,7 @@ test('admins can read the inquiries sent from the public form', function () {
         ->component('admin/PrivateLabel/Inquiries')
         ->has('inquiries', 1)
         ->where('inquiries.0.full_name', 'Amina Yusuf')
+        ->where('inquiries.0.email', 'amina@example.com')
     );
 });
 

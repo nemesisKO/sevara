@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Form } from '@inertiajs/vue3';
-import { Mail, Package } from '@lucide/vue';
+import { CheckCircle2, Mail, Package } from '@lucide/vue';
 import PrivateLabelInquiryController from '@/actions/App/Http/Controllers/PrivateLabelInquiryController';
 import LazyImage from '@/components/LazyImage.vue';
 import type { PackagingFormat } from '@/types';
@@ -80,10 +80,31 @@ const fieldClasses =
                 <Form
                     v-bind="PrivateLabelInquiryController.store.form()"
                     reset-on-success
+                    :options="{ preserveScroll: true }"
                     class="mt-8 grid max-w-xl gap-4 sm:grid-cols-2"
-                    v-slot="{ errors, processing }"
+                    v-slot="{ errors, processing, wasSuccessful }"
                 >
-                    <div>
+                    <div
+                        v-if="wasSuccessful"
+                        class="flex min-h-80 animate-in flex-col items-center justify-center border border-emerald-300/30 bg-emerald-400/10 px-6 py-10 text-center text-emerald-100 duration-500 fade-in-0 zoom-in-95 sm:col-span-2"
+                        role="status"
+                    >
+                        <div
+                            class="flex size-16 animate-in items-center justify-center rounded-full border border-emerald-300/40 bg-emerald-300/10 text-emerald-200 delay-150 duration-500 zoom-in-50"
+                        >
+                            <CheckCircle2 class="size-9" />
+                        </div>
+                        <h3 class="mt-5 font-serif text-2xl text-white">
+                            Message received
+                        </h3>
+                        <p
+                            class="mt-2 max-w-sm text-sm leading-6 text-emerald-100/80"
+                        >
+                            Thank you. Our export team will contact you shortly.
+                        </p>
+                    </div>
+
+                    <div v-if="!wasSuccessful">
                         <label for="full_name" class="sr-only">Full name</label>
                         <input
                             id="full_name"
@@ -102,28 +123,28 @@ const fieldClasses =
                         </p>
                     </div>
 
-                    <div>
-                        <label for="company_name" class="sr-only">
-                            Company name
+                    <div v-if="!wasSuccessful">
+                        <label for="email" class="sr-only">
+                            Email address
                         </label>
                         <input
-                            id="company_name"
-                            name="company_name"
-                            type="text"
+                            id="email"
+                            name="email"
+                            type="email"
                             required
                             maxlength="255"
-                            placeholder="Company Name"
+                            placeholder="Email Address"
                             :class="fieldClasses"
                         />
                         <p
-                            v-if="errors.company_name"
+                            v-if="errors.email"
                             class="mt-1 text-xs text-red-300"
                         >
-                            {{ errors.company_name }}
+                            {{ errors.email }}
                         </p>
                     </div>
 
-                    <div class="sm:col-span-2">
+                    <div v-if="!wasSuccessful" class="sm:col-span-2">
                         <label for="country" class="sr-only">
                             Country / market
                         </label>
@@ -153,7 +174,7 @@ const fieldClasses =
                         </p>
                     </div>
 
-                    <div class="sm:col-span-2">
+                    <div v-if="!wasSuccessful" class="sm:col-span-2">
                         <label for="product_format" class="sr-only">
                             Product format
                         </label>
@@ -186,7 +207,7 @@ const fieldClasses =
                         </p>
                     </div>
 
-                    <div class="sm:col-span-2">
+                    <div v-if="!wasSuccessful" class="sm:col-span-2">
                         <label for="estimated_quantity" class="sr-only">
                             Estimated quantity / MOQ
                         </label>
@@ -207,7 +228,7 @@ const fieldClasses =
                         </p>
                     </div>
 
-                    <div class="sm:col-span-2">
+                    <div v-if="!wasSuccessful" class="sm:col-span-2">
                         <label for="message" class="sr-only">
                             Message / requirements
                         </label>
@@ -228,6 +249,7 @@ const fieldClasses =
                     </div>
 
                     <button
+                        v-if="!wasSuccessful"
                         type="submit"
                         :disabled="processing"
                         class="inline-flex w-fit cursor-pointer items-center gap-2 bg-[#d4af37] px-6 py-3 text-sm font-medium tracking-wide text-[#0f1c3f] transition hover:bg-[#c9a233] disabled:cursor-default disabled:opacity-60 sm:col-span-2"

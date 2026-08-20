@@ -75,7 +75,13 @@ function formatDate(value: string): string {
                             </span>
                         </p>
                         <p class="text-sm text-neutral-500">
-                            {{ inquiry.company_name }} &middot;
+                            <a
+                                :href="`mailto:${inquiry.email}`"
+                                class="underline-offset-2 hover:text-neutral-900 hover:underline"
+                            >
+                                {{ inquiry.email }}
+                            </a>
+                            &middot;
                             {{ formatDate(inquiry.created_at) }}
                         </p>
                     </div>

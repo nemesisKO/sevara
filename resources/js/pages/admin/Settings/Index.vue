@@ -28,7 +28,7 @@ defineOptions({
 <template>
     <Head title="Settings" />
 
-    <div class="flex flex-col space-y-8">
+    <div class="flex flex-col space-y-8 p-6">
         <Heading
             variant="small"
             title="Settings"

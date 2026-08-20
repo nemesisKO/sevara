@@ -4,6 +4,11 @@ use App\Enums\PrivateLabelSection;
 use App\Models\PackagingFormat;
 use App\Models\PrivateLabelInquiry;
 use App\Models\PrivateLabelItem;
+use Illuminate\Support\Facades\Http;
+
+beforeEach(function (): void {
+    Http::fake();
+});
 
 test('the private label page shows the managed content', function () {
     PrivateLabelItem::factory()->section(PrivateLabelSection::Highlight)->create(['title' => 'Product Development']);
@@ -50,7 +55,7 @@ test('the private label page orders items and formats by their order', function 
 test('a visitor can send a private label inquiry', function () {
     $response = $this->from(route('private-label'))->post(route('private-label.inquiries.store'), [
         'full_name' => 'Amina Yusuf',
-        'company_name' => 'Gulf Retail Group',
+        'email' => 'amina@example.com',
         'country' => 'Saudi Arabia',
         'product_format' => '250g Retail Pouch',
         'estimated_quantity' => '10,000 units',
@@ -61,7 +66,7 @@ test('a visitor can send a private label inquiry', function () {
 
     $inquiry = PrivateLabelInquiry::sole();
     expect($inquiry->full_name)->toBe('Amina Yusuf')
-        ->and($inquiry->company_name)->toBe('Gulf Retail Group')
+        ->and($inquiry->email)->toBe('amina@example.com')
         ->and($inquiry->country)->toBe('Saudi Arabia')
         ->and($inquiry->estimated_quantity)->toBe('10,000 units')
         ->and($inquiry->read_at)->toBeNull();
@@ -70,7 +75,7 @@ test('a visitor can send a private label inquiry', function () {
 test('an inquiry may be sent without a message', function () {
     $response = $this->from(route('private-label'))->post(route('private-label.inquiries.store'), [
         'full_name' => 'Amina Yusuf',
-        'company_name' => 'Gulf Retail Group',
+        'email' => 'amina@example.com',
         'country' => 'Qatar',
         'product_format' => 'Not sure yet',
         'estimated_quantity' => '5,000 units',
@@ -85,7 +90,7 @@ test('an inquiry requires the contact and project details', function () {
 
     $response->assertSessionHasErrors([
         'full_name',
-        'company_name',
+        'email',
         'country',
         'product_format',
         'estimated_quantity',
@@ -96,7 +101,7 @@ test('an inquiry requires the contact and project details', function () {
 test('an inquiry rejects a country outside the supported markets', function () {
     $response = $this->post(route('private-label.inquiries.store'), [
         'full_name' => 'Amina Yusuf',
-        'company_name' => 'Gulf Retail Group',
+        'email' => 'amina@example.com',
         'country' => 'Atlantis',
         'product_format' => '250g Retail Pouch',
         'estimated_quantity' => '10,000 units',

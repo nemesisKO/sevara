@@ -27,7 +27,7 @@ export type PackagingFormat = {
 export type PrivateLabelInquiry = {
     id: number;
     full_name: string;
-    company_name: string;
+    email: string;
     country: string;
     product_format: string;
     estimated_quantity: string;
