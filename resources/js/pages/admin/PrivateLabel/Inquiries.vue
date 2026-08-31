@@ -33,6 +33,10 @@ function formatDate(value: string): string {
         timeStyle: 'short',
     });
 }
+
+function formatIntent(intent: string | null): string {
+    return intent ? intent.replaceAll('_', ' ') : 'Legacy inquiry';
+}
 </script>
 
 <template>
@@ -134,9 +138,29 @@ function formatDate(value: string): string {
                 </div>
 
                 <dl
-                    class="mt-5 grid gap-4 border-t border-neutral-200 pt-5 sm:grid-cols-3"
+                    class="mt-5 grid gap-4 border-t border-neutral-200 pt-5 sm:grid-cols-4"
                 >
                     <div>
+                        <dt
+                            class="text-xs font-medium tracking-wide text-neutral-500 uppercase"
+                        >
+                            Enquiry type
+                        </dt>
+                        <dd class="mt-1 text-sm text-neutral-900 capitalize">
+                            {{ formatIntent(inquiry.intent) }}
+                        </dd>
+                    </div>
+                    <div v-if="inquiry.company_name">
+                        <dt
+                            class="text-xs font-medium tracking-wide text-neutral-500 uppercase"
+                        >
+                            Company
+                        </dt>
+                        <dd class="mt-1 text-sm text-neutral-900">
+                            {{ inquiry.company_name }}
+                        </dd>
+                    </div>
+                    <div v-if="inquiry.country">
                         <dt
                             class="text-xs font-medium tracking-wide text-neutral-500 uppercase"
                         >
@@ -146,7 +170,17 @@ function formatDate(value: string): string {
                             {{ inquiry.country }}
                         </dd>
                     </div>
-                    <div>
+                    <div v-if="inquiry.product_name">
+                        <dt
+                            class="text-xs font-medium tracking-wide text-neutral-500 uppercase"
+                        >
+                            Product
+                        </dt>
+                        <dd class="mt-1 text-sm text-neutral-900">
+                            {{ inquiry.product_name }}
+                        </dd>
+                    </div>
+                    <div v-if="inquiry.product_format">
                         <dt
                             class="text-xs font-medium tracking-wide text-neutral-500 uppercase"
                         >
@@ -171,7 +205,7 @@ function formatDate(value: string): string {
                             </a>
                         </dd>
                     </div>
-                    <div>
+                    <div v-if="inquiry.estimated_quantity">
                         <dt
                             class="text-xs font-medium tracking-wide text-neutral-500 uppercase"
                         >

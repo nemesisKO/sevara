@@ -16,19 +16,20 @@ import PrivateLabelInquiryForm from '@/components/public/PrivateLabelInquiryForm
 import RevealOnScroll from '@/components/public/RevealOnScroll.vue';
 import { privateLabel } from '@/routes';
 import { request as requestCatalog } from '@/routes/catalog';
-import type { PackagingFormat } from '@/types';
+import type { InquiryProduct, PackagingFormat } from '@/types';
 
 defineProps<{
     markets: string[];
     formats: PackagingFormat[];
+    products: InquiryProduct[];
 }>();
 
 const mandala = "url('/images/mandala.png') center / contain no-repeat";
 
 /** Single source for the details shown on the page and published as structured data. */
 const contactEmail = 'info@sevaradates.com';
-const contactPhone = '+971 50 123 4567';
-const contactPhoneHref = 'tel:+971501234567';
+const contactPhone = '+971 58 180 9792';
+const contactPhoneHref = 'tel:+971581809792';
 const officeCity = 'Dubai';
 const officeCountry = 'AE';
 
@@ -45,7 +46,8 @@ const channels = [
         title: 'Phone',
         value: contactPhone,
         href: contactPhoneHref,
-        description: 'Sunday to Thursday, 09:00 – 18:00 (GST).',
+        description:
+            'Business hours: Monday to Saturday, 7:30 AM – 7:30 PM (Dubai time).',
     },
     {
         icon: MapPin,
@@ -99,19 +101,20 @@ const structuredData = computed(() => ({
 
 const nextSteps = [
     {
-        title: 'We Review',
-        description:
-            'Your inquiry reaches the export team the same working day.',
+        title: 'When We Receive Your Inquiry',
+        description: 'We review your message and requirements',
     },
     {
-        title: 'We Reply',
-        description:
-            'Expect a response with pricing and lead times within two business days.',
+        title: 'We Get in Touch',
+        description: 'Our team will contact you to understand your needs.',
     },
     {
-        title: 'We Sample',
-        description:
-            'Samples, artwork and production planning follow once the brief is agreed.',
+        title: 'We Provide Solutions',
+        description: 'You’ll receive tailored options, samples or a quotation.',
+    },
+    {
+        title: 'Build Together',
+        description: 'Let’s create and grow your brand together.',
     },
 ];
 
@@ -143,7 +146,7 @@ function scrollToInquiry(): void {
     <JsonLd :data="structuredData" head-key="contact" />
 
     <section
-        class="relative overflow-hidden bg-[#fdfbf6] py-16 lg:py-32 xl:py-40"
+        class="relative overflow-hidden bg-[#fdfbf6] pt-24 pb-12 lg:pt-28 lg:pb-20 xl:pt-32 xl:pb-24"
     >
         <div class="relative z-10 w-full px-6 lg:pl-14 xl:pl-20 2xl:pl-28">
             <div class="lg:max-w-lg xl:max-w-xl 2xl:max-w-2xl">
@@ -153,7 +156,7 @@ function scrollToInquiry(): void {
                     Contact
                 </p>
                 <h1
-                    class="mt-4 font-serif text-4xl leading-tight text-[#0f1c3f] sm:text-5xl xl:text-6xl"
+                    class="mt-4 font-serif text-3xl leading-tight text-[#0f1c3f] sm:text-5xl xl:text-6xl"
                 >
                     Talk to the Sevara Export Team
                 </h1>
@@ -164,7 +167,7 @@ function scrollToInquiry(): void {
                     <span class="h-px w-16 bg-[#d4af37]/50" />
                 </div>
 
-                <p class="mt-7 max-w-sm text-[#3a3a35]">
+                <p class="mt-7 max-w-sm font-serif text-[#3a3a35]">
                     Distribution, retail listings or a private label line — tell
                     us about your market and we will take it from there.
                 </p>
@@ -190,16 +193,22 @@ function scrollToInquiry(): void {
         </div>
 
         <div
-            class="relative mt-12 aspect-square w-full lg:absolute lg:inset-y-0 lg:right-0 lg:mt-0 lg:aspect-auto lg:w-1/2"
+            class="relative mt-8 aspect-4/3 w-full lg:absolute lg:inset-y-0 lg:right-0 lg:mt-0 lg:aspect-auto lg:w-[58%]"
         >
             <LazyImage
                 loading="eager"
                 src="/images/gift-collection.webp"
                 alt="Sevara premium date collection gift box with chocolate dates and almonds"
-                class="h-full w-full object-cover object-center"
+                class="h-full w-full object-contain object-center lg:object-cover"
             />
             <div
-                class="absolute inset-0 hidden bg-linear-to-r from-[#fdfbf6] via-[#fdfbf6]/40 via-7% to-transparent to-18% lg:block"
+                class="absolute inset-0 hidden bg-linear-to-r from-[#fdfbf6] via-[#fdfbf6]/75 via-12% to-transparent to-40% lg:block"
+            />
+            <div
+                class="pointer-events-none absolute inset-x-0 top-0 h-20 bg-linear-to-b from-[#fdfbf6] to-transparent lg:hidden"
+            />
+            <div
+                class="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-linear-to-t from-[#fdfbf6] to-transparent lg:hidden"
             />
         </div>
     </section>
@@ -249,12 +258,11 @@ function scrollToInquiry(): void {
     <PrivateLabelInquiryForm
         :markets="markets"
         :formats="formats"
+        :products="products"
         section-id="contact-inquiry"
         heading="Tell Us About Your Project"
         description="Share your market, packaging needs and target quantity. Our export team will review and contact you."
         submit-label="Send Inquiry"
-        panel-label="Export Enquiries"
-        panel-image="/images/private-label-kit.webp"
     />
 
     <section class="bg-[#f7f3e8] py-20 lg:py-28">
@@ -285,7 +293,7 @@ function scrollToInquiry(): void {
                 </div>
             </RevealOnScroll>
 
-            <div class="mt-14 grid gap-5 sm:grid-cols-3 sm:gap-6">
+            <div class="mt-14 grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
                 <RevealOnScroll
                     v-for="(step, index) in nextSteps"
                     :key="step.title"
@@ -320,7 +328,7 @@ function scrollToInquiry(): void {
                 >
                     <Clock class="size-5 text-primeGold" :stroke-width="1.5" />
                     <span>
-                        Replies within two business days, Sunday to Thursday.
+                        Replies within two business days, Monday to Saturday.
                     </span>
                 </div>
             </RevealOnScroll>

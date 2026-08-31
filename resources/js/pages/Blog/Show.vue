@@ -411,7 +411,6 @@ function toggleFaq(index: number): void {
 <style scoped>
 .blog-prose :deep(h2) {
     margin: 1.75rem 0 0.75rem;
-    font-family: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
     font-size: 1.5rem;
     color: #0f1c3f;
 }

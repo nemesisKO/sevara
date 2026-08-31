@@ -86,7 +86,7 @@ const currentYear = new Date().getFullYear();
                                 type="submit"
                                 aria-label="Subscribe"
                                 :disabled="processing || wasSuccessful"
-                                class="flex shrink-0 items-center justify-center bg-[#d4af37] px-4 text-[#0f1c3f] transition hover:bg-[#c9a233]"
+                                class="flex shrink-0 items-center justify-center bg-primeGold px-4 text-[#0f1c3f] transition hover:bg-[#c9a233]"
                             >
                                 <Send class="size-4" />
                             </button>
@@ -254,10 +254,10 @@ const currentYear = new Date().getFullYear();
                         <li class="flex items-center gap-3">
                             <Phone class="size-4 shrink-0 text-[#b99a45]" />
                             <a
-                                href="tel:+971501234567"
+                                href="tel:+971581809792"
                                 class="transition-colors hover:text-[#d4af37]"
                             >
-                                +971 50 123 4567
+                                +971 58 180 9792
                             </a>
                         </li>
                         <li class="flex items-center gap-3">
@@ -268,7 +268,7 @@ const currentYear = new Date().getFullYear();
 
                     <Link
                         :href="contact()"
-                        class="mt-6 inline-flex items-center bg-[#d4af37] px-6 py-3 text-sm font-medium tracking-wide text-[#0f1c3f] transition hover:bg-[#c9a233]"
+                        class="mt-6 inline-flex items-center bg-primeGold px-6 py-3 text-sm font-medium tracking-wide text-[#0f1c3f] transition hover:bg-[#c9a233]"
                     >
                         Contact Export Team
                     </Link>

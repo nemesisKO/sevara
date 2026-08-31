@@ -85,9 +85,23 @@ function stopSlideshow(): void {
     }
 }
 
-onMounted(startSlideshow);
+onMounted(() => {
+    startSlideshow();
+    updateHeaderState();
+    window.addEventListener('scroll', updateHeaderState, { passive: true });
+    window.addEventListener(
+        'open-catalogue-request-modal',
+        openCatalogueRequestModal,
+    );
+});
+
 onBeforeUnmount(() => {
     stopSlideshow();
+    window.removeEventListener('scroll', updateHeaderState);
+    window.removeEventListener(
+        'open-catalogue-request-modal',
+        openCatalogueRequestModal,
+    );
 
     if (catalogueModalTimer) {
         clearTimeout(catalogueModalTimer);
@@ -122,6 +136,7 @@ function scheduleCloseProductsMenu(): void {
 
 const isMobileMenuOpen = ref(false);
 const isCatalogueRequestModalOpen = ref(false);
+const isScrolled = ref(false);
 let catalogueModalTimer: ReturnType<typeof setTimeout> | null = null;
 
 function openCatalogueRequestModal(): void {
@@ -138,6 +153,27 @@ function openCatalogueRequestModal(): void {
 }
 
 const currentPath = computed(() => page.url.split('?')[0] ?? '/');
+const isPrivateLabelPage = computed(
+    () => currentPath.value === '/private-label',
+);
+const isWelcomePage = computed(() => currentPath.value === '/');
+const isAboutPage = computed(() => currentPath.value === '/about');
+const isContactPage = computed(() => currentPath.value === '/contact');
+const isHeroPage = computed(
+    () =>
+        isPrivateLabelPage.value ||
+        isWelcomePage.value ||
+        isAboutPage.value ||
+        isContactPage.value,
+);
+const usesHeroHeader = computed(() => isHeroPage.value && !isScrolled.value);
+const usesWhiteHeroNavigation = computed(
+    () => isWelcomePage.value && !isScrolled.value,
+);
+
+function updateHeaderState(): void {
+    isScrolled.value = window.scrollY > 32;
+}
 
 /**
  * The header persists across Inertia visits, so the drawer and the products
@@ -152,6 +188,7 @@ watch(currentPath, () => {
     }
 
     isProductsMenuOpen.value = false;
+    updateHeaderState();
 });
 
 function isActive(paths: string[]): boolean {
@@ -164,7 +201,16 @@ function isActive(paths: string[]): boolean {
 </script>
 
 <template>
-    <header class="relative border-b border-[#e7e1d4] bg-white">
+    <header
+        :class="[
+            isHeroPage
+                ? 'fixed inset-x-0 top-0 z-40 transition-colors duration-300'
+                : 'relative z-40',
+            usesHeroHeader
+                ? 'border-b border-transparent bg-transparent'
+                : 'border-b border-[#e7e1d4] bg-white',
+        ]"
+    >
         <div
             class="relative mx-auto flex w-full flex-wrap items-center justify-between gap-y-2 px-2 py-3 md:px-6 lg:px-16 xl:px-20 2xl:px-24"
         >
@@ -174,11 +220,17 @@ function isActive(paths: string[]): boolean {
                     loading="eager"
                     :src="logoUrl"
                     alt="Sevara"
-                    class="h-9 max-w-40 object-contain"
+                    class="h-9 max-w-40 object-contain transition duration-300"
+                    :class="usesWhiteHeroNavigation && 'brightness-0 invert'"
                 />
                 <span
                     v-else
-                    class="font-serif text-2xl font-semibold tracking-widest text-[#0f1c3f]"
+                    class="font-serif text-2xl font-semibold tracking-widest transition-colors duration-300"
+                    :class="
+                        usesWhiteHeroNavigation
+                            ? 'text-white'
+                            : 'text-[#0f1c3f]'
+                    "
                 >
                     SEVARA
                 </span>
@@ -199,11 +251,15 @@ function isActive(paths: string[]): boolean {
                 >
                     <Link
                         :href="item.href"
-                        class="relative flex items-center gap-1 py-1 text-xs font-semibold tracking-[0.15em] uppercase transition-colors"
+                        class="relative flex items-center gap-1 py-1 text-[13px] font-bold tracking-[0.15em] uppercase transition-colors"
                         :class="
                             isActive(item.matches)
-                                ? 'text-[#0f1c3f]'
-                                : 'text-[#3a3a35] hover:text-primeGold/70'
+                                ? usesWhiteHeroNavigation
+                                    ? 'text-white'
+                                    : 'text-[#0f1c3f]'
+                                : usesWhiteHeroNavigation
+                                  ? 'text-white/85 hover:text-[#f4d677]'
+                                  : 'text-[#3a3a35] hover:text-primeGold/70'
                         "
                     >
                         {{ item.title }}
@@ -357,7 +413,12 @@ function isActive(paths: string[]): boolean {
 
             <div class="hidden md:block">
                 <Button
-                    class="h-9 rounded-xs bg-[#0f1c3f] text-xs font-semibold tracking-[0.15em] text-lightGold uppercase hover:bg-[#0f1c3f]/90"
+                    class="h-9 cursor-pointer rounded-xs text-xs font-semibold tracking-[0.15em] uppercase transition-colors"
+                    :class="
+                        usesWhiteHeroNavigation
+                            ? 'bg-[#d4af37] text-[#0f1c3f] hover:bg-[#c9a233] hover:shadow-[0_8px_18px_-10px_rgba(212,175,55,0.9)]'
+                            : 'bg-[#0f1c3f] text-lightGold hover:bg-[#162851] hover:text-[#f1dfad] hover:shadow-[0_8px_18px_-10px_rgba(15,28,63,0.55)]'
+                    "
                     type="button"
                     @click="openCatalogueRequestModal"
                 >
@@ -371,7 +432,12 @@ function isActive(paths: string[]): boolean {
                     <button
                         type="button"
                         aria-label="Open menu"
-                        class="flex size-10 items-center justify-center rounded-xs text-primeBlue transition hover:bg-[#f7f3e8] md:hidden"
+                        class="flex size-10 items-center justify-center rounded-xs transition-colors md:hidden"
+                        :class="
+                            usesWhiteHeroNavigation
+                                ? 'text-white hover:bg-white/10'
+                                : 'text-primeBlue hover:bg-[#f7f3e8]'
+                        "
                     >
                         <Menu class="size-6" />
                     </button>
@@ -414,7 +480,7 @@ function isActive(paths: string[]): boolean {
                         <template v-for="item in navItems" :key="item.title">
                             <Link
                                 :href="item.href"
-                                class="border-l-2 px-4 py-3 text-xs font-semibold tracking-[0.15em] uppercase transition-colors"
+                                class="border-l-2 px-4 py-3 text-sm font-bold tracking-[0.15em] uppercase transition-colors"
                                 :class="
                                     isActive(item.matches)
                                         ? 'border-[#d4af37] bg-[#f7f3e8] text-primeBlue'
@@ -508,7 +574,8 @@ function isActive(paths: string[]): boolean {
                             <DialogDescription
                                 class="max-w-sm text-sm leading-6 text-[#6b6558]"
                             >
-                                Enter your email and we’ll send the latest Sevara catalogue straight to your inbox.
+                                Enter your email and we’ll send the latest
+                                Sevara catalogue straight to your inbox.
                             </DialogDescription>
                         </DialogHeader>
 

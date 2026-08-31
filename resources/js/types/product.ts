@@ -26,7 +26,6 @@ export type ProductExperienceItem = {
     icon_path: string;
     icon_url: string;
     title: string;
-    description: string;
     order: number;
     created_at: string;
     updated_at: string;
@@ -48,8 +47,18 @@ export type Product = {
     subtitle: string | null;
     subtitle_color: string;
     description: string | null;
+    net_piece_weight: string | null;
+    pieces_per_pack: string | null;
+    shelf_life: string | null;
+    storage: string | null;
+    allergens: string | null;
+    moq: string | null;
     spec_image_path: string | null;
     spec_image_url: string | null;
+    technical_data_sheet_path: string | null;
+    technical_data_sheet_url: string | null;
+    pieces_per_pack_path: string | null;
+    pieces_per_pack_url: string | null;
     experience_title: string | null;
     seo_title: string;
     images: ProductImage[];

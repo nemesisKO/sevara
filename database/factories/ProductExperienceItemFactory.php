@@ -22,7 +22,6 @@ class ProductExperienceItemFactory extends Factory
             'product_id' => Product::factory(),
             'icon_path' => 'products/experience-icons/'.fake()->uuid().'.png',
             'title' => fake()->words(2, true),
-            'description' => fake()->sentence(6),
             'order' => 0,
         ];
     }

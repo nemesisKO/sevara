@@ -36,12 +36,20 @@ test('admins can add a slide', function () {
     $response = $this->actingAs($admin)->post(route('admin.slides.store'), [
         'image' => UploadedFile::fake()->image('slide.jpg'),
         'link' => 'https://example.com',
+        'primary_cta_text' => 'Explore products',
+        'primary_cta_link' => '/products',
+        'secondary_cta_text' => 'Contact export team',
+        'secondary_cta_link' => '/contact',
     ]);
 
     $response->assertRedirect(route('admin.slides.index'));
 
     $slide = Slide::sole();
-    expect($slide->link)->toBe('https://example.com');
+    expect($slide->link)->toBe('https://example.com')
+        ->and($slide->primary_cta_text)->toBe('Explore products')
+        ->and($slide->primary_cta_link)->toBe('/products')
+        ->and($slide->secondary_cta_text)->toBe('Contact export team')
+        ->and($slide->secondary_cta_link)->toBe('/contact');
     Storage::disk('public')->assertExists($slide->image_path);
 });
 
@@ -64,6 +72,40 @@ test('adding a slide requires an image and a link', function () {
     $response = $this->actingAs($admin)->post(route('admin.slides.store'), []);
 
     $response->assertSessionHasErrors(['image', 'link']);
+});
+
+test('button text and links must be provided together', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+
+    $response = $this->actingAs($admin)->post(route('admin.slides.store'), [
+        'image' => UploadedFile::fake()->image('slide.jpg'),
+        'link' => 'https://example.com',
+        'primary_cta_text' => 'Explore products',
+    ]);
+
+    $response->assertSessionHasErrors('primary_cta_link');
+});
+
+test('admins can edit a slide call to action buttons', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $slide = Slide::factory()->create();
+
+    $response = $this->actingAs($admin)->patch(route('admin.slides.update', $slide), [
+        'link' => '/private-label',
+        'primary_cta_text' => 'Explore products',
+        'primary_cta_link' => '/products',
+        'secondary_cta_text' => 'Contact export team',
+        'secondary_cta_link' => '/contact',
+    ]);
+
+    $response->assertRedirect(route('admin.slides.index'));
+
+    expect($slide->fresh())
+        ->link->toBe('/private-label')
+        ->primary_cta_text->toBe('Explore products')
+        ->primary_cta_link->toBe('/products')
+        ->secondary_cta_text->toBe('Contact export team')
+        ->secondary_cta_link->toBe('/contact');
 });
 
 test('admins can delete a slide', function () {

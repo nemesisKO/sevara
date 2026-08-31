@@ -25,7 +25,6 @@ class StoreProductExperienceItemRequest extends FormRequest
         return [
             'icon' => ['required', 'image:allow_svg', 'max:2048'],
             'title' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string', 'max:500'],
         ];
     }
 }

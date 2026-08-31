@@ -24,13 +24,22 @@ class StorePrivateLabelInquiryRequest extends FormRequest
      */
     public function rules(): array
     {
+        $isProjectInquiry = in_array($this->intent, [
+            'private_label',
+            'distribution_partnership',
+        ], true);
+        $requiresProduct = $this->intent !== 'general_export_enquiry';
+
         return [
             'full_name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
-            'country' => ['required', 'string', Rule::in(PrivateLabelInquiry::MARKETS)],
-            'product_format' => ['required', 'string', 'max:255'],
-            'estimated_quantity' => ['required', 'string', 'max:255'],
+            'intent' => ['required', 'string', Rule::in(PrivateLabelInquiry::INTENTS)],
+            'company_name' => [Rule::requiredIf($isProjectInquiry), 'nullable', 'string', 'max:255'],
+            'country' => [Rule::requiredIf($isProjectInquiry), 'nullable', 'string', Rule::in(PrivateLabelInquiry::MARKETS)],
+            'product_format' => [Rule::requiredIf($isProjectInquiry), 'nullable', 'string', 'max:255'],
+            'product_name' => [Rule::requiredIf($requiresProduct), 'nullable', 'string', 'max:255'],
+            'estimated_quantity' => [Rule::requiredIf($isProjectInquiry), 'nullable', 'string', 'max:255'],
             'message' => ['nullable', 'string', 'max:2000'],
         ];
     }
@@ -41,8 +50,11 @@ class StorePrivateLabelInquiryRequest extends FormRequest
     public function attributes(): array
     {
         return [
+            'intent' => 'enquiry type',
+            'company_name' => 'company name',
             'country' => 'country / market',
             'product_format' => 'product format',
+            'product_name' => 'product',
             'estimated_quantity' => 'estimated quantity',
         ];
     }

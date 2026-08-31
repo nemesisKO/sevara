@@ -24,13 +24,21 @@ export type PackagingFormat = {
     updated_at: string;
 };
 
+export type InquiryProduct = {
+    id: number;
+    name: string;
+};
+
 export type PrivateLabelInquiry = {
     id: number;
     full_name: string;
+    company_name: string | null;
     email: string;
     phone: string | null;
+    intent: string | null;
     country: string;
     product_format: string;
+    product_name: string | null;
     estimated_quantity: string;
     message: string | null;
     read_at: string | null;

@@ -17,7 +17,6 @@ class ProductExperienceItemController extends Controller
         $product->experienceItems()->create([
             'icon_path' => $request->file('icon')->store('products/experience-icons', 'public'),
             'title' => $request->validated('title'),
-            'description' => $request->validated('description'),
             'order' => ($product->experienceItems()->max('order') ?? -1) + 1,
         ]);
 

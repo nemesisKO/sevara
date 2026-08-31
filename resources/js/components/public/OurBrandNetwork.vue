@@ -96,13 +96,22 @@ function scrollByCards(direction: number): void {
 
                 <div
                     ref="track"
-                    class="flex snap-x snap-mandatory [scrollbar-width:none] gap-4 overflow-x-auto scroll-smooth px-1"
+                    class="gap-4 px-1"
+                    :class="
+                        brands.length > 5
+                            ? 'flex snap-x snap-mandatory pt-4 [scrollbar-width:none] overflow-x-auto scroll-smooth'
+                            : 'grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5'
+                    "
                 >
                     <RevealOnScroll
                         v-for="(brand, index) in brands"
                         :key="brand.id"
                         :delay="index * 120"
-                        class="shrink-0 basis-[calc((100%-1rem)/2)] snap-start sm:basis-[calc((100%-2rem)/3)] lg:basis-[calc((100%-4rem)/5)]"
+                        :class="
+                            brands.length > 5
+                                ? 'shrink-0 basis-[calc((100%-1rem)/2)] snap-start sm:basis-[calc((100%-2rem)/3)] lg:basis-[calc((100%-4rem)/5)]'
+                                : ''
+                        "
                     >
                         <a
                             :href="brand.link"
@@ -114,7 +123,7 @@ function scrollByCards(direction: number): void {
                             <LazyImage
                                 :src="brand.image_url"
                                 :alt="brand.name"
-                                class="relative max-h-full max-w-full object-contain opacity-80 grayscale transition duration-500 ease-out group-hover:scale-105 group-hover:opacity-100 group-hover:grayscale-0"
+                                class="relative max-h-full max-w-full object-contain transition duration-500 ease-out group-hover:scale-105"
                             />
                         </a>
                     </RevealOnScroll>

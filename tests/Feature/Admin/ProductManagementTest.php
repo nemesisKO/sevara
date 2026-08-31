@@ -98,6 +98,41 @@ test('admins can update a product', function () {
     expect($product->fresh()->title_part1)->toBe('Mango');
 });
 
+test('admins can set technical details and upload product files', function () {
+    Storage::fake('public');
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $product = Product::factory()->create();
+
+    $response = $this->actingAs($admin)->put(
+        route('admin.products.update', $product),
+        validProductPayload([
+            'slug' => $product->slug,
+            'net_piece_weight' => '25 g',
+            'pieces_per_pack' => '12 pieces',
+            'shelf_life' => '12 months',
+            'storage' => 'Cool, dry place',
+            'allergens' => 'Contains almonds',
+            'moq' => '500 cartons',
+            'technical_data_sheet' => UploadedFile::fake()->create('technical-data.pdf', 500, 'application/pdf'),
+            'pieces_per_pack_file' => UploadedFile::fake()->image('pieces-per-pack.png'),
+        ]),
+    );
+
+    $response->assertRedirect(route('admin.products.edit', $product));
+    $product->refresh();
+
+    expect($product->net_piece_weight)->toBe('25 g');
+    expect($product->pieces_per_pack)->toBe('12 pieces');
+    expect($product->shelf_life)->toBe('12 months');
+    expect($product->storage)->toBe('Cool, dry place');
+    expect($product->allergens)->toBe('Contains almonds');
+    expect($product->moq)->toBe('500 cartons');
+    expect($product->technical_data_sheet_url)->not->toBeNull();
+    expect($product->pieces_per_pack_url)->not->toBeNull();
+    Storage::disk('public')->assertExists($product->technical_data_sheet_path);
+    Storage::disk('public')->assertExists($product->pieces_per_pack_path);
+});
+
 test('admins can delete a product and its gallery images', function () {
     Storage::fake('public');
     $admin = User::factory()->create(['role' => UserRole::Admin]);
@@ -316,13 +351,11 @@ test('admins can add an experience item to a product', function () {
     $response = $this->actingAs($admin)->post(route('admin.products.experience-items.store', $product), [
         'icon' => UploadedFile::fake()->image('icon.png'),
         'title' => 'Deep Cocoa',
-        'description' => 'Bold, rich cocoa for a full-bodied flavor.',
     ]);
 
     $response->assertRedirect(route('admin.products.edit', $product));
     $item = $product->experienceItems()->sole();
     expect($item->title)->toBe('Deep Cocoa');
-    expect($item->description)->toBe('Bold, rich cocoa for a full-bodied flavor.');
     expect($item->order)->toBe(0);
     Storage::disk('public')->assertExists($item->icon_path);
 });
@@ -338,7 +371,6 @@ test('experience item icons can be svg files', function () {
             '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/></svg>',
         ),
         'title' => 'Deep Cocoa',
-        'description' => 'Bold, rich cocoa for a full-bodied flavor.',
     ]);
 
     $response->assertRedirect(route('admin.products.edit', $product));
@@ -347,13 +379,13 @@ test('experience item icons can be svg files', function () {
     Storage::disk('public')->assertExists($item->icon_path);
 });
 
-test('adding an experience item requires an icon, a title and a description', function () {
+test('adding an experience item requires an icon and a title', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
     $product = Product::factory()->create();
 
     $response = $this->actingAs($admin)->post(route('admin.products.experience-items.store', $product), []);
 
-    $response->assertSessionHasErrors(['icon', 'title', 'description']);
+    $response->assertSessionHasErrors(['icon', 'title']);
 });
 
 test('admins can delete an experience item', function () {
@@ -363,7 +395,6 @@ test('admins can delete an experience item', function () {
     $item = $product->experienceItems()->create([
         'icon_path' => UploadedFile::fake()->image('icon.png')->store('products/experience-icons', 'public'),
         'title' => 'Deep Cocoa',
-        'description' => 'Bold, rich cocoa.',
         'order' => 0,
     ]);
 
@@ -377,8 +408,8 @@ test('admins can delete an experience item', function () {
 test('admins can reorder experience items', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
     $product = Product::factory()->create();
-    $first = $product->experienceItems()->create(['icon_path' => 'products/experience-icons/a.png', 'title' => 'A', 'description' => 'A.', 'order' => 0]);
-    $second = $product->experienceItems()->create(['icon_path' => 'products/experience-icons/b.png', 'title' => 'B', 'description' => 'B.', 'order' => 1]);
+    $first = $product->experienceItems()->create(['icon_path' => 'products/experience-icons/a.png', 'title' => 'A', 'order' => 0]);
+    $second = $product->experienceItems()->create(['icon_path' => 'products/experience-icons/b.png', 'title' => 'B', 'order' => 1]);
 
     $response = $this->actingAs($admin)->patch(route('admin.products.experience-items.move-up', [$product, $second]));
 
@@ -394,7 +425,6 @@ test('deleting a product removes its experience item icons', function () {
     $item = $product->experienceItems()->create([
         'icon_path' => UploadedFile::fake()->image('icon.png')->store('products/experience-icons', 'public'),
         'title' => 'Deep Cocoa',
-        'description' => 'Bold, rich cocoa.',
         'order' => 0,
     ]);
 

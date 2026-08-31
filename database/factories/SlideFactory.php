@@ -20,6 +20,10 @@ class SlideFactory extends Factory
         return [
             'image_path' => 'slides/'.fake()->uuid().'.jpg',
             'link' => fake()->url(),
+            'primary_cta_text' => fake()->words(2, true),
+            'primary_cta_link' => fake()->url(),
+            'secondary_cta_text' => fake()->words(2, true),
+            'secondary_cta_link' => fake()->url(),
         ];
     }
 }

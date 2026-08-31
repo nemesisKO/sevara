@@ -6,6 +6,7 @@ import BlogSection from '@/components/public/BlogSection.vue';
 import HeroSlider from '@/components/public/HeroSlider.vue';
 import OurBrandNetwork from '@/components/public/OurBrandNetwork.vue';
 import OurJourney from '@/components/public/OurJourney.vue';
+import PrivateLabelBanner from '@/components/public/PrivateLabelBanner.vue';
 import ProductCollection from '@/components/public/ProductCollection.vue';
 import WhySevara from '@/components/public/WhySevara.vue';
 import type { Blog, Brand, Product, Slide } from '@/types';
@@ -59,8 +60,9 @@ const structuredData = computed(() => ({
 
     <HeroSlider :slides="slides" />
     <WhySevara />
-    <OurBrandNetwork :brands="brands" />
-    <OurJourney />
     <ProductCollection :products="products" />
+    <PrivateLabelBanner />
+    <OurJourney />
+     <OurBrandNetwork :brands="brands" />
     <BlogSection :blogs="blogs" />
 </template>

@@ -1,20 +1,28 @@
 <script setup lang="ts">
 import { Form } from '@inertiajs/vue3';
-import { CheckCircle2, Mail, Package } from '@lucide/vue';
+import {
+    ArrowLeft,
+    CheckCircle2,
+    Gift,
+    Mail,
+    MessageCircle,
+    Package,
+    Users,
+} from '@lucide/vue';
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
 import PrivateLabelInquiryController from '@/actions/App/Http/Controllers/PrivateLabelInquiryController';
-import LazyImage from '@/components/LazyImage.vue';
-import type { PackagingFormat } from '@/types';
+import CountryMarketInput from '@/components/public/CountryMarketInput.vue';
+import type { InquiryProduct, PackagingFormat } from '@/types';
 
 withDefaults(
     defineProps<{
         markets: string[];
         formats: PackagingFormat[];
+        products: InquiryProduct[];
         sectionId?: string;
         heading?: string;
         description?: string;
         submitLabel?: string;
-        panelLabel?: string;
-        panelImage?: string;
     }>(),
     {
         sectionId: 'private-label-inquiry',
@@ -22,7 +30,6 @@ withDefaults(
         description:
             'Share your market, packaging needs and target quantity. Our export team will review and contact you.',
         submitLabel: 'Send Private Label Inquiry',
-        panelLabel: 'Private Label Kit',
     },
 );
 
@@ -30,6 +37,116 @@ const mandala = "url('/images/mandala.png') center / contain no-repeat";
 
 const fieldClasses =
     'w-full border border-white/15 bg-white/5 px-4 py-3 text-sm text-white transition placeholder:text-[#8e97b0] focus:border-[#d4af37] focus:outline-none';
+
+const selectedIntent = ref('');
+
+const inquiryIntents = [
+    {
+        value: 'private_label',
+        title: 'Private Label',
+        description: 'Create a Sevara product tailored to your brand.',
+        icon: Package,
+    },
+    {
+        value: 'sample_request',
+        title: 'Request Samples',
+        description: 'Try our products before your next decision.',
+        icon: Gift,
+    },
+    {
+        value: 'distribution_partnership',
+        title: 'Distribution Partnership',
+        description: 'Bring Sevara to your market.',
+        icon: Users,
+    },
+    {
+        value: 'general_export_enquiry',
+        title: 'General Export Enquiry',
+        description: 'Talk to us about another export opportunity.',
+        icon: MessageCircle,
+    },
+];
+
+const selectedIntentDetails = computed(() =>
+    inquiryIntents.find((intent) => intent.value === selectedIntent.value),
+);
+
+const isProjectInquiry = computed(() =>
+    ['private_label', 'distribution_partnership'].includes(
+        selectedIntent.value,
+    ),
+);
+
+const requiresProduct = computed(
+    () => selectedIntent.value !== 'general_export_enquiry',
+);
+
+const intentStepContainer = ref<HTMLElement | null>(null);
+const intentStepHeight = ref<number | null>(null);
+let intentPanelResizeObserver: ResizeObserver | null = null;
+
+function measureIntentPanel(element?: Element): void {
+    const panel =
+        element instanceof HTMLElement
+            ? element
+            : intentStepContainer.value?.querySelector<HTMLElement>(
+                  '[data-intent-panel]',
+              );
+
+    if (!panel) {
+        return;
+    }
+
+    intentStepHeight.value = Math.ceil(panel.getBoundingClientRect().height);
+
+    intentPanelResizeObserver?.disconnect();
+    intentPanelResizeObserver = new ResizeObserver((entries) => {
+        const [entry] = entries;
+
+        if (entry) {
+            intentStepHeight.value = Math.ceil(entry.contentRect.height);
+        }
+    });
+    intentPanelResizeObserver.observe(panel);
+}
+
+function focusIntentForm(element: Element): void {
+    measureIntentPanel(element);
+
+    if (
+        !selectedIntent.value ||
+        window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    ) {
+        return;
+    }
+
+    window.requestAnimationFrame(() => {
+        const formTitle = intentStepContainer.value?.querySelector<HTMLElement>(
+            '[data-intent-form-title]',
+        );
+
+        if (!formTitle) {
+            return;
+        }
+
+        const targetTop = Math.max(
+            0,
+            window.scrollY + formTitle.getBoundingClientRect().top - 112,
+        );
+
+        if (Math.abs(window.scrollY - targetTop) > 12) {
+            window.scrollTo({ top: targetTop, behavior: 'smooth' });
+        }
+    });
+}
+
+onMounted(() => {
+    void nextTick(() => measureIntentPanel());
+});
+
+onBeforeUnmount(() => {
+    intentPanelResizeObserver?.disconnect();
+});
 </script>
 
 <template>
@@ -49,40 +166,26 @@ const fieldClasses =
             />
         </div>
 
-        <div
-            v-if="panelImage"
-            class="pointer-events-none absolute inset-y-0 right-0 hidden aspect-square max-w-[58%] lg:block"
-        >
-            <LazyImage
-                :src="panelImage"
-                :alt="panelLabel"
-                class="h-full w-full object-cover object-center"
-            />
-            <div class="absolute inset-0 bg-[#0f1c3f]/20" />
-            <div
-                class="absolute inset-0 bg-linear-to-r from-[#0f1c3f] to-transparent to-32%"
-            />
-        </div>
-
-        <div
-            class="relative mx-auto grid max-w-7xl items-center gap-12 px-6 lg:px-10"
-            :class="panelImage ? '' : 'lg:grid-cols-2'"
-        >
-            <div :class="panelImage ? 'lg:max-w-xl' : ''">
+        <div class="relative mx-auto max-w-3xl px-6 lg:px-10">
+            <div>
                 <h2
                     :id="`${sectionId}-heading`"
-                    class="font-serif text-3xl text-[#e9d9ae] sm:text-4xl"
+                    class="text-center font-serif text-3xl text-primeGold sm:text-4xl"
                 >
                     {{ heading }}
                 </h2>
-                <p class="mt-4 max-w-md text-[#9aa5c4]">{{ description }}</p>
+                <p
+                    class="mx-auto mt-4 max-w-md text-center font-serif text-[#9aa5c4]"
+                >
+                    {{ description }}
+                </p>
 
                 <Form
                     v-bind="PrivateLabelInquiryController.store.form()"
                     reset-on-success
                     :options="{ preserveScroll: true }"
-                    class="mt-8 grid max-w-xl gap-4 sm:grid-cols-2"
-                    v-slot="{ errors, processing, wasSuccessful }"
+                    class="mx-auto mt-10 grid max-w-2xl gap-5 sm:grid-cols-2"
+                    v-slot="{ errors, processing, wasSuccessful, clearErrors }"
                 >
                     <div
                         v-if="wasSuccessful"
@@ -100,213 +203,373 @@ const fieldClasses =
                         <p
                             class="mt-2 max-w-sm text-sm leading-6 text-emerald-100/80"
                         >
-                            Thank you. Our export team will contact you shortly.
+                            Thank you. Our team will contact you shortly.
                         </p>
                     </div>
 
-                    <div v-if="!wasSuccessful">
-                        <label for="full_name" class="sr-only">Full name</label>
-                        <input
-                            id="full_name"
-                            name="full_name"
-                            type="text"
-                            required
-                            maxlength="255"
-                            placeholder="Full Name"
-                            :class="fieldClasses"
-                        />
-                        <p
-                            v-if="errors.full_name"
-                            class="mt-1 text-xs text-red-300"
-                        >
-                            {{ errors.full_name }}
-                        </p>
-                    </div>
-
-                    <div v-if="!wasSuccessful">
-                        <label for="email" class="sr-only">
-                            Email address
-                        </label>
-                        <input
-                            id="email"
-                            name="email"
-                            type="email"
-                            required
-                            maxlength="255"
-                            placeholder="Email Address"
-                            :class="fieldClasses"
-                        />
-                        <p
-                            v-if="errors.email"
-                            class="mt-1 text-xs text-red-300"
-                        >
-                            {{ errors.email }}
-                        </p>
-                    </div>
-
-                    <div v-if="!wasSuccessful">
-                        <label for="phone" class="sr-only">
-                            Phone number (optional)
-                        </label>
-                        <input
-                            id="phone"
-                            name="phone"
-                            type="tel"
-                            maxlength="50"
-                            autocomplete="tel"
-                            placeholder="Phone Number (Optional)"
-                            :class="fieldClasses"
-                        />
-                        <p
-                            v-if="errors.phone"
-                            class="mt-1 text-xs text-red-300"
-                        >
-                            {{ errors.phone }}
-                        </p>
-                    </div>
-
-                    <div v-if="!wasSuccessful" class="sm:col-span-2">
-                        <label for="country" class="sr-only">
-                            Country / market
-                        </label>
-                        <select
-                            id="country"
-                            name="country"
-                            required
-                            :class="fieldClasses"
-                        >
-                            <option value="" disabled selected>
-                                Country / Market
-                            </option>
-                            <option
-                                v-for="market in markets"
-                                :key="market"
-                                :value="market"
-                                class="text-[#0f1c3f]"
-                            >
-                                {{ market }}
-                            </option>
-                        </select>
-                        <p
-                            v-if="errors.country"
-                            class="mt-1 text-xs text-red-300"
-                        >
-                            {{ errors.country }}
-                        </p>
-                    </div>
-
-                    <div v-if="!wasSuccessful" class="sm:col-span-2">
-                        <label for="product_format" class="sr-only">
-                            Product format
-                        </label>
-                        <select
-                            id="product_format"
-                            name="product_format"
-                            required
-                            :class="fieldClasses"
-                        >
-                            <option value="" disabled selected>
-                                Product Format
-                            </option>
-                            <option
-                                v-for="format in formats"
-                                :key="format.id"
-                                :value="format.name"
-                                class="text-[#0f1c3f]"
-                            >
-                                {{ format.name }}
-                            </option>
-                            <option value="Not sure yet" class="text-[#0f1c3f]">
-                                Not sure yet
-                            </option>
-                        </select>
-                        <p
-                            v-if="errors.product_format"
-                            class="mt-1 text-xs text-red-300"
-                        >
-                            {{ errors.product_format }}
-                        </p>
-                    </div>
-
-                    <div v-if="!wasSuccessful" class="sm:col-span-2">
-                        <label for="estimated_quantity" class="sr-only">
-                            Estimated quantity / MOQ
-                        </label>
-                        <input
-                            id="estimated_quantity"
-                            name="estimated_quantity"
-                            type="text"
-                            required
-                            maxlength="255"
-                            placeholder="Estimated Quantity / MOQ"
-                            :class="fieldClasses"
-                        />
-                        <p
-                            v-if="errors.estimated_quantity"
-                            class="mt-1 text-xs text-red-300"
-                        >
-                            {{ errors.estimated_quantity }}
-                        </p>
-                    </div>
-
-                    <div v-if="!wasSuccessful" class="sm:col-span-2">
-                        <label for="message" class="sr-only">
-                            Message / requirements
-                        </label>
-                        <textarea
-                            id="message"
-                            name="message"
-                            rows="4"
-                            maxlength="2000"
-                            placeholder="Message / Requirements"
-                            :class="fieldClasses"
-                        />
-                        <p
-                            v-if="errors.message"
-                            class="mt-1 text-xs text-red-300"
-                        >
-                            {{ errors.message }}
-                        </p>
-                    </div>
-
-                    <button
-                        v-if="!wasSuccessful"
-                        type="submit"
-                        :disabled="processing"
-                        class="inline-flex w-fit cursor-pointer items-center gap-2 bg-[#d4af37] px-6 py-3 text-sm font-medium tracking-wide text-[#0f1c3f] transition hover:bg-[#c9a233] disabled:cursor-default disabled:opacity-60 sm:col-span-2"
-                    >
-                        <Mail class="size-4" />
-                        {{ processing ? 'Sending…' : submitLabel }}
-                    </button>
-                </Form>
-            </div>
-
-            <div v-if="!panelImage" class="hidden lg:block">
-                <div
-                    class="relative flex aspect-4/3 items-center justify-center overflow-hidden rounded-lg border border-[#d4af37]/25 bg-white/[0.03]"
-                >
                     <div
-                        class="pointer-events-none absolute inset-0 opacity-[0.08] grayscale"
-                        :style="{ background: mandala }"
-                    />
-                    <div class="relative flex flex-col items-center gap-4">
-                        <Package
-                            class="size-16 text-[#d4af37]/50"
-                            :stroke-width="0.9"
+                        v-if="!wasSuccessful"
+                        ref="intentStepContainer"
+                        class="relative min-h-[29rem] transition-[height] duration-300 ease-out sm:col-span-2 sm:min-h-[18rem]"
+                        :style="
+                            intentStepHeight
+                                ? { height: `${intentStepHeight}px` }
+                                : undefined
+                        "
+                    >
+                        <input
+                            name="intent"
+                            type="hidden"
+                            :value="selectedIntent"
                         />
-                        <p
-                            class="font-serif text-2xl tracking-[0.3em] text-white/40"
+
+                        <Transition
+                            name="intent-step"
+                            mode="out-in"
+                            @before-enter="measureIntentPanel"
+                            @after-enter="focusIntentForm"
                         >
-                            SEVARA
-                        </p>
-                        <p
-                            class="text-[10px] tracking-[0.3em] text-[#d4af37]/50 uppercase"
-                        >
-                            {{ panelLabel }}
-                        </p>
+                            <div
+                                v-if="!selectedIntent"
+                                key="intent-options"
+                                data-intent-panel
+                                class="absolute inset-x-0 top-0"
+                            >
+                                <p
+                                    class="text-center text-xs font-semibold tracking-[0.2em] text-[#d4af37] uppercase"
+                                >
+                                    What can we help you with?
+                                </p>
+                                <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                                    <button
+                                        v-for="intent in inquiryIntents"
+                                        :key="intent.value"
+                                        type="button"
+                                        :aria-pressed="
+                                            selectedIntent === intent.value
+                                        "
+                                        :class="[
+                                            'flex cursor-pointer items-start gap-4 border p-5 text-left transition',
+                                            selectedIntent === intent.value
+                                                ? 'border-[#d4af37] bg-[#d4af37]/15'
+                                                : 'border-white/15 bg-white/[0.03] hover:border-[#d4af37]/60 hover:bg-white/[0.06]',
+                                        ]"
+                                        @click="selectedIntent = intent.value"
+                                    >
+                                        <component
+                                            :is="intent.icon"
+                                            class="mt-0.5 size-6 shrink-0 text-[#d4af37]"
+                                        />
+                                        <span>
+                                            <span
+                                                class="block text-base font-semibold text-white"
+                                            >
+                                                {{ intent.title }}
+                                            </span>
+                                            <span
+                                                class="mt-1 block font-serif text-xs leading-5 text-[#9aa5c4]"
+                                            >
+                                                {{ intent.description }}
+                                            </span>
+                                        </span>
+                                    </button>
+                                </div>
+                                <p
+                                    v-if="errors.intent"
+                                    class="mt-1 text-xs text-red-300"
+                                >
+                                    {{ errors.intent }}
+                                </p>
+                            </div>
+
+                            <div
+                                v-else
+                                :key="selectedIntent"
+                                data-intent-panel
+                                class="absolute inset-x-0 top-0 grid gap-4 sm:grid-cols-2"
+                            >
+                                <div
+                                    data-intent-form-title
+                                    class="text-center sm:col-span-2"
+                                >
+                                    <button
+                                        type="button"
+                                        class="mx-auto mb-4 inline-flex cursor-pointer items-center gap-1.5 text-xs font-semibold tracking-[0.14em] text-[#d4af37] uppercase transition hover:text-white"
+                                        @click="
+                                            selectedIntent = '';
+                                            clearErrors();
+                                        "
+                                    >
+                                        <ArrowLeft class="size-3.5" />
+                                        Change enquiry
+                                    </button>
+                                    <p
+                                        class="text-xs font-semibold tracking-[0.2em] text-[#d4af37] uppercase"
+                                    >
+                                        Your enquiry
+                                    </p>
+                                    <h3
+                                        class="mt-2 font-serif text-2xl text-white sm:text-3xl"
+                                    >
+                                        {{ selectedIntentDetails?.title }}
+                                    </h3>
+                                    <p
+                                        class="mx-auto mt-2 max-w-md font-serif text-sm text-[#9aa5c4]"
+                                    >
+                                        {{ selectedIntentDetails?.description }}
+                                    </p>
+                                </div>
+                                <div>
+                                    <label for="full_name" class="sr-only"
+                                        >Full name</label
+                                    >
+                                    <input
+                                        id="full_name"
+                                        name="full_name"
+                                        type="text"
+                                        required
+                                        maxlength="255"
+                                        placeholder="Full Name"
+                                        :class="fieldClasses"
+                                    />
+                                    <p
+                                        v-if="errors.full_name"
+                                        class="mt-1 text-xs text-red-300"
+                                    >
+                                        {{ errors.full_name }}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label for="email" class="sr-only">
+                                        Email address
+                                    </label>
+                                    <input
+                                        id="email"
+                                        name="email"
+                                        type="email"
+                                        required
+                                        maxlength="255"
+                                        placeholder="Email Address"
+                                        :class="fieldClasses"
+                                    />
+                                    <p
+                                        v-if="errors.email"
+                                        class="mt-1 text-xs text-red-300"
+                                    >
+                                        {{ errors.email }}
+                                    </p>
+                                </div>
+
+                                <div>
+                                    <label for="phone" class="sr-only">
+                                        Phone number (optional)
+                                    </label>
+                                    <input
+                                        id="phone"
+                                        name="phone"
+                                        type="tel"
+                                        maxlength="50"
+                                        autocomplete="tel"
+                                        placeholder="Phone Number (Optional)"
+                                        :class="fieldClasses"
+                                    />
+                                    <p
+                                        v-if="errors.phone"
+                                        class="mt-1 text-xs text-red-300"
+                                    >
+                                        {{ errors.phone }}
+                                    </p>
+                                </div>
+
+                                <div v-if="isProjectInquiry">
+                                    <label for="company_name" class="sr-only">
+                                        Company name
+                                    </label>
+                                    <input
+                                        id="company_name"
+                                        name="company_name"
+                                        type="text"
+                                        required
+                                        maxlength="255"
+                                        autocomplete="organization"
+                                        placeholder="Company Name"
+                                        :class="fieldClasses"
+                                    />
+                                    <p
+                                        v-if="errors.company_name"
+                                        class="mt-1 text-xs text-red-300"
+                                    >
+                                        {{ errors.company_name }}
+                                    </p>
+                                </div>
+
+                                <div
+                                    v-if="requiresProduct"
+                                    class="sm:col-span-2"
+                                >
+                                    <label for="product_name" class="sr-only">
+                                        Product
+                                    </label>
+                                    <select
+                                        id="product_name"
+                                        name="product_name"
+                                        required
+                                        :class="fieldClasses"
+                                    >
+                                        <option value="" disabled selected>
+                                            Choose a Product
+                                        </option>
+                                        <option
+                                            v-for="product in products"
+                                            :key="product.id"
+                                            :value="product.name"
+                                            class="text-[#0f1c3f]"
+                                        >
+                                            {{ product.name }}
+                                        </option>
+                                    </select>
+                                    <p
+                                        v-if="errors.product_name"
+                                        class="mt-1 text-xs text-red-300"
+                                    >
+                                        {{ errors.product_name }}
+                                    </p>
+                                </div>
+
+                                <div
+                                    v-if="isProjectInquiry"
+                                    class="sm:col-span-2"
+                                >
+                                    <label for="country" class="sr-only">
+                                        Country / market
+                                    </label>
+                                    <CountryMarketInput
+                                        :markets="markets"
+                                        :field-classes="fieldClasses"
+                                    />
+                                    <p
+                                        v-if="errors.country"
+                                        class="mt-1 text-xs text-red-300"
+                                    >
+                                        {{ errors.country }}
+                                    </p>
+                                </div>
+
+                                <div
+                                    v-if="isProjectInquiry"
+                                    class="sm:col-span-2"
+                                >
+                                    <label for="product_format" class="sr-only">
+                                        Product format
+                                    </label>
+                                    <select
+                                        id="product_format"
+                                        name="product_format"
+                                        required
+                                        :class="fieldClasses"
+                                    >
+                                        <option value="" disabled selected>
+                                            Product Format
+                                        </option>
+                                        <option
+                                            v-for="format in formats"
+                                            :key="format.id"
+                                            :value="format.name"
+                                            class="text-[#0f1c3f]"
+                                        >
+                                            {{ format.name }}
+                                        </option>
+                                        <option
+                                            value="Not sure yet"
+                                            class="text-[#0f1c3f]"
+                                        >
+                                            Not sure yet
+                                        </option>
+                                    </select>
+                                    <p
+                                        v-if="errors.product_format"
+                                        class="mt-1 text-xs text-red-300"
+                                    >
+                                        {{ errors.product_format }}
+                                    </p>
+                                </div>
+
+                                <div
+                                    v-if="isProjectInquiry"
+                                    class="sm:col-span-2"
+                                >
+                                    <label
+                                        for="estimated_quantity"
+                                        class="sr-only"
+                                    >
+                                        Estimated quantity / MOQ
+                                    </label>
+                                    <input
+                                        id="estimated_quantity"
+                                        name="estimated_quantity"
+                                        type="text"
+                                        required
+                                        maxlength="255"
+                                        placeholder="Estimated Quantity / MOQ"
+                                        :class="fieldClasses"
+                                    />
+                                    <p
+                                        v-if="errors.estimated_quantity"
+                                        class="mt-1 text-xs text-red-300"
+                                    >
+                                        {{ errors.estimated_quantity }}
+                                    </p>
+                                </div>
+
+                                <div class="sm:col-span-2">
+                                    <label for="message" class="sr-only">
+                                        Message / requirements
+                                    </label>
+                                    <textarea
+                                        id="message"
+                                        name="message"
+                                        rows="4"
+                                        maxlength="2000"
+                                        placeholder="Message / Requirements"
+                                        :class="fieldClasses"
+                                    />
+                                    <p
+                                        v-if="errors.message"
+                                        class="mt-1 text-xs text-red-300"
+                                    >
+                                        {{ errors.message }}
+                                    </p>
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    :disabled="processing"
+                                    class="inline-flex w-fit cursor-pointer items-center gap-2 bg-primeGold px-6 py-3 text-sm font-medium tracking-wide text-[#0f1c3f] transition hover:bg-[#c9a233] disabled:cursor-default disabled:opacity-60 sm:col-span-2"
+                                >
+                                    <Mail class="size-4" />
+                                    {{ processing ? 'Sending…' : submitLabel }}
+                                </button>
+                            </div>
+                        </Transition>
                     </div>
-                </div>
+                </Form>
             </div>
         </div>
     </section>
 </template>
+
+<style scoped>
+.intent-step-enter-active,
+.intent-step-leave-active {
+    transition:
+        opacity 250ms ease,
+        transform 250ms ease;
+}
+
+.intent-step-enter-from,
+.intent-step-leave-to {
+    opacity: 0;
+    transform: translateY(-0.5rem);
+}
+</style>

@@ -20,12 +20,22 @@ use Illuminate\Support\Carbon;
  * @property string|null $subtitle
  * @property string $subtitle_color
  * @property string|null $description
+ * @property string|null $net_piece_weight
+ * @property string|null $pieces_per_pack
+ * @property string|null $shelf_life
+ * @property string|null $storage
+ * @property string|null $allergens
+ * @property string|null $moq
  * @property string|null $spec_image_path
+ * @property string|null $technical_data_sheet_path
+ * @property string|null $pieces_per_pack_path
  * @property string|null $experience_title
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read string $seo_title
  * @property-read string|null $spec_image_url
+ * @property-read string|null $technical_data_sheet_url
+ * @property-read string|null $pieces_per_pack_url
  */
 #[Fillable([
     'slug',
@@ -36,7 +46,15 @@ use Illuminate\Support\Carbon;
     'subtitle',
     'subtitle_color',
     'description',
+    'net_piece_weight',
+    'pieces_per_pack',
+    'shelf_life',
+    'storage',
+    'allergens',
+    'moq',
     'spec_image_path',
+    'technical_data_sheet_path',
+    'pieces_per_pack_path',
     'experience_title',
 ])]
 class Product extends Model
@@ -44,7 +62,12 @@ class Product extends Model
     /** @use HasFactory<ProductFactory> */
     use HasFactory;
 
-    protected $appends = ['seo_title', 'spec_image_url'];
+    protected $appends = [
+        'seo_title',
+        'spec_image_url',
+        'technical_data_sheet_url',
+        'pieces_per_pack_url',
+    ];
 
     /**
      * @return HasMany<ProductImage, $this>
@@ -81,6 +104,20 @@ class Product extends Model
     {
         return Attribute::make(
             get: fn (): ?string => $this->spec_image_path ? '/storage/'.$this->spec_image_path : null,
+        );
+    }
+
+    protected function technicalDataSheetUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?string => $this->technical_data_sheet_path ? '/storage/'.$this->technical_data_sheet_path : null,
+        );
+    }
+
+    protected function piecesPerPackUrl(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): ?string => $this->pieces_per_pack_path ? '/storage/'.$this->pieces_per_pack_path : null,
         );
     }
 }

@@ -22,7 +22,7 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
 
-    Route::resource('slides', SlideController::class)->only(['index', 'store', 'destroy']);
+    Route::resource('slides', SlideController::class)->only(['index', 'store', 'update', 'destroy']);
 
     Route::resource('brands', BrandController::class)->only(['index', 'store', 'destroy']);
     Route::patch('brands/{brand}/move-up', [BrandController::class, 'moveUp'])->name('brands.move-up');

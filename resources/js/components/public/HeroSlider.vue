@@ -111,6 +111,32 @@ onBeforeUnmount(() => {
             />
         </a>
 
+        <div
+            v-for="(slide, index) in slides"
+            :key="`${slide.id}-ctas`"
+            class="absolute bottom-[6%] left-[7%] z-30 flex max-w-[70%] flex-nowrap gap-1 sm:bottom-[9%] sm:left-[15%] sm:max-w-[58%] sm:gap-3"
+            :class="
+                index === activeIndex
+                    ? 'opacity-100'
+                    : 'pointer-events-none opacity-0'
+            "
+        >
+            <a
+                v-if="slide.primary_cta_text && slide.primary_cta_link"
+                :href="slide.primary_cta_link"
+                class="max-w-[calc(50%-0.125rem)] rounded-sm bg-[#d4af37] px-1.5 py-1 text-center text-[9px] leading-tight font-semibold text-[#10281d] shadow-lg transition hover:bg-[#e6c45a] sm:max-w-none sm:px-5 sm:py-3 sm:text-sm"
+            >
+                {{ slide.primary_cta_text }}
+            </a>
+            <a
+                v-if="slide.secondary_cta_text && slide.secondary_cta_link"
+                :href="slide.secondary_cta_link"
+                class="max-w-[calc(50%-0.125rem)] rounded-sm border border-[#d4af37] bg-[#10281d]/80 px-1.5 py-1 text-center text-[9px] leading-tight font-semibold text-[#f8f5eb] shadow-lg transition hover:bg-[#d4af37] hover:text-[#10281d] sm:max-w-none sm:px-5 sm:py-3 sm:text-sm"
+            >
+                {{ slide.secondary_cta_text }}
+            </a>
+        </div>
+
         <template v-if="slides.length > 1">
             <button
                 type="button"
@@ -130,7 +156,7 @@ onBeforeUnmount(() => {
             </button>
 
             <div
-                class="absolute bottom-3 left-1/2 z-30 flex -translate-x-1/2 gap-2 sm:bottom-5"
+                class="absolute bottom-5 left-1/2 z-30 hidden -translate-x-1/2 gap-2 sm:flex"
             >
                 <button
                     v-for="(slide, index) in slides"

@@ -213,47 +213,152 @@ function confirmDeleteExperienceItem(event: MouseEvent): void {
                     <InputError :message="errors.description" />
                 </div>
 
-                <div class="grid gap-2">
-                    <Label for="experience_title" class="text-neutral-900"
-                        >Experience section title</Label
-                    >
-                    <Input
-                        id="experience_title"
-                        name="experience_title"
-                        :default-value="product.experience_title ?? ''"
-                        class="h-11 text-base"
-                        placeholder="The Dark Chocolate Experience"
-                    />
-                    <p class="text-xs text-neutral-500">
-                        Heading shown above the experience cards on the product
-                        page.
-                    </p>
-                    <InputError :message="errors.experience_title" />
+                <div class="grid gap-4">
+                    <div>
+                        <Label class="text-neutral-900"
+                            >Technical product details</Label
+                        >
+                        <p class="mt-1 text-xs text-neutral-500">
+                            These six details are shown above the Retail Ready
+                            section on the product page.
+                        </p>
+                    </div>
+
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div class="grid gap-2">
+                            <Label
+                                for="net_piece_weight"
+                                class="text-neutral-900"
+                                >Net piece weight</Label
+                            >
+                            <Input
+                                id="net_piece_weight"
+                                name="net_piece_weight"
+                                :default-value="product.net_piece_weight ?? ''"
+                                placeholder="25 g"
+                            />
+                            <InputError :message="errors.net_piece_weight" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label
+                                for="pieces_per_pack"
+                                class="text-neutral-900"
+                                >Pieces per pack</Label
+                            >
+                            <Input
+                                id="pieces_per_pack"
+                                name="pieces_per_pack"
+                                :default-value="product.pieces_per_pack ?? ''"
+                                placeholder="12 pieces"
+                            />
+                            <InputError :message="errors.pieces_per_pack" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="shelf_life" class="text-neutral-900"
+                                >Shelf life</Label
+                            >
+                            <Input
+                                id="shelf_life"
+                                name="shelf_life"
+                                :default-value="product.shelf_life ?? ''"
+                                placeholder="12 months"
+                            />
+                            <InputError :message="errors.shelf_life" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="storage" class="text-neutral-900"
+                                >Storage</Label
+                            >
+                            <Input
+                                id="storage"
+                                name="storage"
+                                :default-value="product.storage ?? ''"
+                                placeholder="Cool, dry place"
+                            />
+                            <InputError :message="errors.storage" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="allergens" class="text-neutral-900"
+                                >Allergens</Label
+                            >
+                            <Input
+                                id="allergens"
+                                name="allergens"
+                                :default-value="product.allergens ?? ''"
+                                placeholder="Contains almonds"
+                            />
+                            <InputError :message="errors.allergens" />
+                        </div>
+
+                        <div class="grid gap-2">
+                            <Label for="moq" class="text-neutral-900"
+                                >MOQ</Label
+                            >
+                            <Input
+                                id="moq"
+                                name="moq"
+                                :default-value="product.moq ?? ''"
+                                placeholder="500 cartons"
+                            />
+                            <InputError :message="errors.moq" />
+                        </div>
+                    </div>
                 </div>
 
-                <div class="grid gap-2">
-                    <Label for="spec_image" class="text-neutral-900"
-                        >Specifications image</Label
-                    >
-                    <div class="flex items-center gap-3">
-                        <LazyImage
-                            v-if="product.spec_image_url"
-                            :src="product.spec_image_url"
-                            alt=""
-                            class="h-16 w-24 rounded-md border border-neutral-200 object-cover"
-                        />
+                <div class="grid gap-4 sm:grid-cols-2">
+                    <div class="grid gap-2">
+                        <Label
+                            for="technical_data_sheet"
+                            class="text-neutral-900"
+                            >Technical data sheet</Label
+                        >
+                        <a
+                            v-if="product.technical_data_sheet_url"
+                            :href="product.technical_data_sheet_url"
+                            target="_blank"
+                            rel="noopener"
+                            class="text-xs font-medium text-[#a8842b] hover:underline"
+                        >
+                            View current file
+                        </a>
                         <input
-                            id="spec_image"
+                            id="technical_data_sheet"
                             type="file"
-                            name="spec_image"
-                            accept="image/*"
+                            name="technical_data_sheet"
+                            accept=".pdf,image/*"
                             class="h-11 w-full rounded-md border border-neutral-300 bg-white px-4 text-sm text-neutral-900 file:mr-3 file:h-11 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-neutral-900"
                         />
+                        <InputError :message="errors.technical_data_sheet" />
                     </div>
-                    <p class="text-xs text-neutral-500">
-                        Shown beside the specifications on the product page.
-                    </p>
-                    <InputError :message="errors.spec_image" />
+
+                    <div class="grid gap-2">
+                        <Label
+                            for="pieces_per_pack_file"
+                            class="text-neutral-900"
+                            >Pieces-per-pack file</Label
+                        >
+                        <a
+                            v-if="product.pieces_per_pack_url"
+                            :href="product.pieces_per_pack_url"
+                            target="_blank"
+                            rel="noopener"
+                            class="text-xs font-medium text-[#a8842b] hover:underline"
+                        >
+                            View current file
+                        </a>
+                        <input
+                            id="pieces_per_pack_file"
+                            type="file"
+                            name="pieces_per_pack_file"
+                            accept=".pdf,image/*"
+                            class="h-11 w-full rounded-md border border-neutral-300 bg-white px-4 text-sm text-neutral-900 file:mr-3 file:h-11 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-neutral-900"
+                        />
+                        <InputError :message="errors.pieces_per_pack_file" />
+                    </div>
                 </div>
 
                 <Button
@@ -277,6 +382,71 @@ function confirmDeleteExperienceItem(event: MouseEvent): void {
             />
 
             <div class="mt-6 rounded-xl border border-neutral-200 bg-white p-8">
+                <Form
+                    :options="{ preserveScroll: true }"
+                    v-bind="ProductController.update.form(product.id)"
+                    class="mb-8 grid gap-4 border-b border-neutral-200 pb-8"
+                    v-slot="{ errors, processing }"
+                >
+                    <input type="hidden" name="slug" :value="product.slug" />
+                    <input
+                        type="hidden"
+                        name="title_part1"
+                        :value="product.title_part1"
+                    />
+                    <input
+                        type="hidden"
+                        name="title_part1_color"
+                        :value="product.title_part1_color"
+                    />
+                    <input
+                        type="hidden"
+                        name="title_part2"
+                        :value="product.title_part2"
+                    />
+                    <input
+                        type="hidden"
+                        name="title_part2_color"
+                        :value="product.title_part2_color"
+                    />
+                    <input
+                        type="hidden"
+                        name="subtitle_color"
+                        :value="product.subtitle_color"
+                    />
+
+                    <div class="grid gap-2">
+                        <Label for="spec_image" class="text-neutral-900"
+                            >Main image for this section</Label
+                        >
+                        <div class="flex items-center gap-3">
+                            <LazyImage
+                                v-if="product.spec_image_url"
+                                :src="product.spec_image_url"
+                                alt=""
+                                class="h-16 w-24 rounded-md border border-neutral-200 object-cover"
+                            />
+                            <input
+                                id="spec_image"
+                                type="file"
+                                name="spec_image"
+                                accept="image/*"
+                                class="h-11 w-full rounded-md border border-neutral-300 bg-white px-4 text-sm text-neutral-900 file:mr-3 file:h-11 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-neutral-900"
+                            />
+                        </div>
+                        <InputError :message="errors.spec_image" />
+                    </div>
+
+                    <Button
+                        type="submit"
+                        variant="secondary"
+                        class="w-fit"
+                        :disabled="processing"
+                    >
+                        Save main image
+                    </Button>
+                </Form>
+
                 <Form
                     :options="{ preserveScroll: true }"
                     v-bind="ProductImageController.store.form(product.id)"
@@ -406,8 +576,8 @@ function confirmDeleteExperienceItem(event: MouseEvent): void {
         <div>
             <Heading
                 variant="small"
-                title="Experience"
-                description="Cards shown under the experience section title. Each has an icon, a title and a short description."
+                title="Product highlights"
+                description="Icon and text details shown directly below the product buttons."
             />
 
             <div class="mt-6 rounded-xl border border-neutral-200 bg-white p-8">
@@ -417,10 +587,10 @@ function confirmDeleteExperienceItem(event: MouseEvent): void {
                         ProductExperienceItemController.store.form(product.id)
                     "
                     reset-on-success
-                    class="grid gap-4 sm:grid-cols-2"
+                    class="grid gap-4"
                     v-slot="{ errors, processing, isDirty }"
                 >
-                    <div class="grid gap-2 sm:col-span-2">
+                    <div class="grid gap-2">
                         <Label for="experience_icon" class="text-neutral-900"
                             >Icon</Label
                         >
@@ -439,32 +609,16 @@ function confirmDeleteExperienceItem(event: MouseEvent): void {
                         <Label
                             for="experience_item_title"
                             class="text-neutral-900"
-                            >Title</Label
+                            >Highlight text</Label
                         >
                         <Input
                             id="experience_item_title"
                             name="title"
                             class="h-11 text-base"
-                            placeholder="Deep Cocoa"
+                            placeholder="Whole Almond Filling"
                             required
                         />
                         <InputError :message="errors.title" />
-                    </div>
-
-                    <div class="grid gap-2">
-                        <Label
-                            for="experience_item_description"
-                            class="text-neutral-900"
-                            >Description</Label
-                        >
-                        <Input
-                            id="experience_item_description"
-                            name="description"
-                            class="h-11 text-base"
-                            placeholder="Bold, rich cocoa for a full-bodied flavor."
-                            required
-                        />
-                        <InputError :message="errors.description" />
                     </div>
 
                     <Button
@@ -473,7 +627,7 @@ function confirmDeleteExperienceItem(event: MouseEvent): void {
                         class="w-fit"
                         :disabled="processing || !isDirty"
                     >
-                        Add experience item
+                        Add product highlight
                     </Button>
                 </Form>
 
@@ -503,9 +657,6 @@ function confirmDeleteExperienceItem(event: MouseEvent): void {
                                 class="truncate text-sm font-medium text-neutral-900"
                             >
                                 {{ item.title }}
-                            </p>
-                            <p class="truncate text-sm text-neutral-500">
-                                {{ item.description }}
                             </p>
                         </div>
 

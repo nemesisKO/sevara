@@ -8,7 +8,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-    --color-primeGold: #bc7741;
+    --color-primeGold: #C6A15B;
     --color-lightGold: #dfc088;
     --color-primeBlue: #0f1c3f;
 }
@@ -204,6 +204,6 @@
         @apply border-border outline-ring/50;
     }
     body {
-        @apply bg-background text-foreground;
+        @apply bg-background font-serif text-foreground;
     }
 }

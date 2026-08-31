@@ -13,11 +13,22 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string $image_path
  * @property string $link
+ * @property string|null $primary_cta_text
+ * @property string|null $primary_cta_link
+ * @property string|null $secondary_cta_text
+ * @property string|null $secondary_cta_link
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read string $image_url
  */
-#[Fillable(['image_path', 'link'])]
+#[Fillable([
+    'image_path',
+    'link',
+    'primary_cta_text',
+    'primary_cta_link',
+    'secondary_cta_text',
+    'secondary_cta_link',
+])]
 class Slide extends Model
 {
     /** @use HasFactory<SlideFactory> */

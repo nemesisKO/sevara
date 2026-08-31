@@ -20,7 +20,11 @@ import PrivateLabelInquiryForm from '@/components/public/PrivateLabelInquiryForm
 import RevealOnScroll from '@/components/public/RevealOnScroll.vue';
 import { contact } from '@/routes';
 import { request as requestCatalog } from '@/routes/catalog';
-import type { PackagingFormat, PrivateLabelItem } from '@/types';
+import type {
+    InquiryProduct,
+    PackagingFormat,
+    PrivateLabelItem,
+} from '@/types';
 
 defineProps<{
     highlights: PrivateLabelItem[];
@@ -29,6 +33,7 @@ defineProps<{
     featuredFormats: PackagingFormat[];
     otherFormats: PackagingFormat[];
     markets: string[];
+    products: InquiryProduct[];
 }>();
 
 const mandala = "url('/images/mandala.png') center / contain no-repeat";
@@ -36,6 +41,13 @@ const mandala = "url('/images/mandala.png') center / contain no-repeat";
 const highlightIcons: Component[] = [PenTool, Box, Globe];
 const stepIcons: Component[] = [ClipboardList, FlaskConical, Box, Truck];
 const featureIcons: Component[] = [Gem, PackageCheck, Globe];
+
+const projectBenefits = [
+    { icon: PackageCheck, label: 'Custom packaging' },
+    { icon: FlaskConical, label: 'Flavor development' },
+    { icon: Box, label: 'Flexible MOQ' },
+    { icon: Users, label: 'End-to-end support' },
+];
 
 function fallbackIcon(icons: Component[], index: number): Component {
     return icons[index % icons.length] as Component;
@@ -76,7 +88,7 @@ function scrollToInquiry(): void {
                     Private Label
                 </p>
                 <h1
-                    class="mt-3 font-serif text-5xl leading-tight text-primeGold sm:text-6xl"
+                    class="mt-3 font-serif text-5xl leading-tight text-primeGold sm:text-6xl "
                 >
                     Chocolate Dates
                 </h1>
@@ -86,10 +98,9 @@ function scrollToInquiry(): void {
                     Build Your Own<br class="hidden lg:inline" />
                     Premium Date Confectionery Line.
                 </p>
-                <p class="mt-5 max-w-md text-[#6b6558]">
-                    From flavor development to export-ready packaging, Sevara
-                    helps distributors and retailers launch premium chocolate
-                    date products with confidence.
+                <p class="mt-5 max-w-md font-serif text-[#6b6558]">
+                    Heading build your own premium chocolate line With labor
+                    solutions tailored to your brand, market, and audience.
                 </p>
 
                 <div class="mt-10 flex flex-wrap gap-4">
@@ -108,6 +119,23 @@ function scrollToInquiry(): void {
                         <BookOpen class="size-4" />
                         Request Catalog
                     </Link>
+                </div>
+
+                <div
+                    class="mt-6 grid max-w-lg grid-cols-2 gap-x-5 gap-y-3 text-xs font-medium text-[#5e584d] sm:flex sm:flex-wrap sm:gap-x-5"
+                >
+                    <span
+                        v-for="benefit in projectBenefits"
+                        :key="benefit.label"
+                        class="inline-flex items-center gap-1.5"
+                    >
+                        <component
+                            :is="benefit.icon"
+                            class="size-3.5 text-primeGold"
+                            :stroke-width="1.8"
+                        />
+                        {{ benefit.label }}
+                    </span>
                 </div>
             </div>
         </div>
@@ -154,7 +182,7 @@ function scrollToInquiry(): void {
     <PrivateLabelInquiryForm
         :markets="markets"
         :formats="[...featuredFormats, ...otherFormats]"
-        panel-image="/images/private-label-kit.webp"
+        :products="products"
     />
 
     <section v-if="steps.length > 0" class="bg-[#fdfbf6] py-20">
@@ -162,7 +190,7 @@ function scrollToInquiry(): void {
             <RevealOnScroll>
                 <div class="text-center">
                     <h2 class="font-serif text-3xl text-primeBlue sm:text-4xl">
-                        From Idea to Market
+                        From Idea to Export
                     </h2>
                     <div class="mt-5 flex items-center justify-center gap-4">
                         <span class="h-px w-12 bg-primeGold/40" />
@@ -207,12 +235,12 @@ function scrollToInquiry(): void {
                                     {{ String(index + 1).padStart(2, '0') }}
                                 </p>
                                 <p
-                                    class="mt-1 text-xs font-semibold tracking-[0.2em] text-primeBlue uppercase"
+                                    class="mt-1 text-sm font-semibold tracking-[0.2em] text-primeBlue uppercase"
                                 >
                                     {{ item.title }}
                                 </p>
                             </div>
-                            <p class="max-w-56 text-sm text-[#6b6558]">
+                            <p class="max-w-56 font-serif text-[#6b6558]">
                                 {{ item.description }}
                             </p>
                         </div>
@@ -291,12 +319,12 @@ function scrollToInquiry(): void {
         <div
             class="relative mx-auto flex max-w-6xl flex-col items-center gap-8 px-6 text-center lg:flex-row lg:justify-between lg:px-10 lg:text-left"
         >
-            <h2 class="max-w-lg font-serif text-3xl text-[#e9d9ae] sm:text-4xl">
+            <h2 class="max-w-lg font-serif text-3xl text-primeGold sm:text-4xl">
                 Ready to build your chocolate date line?
             </h2>
             <Link
                 :href="contact()"
-                class="inline-flex shrink-0 items-center gap-2 bg-[#d4af37] px-7 py-3.5 text-sm font-medium tracking-wide text-primeBlue transition hover:bg-[#c9a233]"
+                class="inline-flex shrink-0 items-center gap-2 bg-primeGold px-7 py-3.5 text-sm font-medium tracking-wide text-primeBlue transition hover:bg-[#c9a233]"
             >
                 <Users class="size-4" />
                 Contact Export Team

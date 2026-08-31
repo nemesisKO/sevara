@@ -165,7 +165,7 @@ const reliabilityPoints = [
 
                 <div class="mt-7 flex items-center gap-4">
                     <span class="h-px w-16 bg-[#d4af37]/50" />
-                    <Diamond class="size-3 text-[#d4af37]" />
+                    <Diamond class="size-3 text-primeGold" />
                     <span class="h-px w-16 bg-[#d4af37]/50" />
                 </div>
 
@@ -192,7 +192,7 @@ const reliabilityPoints = [
         </div>
     </section>
 
-    <section class="bg-[#fdfbf6] py-20 lg:py-24">
+    <section class="bg-[#fdfbf6] py-12 lg:py-16">
         <div
             class="mx-auto grid max-w-6xl items-center gap-12 px-6 lg:grid-cols-2 lg:gap-16 lg:px-10"
         >
@@ -209,12 +209,12 @@ const reliabilityPoints = [
                 </h2>
 
                 <div class="mt-6 flex items-center gap-4">
-                    <span class="h-px w-12 bg-[#d4af37]/40" />
-                    <Diamond class="size-2.5 text-[#d4af37]" />
-                    <span class="h-px w-12 bg-[#d4af37]/40" />
+                    <span class="h-px w-16 bg-[#d4af37]/40" />
+                    <Diamond class="size-2.5 text-primeGold" />
+                    <span class="h-px w-16 bg-[#d4af37]/40" />
                 </div>
 
-                <p class="mt-6 max-w-md text-[#6b6558]">
+                <p class="mt-6 max-w-md font-serif text-[#6b6558]">
                     Sevara brings together selected dates, almond centers,
                     refined chocolate coating and elegant packaging to create a
                     product ready for modern retail and international
@@ -236,7 +236,7 @@ const reliabilityPoints = [
         </div>
     </section>
 
-    <section class="bg-[#f7f3e8]/70 py-20 lg:py-24">
+    <section class="bg-[#f7f3e8]/70 py-12 lg:py-16">
         <div
             class="mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-14 lg:px-10"
         >
@@ -244,7 +244,7 @@ const reliabilityPoints = [
                 <p
                     class="text-xs font-semibold tracking-[0.3em] text-primeGold uppercase"
                 >
-                    The Sevara Standard
+                    Standards
                 </p>
                 <h2
                     class="mt-4 font-serif text-3xl leading-snug text-primeBlue sm:text-4xl"
@@ -252,12 +252,7 @@ const reliabilityPoints = [
                     The Sevara Standard
                 </h2>
 
-                <Diamond
-                    class="mt-6 size-6 text-[#d4af37]"
-                    :stroke-width="1.1"
-                />
-
-                <div class="mt-6 space-y-1.5 text-[#6b6558]">
+                <div class="mt-6 space-y-1.5 font-serif text-[#6b6558]">
                     <p>Every element is chosen with care.</p>
                     <p>Nothing is left to chance.</p>
                     <p>The details define the experience.</p>
@@ -271,7 +266,7 @@ const reliabilityPoints = [
                     :delay="index * 120"
                 >
                     <article
-                        class="relative flex aspect-4/3 flex-col justify-end overflow-hidden rounded-sm bg-primeBlue sm:aspect-9/16"
+                        class="relative flex aspect-4/3 flex-col justify-end overflow-hidden rounded-sm bg-primeBlue transition duration-300 ease-out hover:-translate-y-1.5 hover:scale-[1.02] hover:shadow-[0_20px_45px_-24px_rgba(15,28,63,0.55)] motion-reduce:hover:translate-y-0 motion-reduce:hover:scale-100 sm:aspect-9/16"
                     >
                         <LazyImage
                             :src="standard.image"
@@ -304,11 +299,11 @@ const reliabilityPoints = [
         </div>
     </section>
 
-    <section class="bg-[#fdfbf6] py-20 lg:py-24">
+    <section class="bg-[#fdfbf6] py-20 ">
         <div class="mx-auto max-w-6xl px-6 lg:px-10">
             <RevealOnScroll>
                 <p
-                    class="text-center text-xs font-semibold tracking-[0.3em] text-primeGold uppercase"
+                    class="text-center font-serif text-sm font-semibold tracking-[0.3em] text-primeGold uppercase"
                 >
                     From Ingredient to International Shelf
                 </p>
@@ -322,7 +317,9 @@ const reliabilityPoints = [
                     class="absolute top-2 left-1/2 hidden size-2 -translate-x-1/2 -translate-y-1/2 rotate-45 border border-[#d4af37]/60 bg-[#fdfbf6] sm:block"
                 />
 
-                <div class="relative grid gap-12 sm:grid-cols-2 lg:grid-cols-4">
+                <div
+                    class="relative grid gap-12 font-serif sm:grid-cols-2 lg:grid-cols-4"
+                >
                     <RevealOnScroll
                         v-for="(step, index) in processSteps"
                         :key="step.title"
@@ -334,11 +331,11 @@ const reliabilityPoints = [
                             <span
                                 class="hidden size-4 rounded-full border-2 border-[#d4af37] bg-[#fdfbf6] sm:block"
                             />
-                            <p class="font-serif text-2xl text-primeGold">
+                            <p class="font-serif text-lg text-primeGold">
                                 {{ String(index + 1).padStart(2, '0') }}
                             </p>
                             <p
-                                class="text-[11px] font-semibold tracking-[0.2em] text-primeBlue uppercase"
+                                class="text-sm font-semibold tracking-[0.2em] text-primeBlue uppercase"
                             >
                                 {{ step.title }}
                             </p>
@@ -370,7 +367,7 @@ const reliabilityPoints = [
             <RevealOnScroll>
                 <div class="lg:max-w-lg">
                     <h2
-                        class="font-serif text-4xl leading-tight text-[#d4af37] sm:text-5xl"
+                        class="font-serif text-4xl leading-tight text-primeGold sm:text-5xl"
                     >
                         Premium Dates.<br />
                         Modern Packaging.<br />
@@ -378,9 +375,9 @@ const reliabilityPoints = [
                     </h2>
 
                     <div class="mt-8 flex items-center gap-4">
-                        <span class="h-px w-20 bg-[#d4af37]/40" />
-                        <Diamond class="size-3 text-[#d4af37]" />
-                        <span class="h-px w-20 bg-[#d4af37]/40" />
+                        <span class="h-px w-32 bg-[#d4af37]/40 md:w-48" />
+                        <Diamond class="size-3 text-primeGold" />
+                        <span class="h-px w-32 bg-[#d4af37]/40 md:w-48" />
                     </div>
 
                     <Link
@@ -447,7 +444,7 @@ const reliabilityPoints = [
 
     <!-- #f9f5ec is the previous bg-[#f7f3e8]/70 flattened onto the page, so the photo can fade into it. -->
     <section
-        class="relative overflow-hidden bg-[#f9f5ec] py-20 lg:py-28 xl:py-36"
+        class="relative overflow-hidden bg-[#f9f5ec] py-12 lg:py-12 xl:py-14"
     >
         <div class="relative z-10 w-full px-6 lg:pl-16 xl:pl-24 2xl:pl-32">
             <RevealOnScroll>
@@ -463,7 +460,7 @@ const reliabilityPoints = [
                         Reliable by Design
                     </h2>
 
-                    <div class="mt-9 flex flex-col gap-8">
+                    <div class="mt-9 flex flex-col gap-8 font-serif">
                         <div
                             v-for="point in reliabilityPoints"
                             :key="point.title"
@@ -476,7 +473,7 @@ const reliabilityPoints = [
                             />
                             <div>
                                 <h3
-                                    class="text-xs font-semibold tracking-[0.2em] text-primeBlue uppercase"
+                                    class="text-sm font-semibold tracking-[0.2em] text-primeBlue uppercase"
                                 >
                                     {{ point.title }}
                                 </h3>
@@ -491,7 +488,7 @@ const reliabilityPoints = [
         </div>
 
         <div
-            class="relative mt-12 aspect-7/5 w-full lg:absolute lg:inset-y-0 lg:right-0 lg:mt-0 lg:aspect-auto lg:w-1/2 lg:max-w-4xl"
+            class="relative mt-10 aspect-7/5 w-full lg:absolute lg:inset-y-12 lg:right-0 lg:mt-0 lg:aspect-auto lg:w-[42%] lg:max-w-3xl xl:inset-y-16"
         >
             <LazyImage
                 src="/images/private-label-kit-box.webp"
@@ -524,12 +521,12 @@ const reliabilityPoints = [
                             class="mt-5 flex items-center justify-center gap-3"
                         >
                             <span class="h-px flex-1 bg-[#d4af37]/40" />
-                            <Diamond class="size-2.5 text-[#d4af37]" />
+                            <Diamond class="size-2.5 text-primeGold" />
                             <span class="h-px flex-1 bg-[#d4af37]/40" />
                         </div>
 
                         <p
-                            class="mt-7 text-center leading-relaxed text-[#6b6558]"
+                            class="mt-7 text-center leading-relaxed text-[#6b6558] font-serif"
                         >
                             We believe a premium product is built through taste,
                             packaging, consistency and trust. Our role is to
@@ -549,14 +546,14 @@ const reliabilityPoints = [
         </div>
     </section>
 
-    <section class="relative overflow-hidden bg-primeBlue py-16">
+    <section class="relative mb-16 overflow-hidden bg-[#fdfbf6] py-16">
         <div class="pointer-events-none absolute inset-0 overflow-hidden">
             <div
-                class="absolute -top-20 -left-32 size-96 -rotate-12 opacity-[0.07]"
+                class="absolute -top-20 -left-32 size-96 -rotate-12 opacity-[0.04]"
                 :style="{ background: mandala }"
             />
             <div
-                class="absolute -right-32 -bottom-24 size-96 rotate-18 opacity-[0.06]"
+                class="absolute -right-32 -bottom-24 size-96 rotate-18 opacity-[0.04]"
                 :style="{ background: mandala }"
             />
         </div>
@@ -564,21 +561,21 @@ const reliabilityPoints = [
         <div
             class="relative mx-auto flex max-w-6xl flex-col items-center gap-8 px-6 text-center lg:flex-row lg:justify-between lg:px-10 lg:text-left"
         >
-            <h2 class="max-w-lg font-serif text-3xl text-[#e9d9ae] sm:text-4xl">
+            <h2 class="max-w-lg font-serif text-3xl text-primeBlue sm:text-4xl">
                 Ready to introduce Sevara to your market?
             </h2>
 
             <div class="flex flex-wrap justify-center gap-4">
                 <Link
                     :href="requestCatalog()"
-                    class="inline-flex items-center gap-2 border border-[#d4af37]/60 bg-[#d4af37]/10 px-6 py-3.5 text-xs font-semibold tracking-[0.15em] text-[#e9d9ae] uppercase transition hover:bg-[#d4af37]/20"
+                    class="inline-flex items-center gap-2 border border-primeBlue/30 px-6 py-3.5 text-xs font-semibold tracking-[0.15em] text-primeBlue uppercase transition hover:bg-primeBlue/5"
                 >
                     <BookOpen class="size-4" />
                     Request Catalog
                 </Link>
                 <Link
                     :href="contact()"
-                    class="inline-flex items-center gap-2 border border-[#d4af37]/60 px-6 py-3.5 text-xs font-semibold tracking-[0.15em] text-[#e9d9ae] uppercase transition hover:bg-[#d4af37]/10"
+                    class="inline-flex items-center gap-2 border border-primeBlue/30 px-6 py-3.5 text-xs font-semibold tracking-[0.15em] text-primeBlue uppercase transition hover:bg-primeBlue/5"
                 >
                     <Users class="size-4" />
                     Contact Export Team

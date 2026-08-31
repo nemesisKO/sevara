@@ -47,6 +47,14 @@ class ProductController extends Controller
             Storage::disk('public')->delete($product->spec_image_path);
         }
 
+        if ($request->hasFile('technical_data_sheet') && $product->technical_data_sheet_path) {
+            Storage::disk('public')->delete($product->technical_data_sheet_path);
+        }
+
+        if ($request->hasFile('pieces_per_pack_file') && $product->pieces_per_pack_path) {
+            Storage::disk('public')->delete($product->pieces_per_pack_path);
+        }
+
         $product->update($this->productData($request));
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Product updated.']);
@@ -64,6 +72,14 @@ class ProductController extends Controller
             $paths->push($product->spec_image_path);
         }
 
+        if ($product->technical_data_sheet_path) {
+            $paths->push($product->technical_data_sheet_path);
+        }
+
+        if ($product->pieces_per_pack_path) {
+            $paths->push($product->pieces_per_pack_path);
+        }
+
         Storage::disk('public')->delete($paths->all());
 
         $product->delete();
@@ -78,10 +94,22 @@ class ProductController extends Controller
      */
     private function productData(StoreProductRequest|UpdateProductRequest $request): array
     {
-        $data = $request->safe()->except('spec_image');
+        $data = $request->safe()->except([
+            'spec_image',
+            'technical_data_sheet',
+            'pieces_per_pack_file',
+        ]);
 
         if ($request->hasFile('spec_image')) {
             $data['spec_image_path'] = $request->file('spec_image')->store('products/spec', 'public');
+        }
+
+        if ($request->hasFile('technical_data_sheet')) {
+            $data['technical_data_sheet_path'] = $request->file('technical_data_sheet')->store('products/technical-files', 'public');
+        }
+
+        if ($request->hasFile('pieces_per_pack_file')) {
+            $data['pieces_per_pack_path'] = $request->file('pieces_per_pack_file')->store('products/technical-files', 'public');
         }
 
         return $data;

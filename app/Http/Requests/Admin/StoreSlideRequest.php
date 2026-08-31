@@ -25,6 +25,10 @@ class StoreSlideRequest extends FormRequest
         return [
             'image' => ['required', 'image', 'max:5120'],
             'link' => ['required', 'string', 'max:2048'],
+            'primary_cta_text' => ['nullable', 'string', 'max:255', 'required_with:primary_cta_link'],
+            'primary_cta_link' => ['nullable', 'string', 'max:2048', 'required_with:primary_cta_text'],
+            'secondary_cta_text' => ['nullable', 'string', 'max:255', 'required_with:secondary_cta_link'],
+            'secondary_cta_link' => ['nullable', 'string', 'max:2048', 'required_with:secondary_cta_text'],
         ];
     }
 }

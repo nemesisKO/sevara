@@ -14,6 +14,8 @@ const totalFormats = computed(
     () => featuredFormats.length + otherFormats.length,
 );
 
+const formats = computed(() => [...featuredFormats, ...otherFormats]);
+
 const track = useTemplateRef('track');
 const pageCount = ref(1);
 const activePage = ref(0);
@@ -100,7 +102,7 @@ onBeforeUnmount(() => {
             </RevealOnScroll>
 
             <div
-                v-if="featuredFormats.length > 0"
+                v-if="formats.length > 0"
                 class="mt-12 flex items-center gap-3 lg:gap-5"
             >
                 <button
@@ -119,9 +121,9 @@ onBeforeUnmount(() => {
                     @scroll.passive="syncPages"
                 >
                     <div
-                        v-for="format in featuredFormats"
+                        v-for="format in formats"
                         :key="format.id"
-                        class="w-full shrink-0 snap-start px-2 sm:w-1/2 lg:w-1/3 xl:w-1/5"
+                        class="w-full shrink-0 snap-start px-2 sm:w-1/2 lg:w-1/5"
                     >
                         <article
                             class="flex h-full flex-col rounded-lg border border-[#e7e1d4] bg-white p-5 text-center transition duration-300 hover:-translate-y-1 hover:border-[#d4af37]/60"
@@ -167,49 +169,6 @@ onBeforeUnmount(() => {
                     <ChevronRight class="size-5" />
                 </button>
             </div>
-
-            <template v-if="otherFormats.length > 0">
-                <RevealOnScroll>
-                    <p
-                        class="mt-14 text-center font-serif text-xl text-[#0f1c3f]"
-                    >
-                        Other Available Formats
-                    </p>
-                </RevealOnScroll>
-
-                <div
-                    class="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5"
-                >
-                    <RevealOnScroll
-                        v-for="(format, index) in otherFormats"
-                        :key="format.id"
-                        :delay="index * 90"
-                    >
-                        <article
-                            class="flex h-full flex-col rounded-lg border border-[#e7e1d4] bg-white p-4 text-center transition duration-300 hover:-translate-y-1 hover:border-[#d4af37]/60"
-                        >
-                            <div
-                                class="flex aspect-4/3 items-center justify-center overflow-hidden rounded-md bg-[#f7f3e8]/70"
-                            >
-                                <LazyImage
-                                    v-if="format.image_url"
-                                    :src="format.image_url"
-                                    :alt="format.name"
-                                    class="h-full w-full object-contain mix-blend-multiply"
-                                />
-                                <Package
-                                    v-else
-                                    class="size-9 text-[#d4af37]/40"
-                                    :stroke-width="1"
-                                />
-                            </div>
-                            <h3 class="mt-3 font-serif text-sm text-[#0f1c3f]">
-                                {{ format.name }}
-                            </h3>
-                        </article>
-                    </RevealOnScroll>
-                </div>
-            </template>
 
             <div
                 v-if="pageCount > 1"

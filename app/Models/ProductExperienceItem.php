@@ -15,13 +15,12 @@ use Illuminate\Support\Carbon;
  * @property int $product_id
  * @property string $icon_path
  * @property string $title
- * @property string $description
  * @property int $order
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read string $icon_url
  */
-#[Fillable(['product_id', 'icon_path', 'title', 'description', 'order'])]
+#[Fillable(['product_id', 'icon_path', 'title', 'order'])]
 class ProductExperienceItem extends Model
 {
     /** @use HasFactory<ProductExperienceItemFactory> */

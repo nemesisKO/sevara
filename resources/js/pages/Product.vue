@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Head, Link, usePage } from '@inertiajs/vue3';
+import { Head, usePage } from '@inertiajs/vue3';
 import {
     ArrowDown,
     BookOpen,
@@ -8,9 +8,11 @@ import {
     Coffee,
     ConciergeBell,
     Diamond,
+    Download,
     Gift,
     Globe,
     Plus,
+    Ship,
     ShoppingBag,
     Tag,
     Users,
@@ -18,13 +20,13 @@ import {
 import { computed, ref, useTemplateRef } from 'vue';
 import JsonLd from '@/components/JsonLd.vue';
 import LazyImage from '@/components/LazyImage.vue';
+import ProductCollection from '@/components/public/ProductCollection.vue';
 import RevealOnScroll from '@/components/public/RevealOnScroll.vue';
-import { contact } from '@/routes';
-import { request as requestCatalog } from '@/routes/catalog';
 import type { Product } from '@/types';
 
 const props = defineProps<{
     product: Product;
+    otherProducts: Product[];
 }>();
 
 const page = usePage();
@@ -77,10 +79,31 @@ const activeImage = computed(
     () => props.product.images[activeIndex.value] ?? props.product.images[0],
 );
 
+const technicalDetails = computed(() => [
+    { title: 'Net piece weight', value: props.product.net_piece_weight },
+    { title: 'Pieces / pack', value: props.product.pieces_per_pack },
+    { title: 'Shelf life', value: props.product.shelf_life },
+    { title: 'Storage', value: props.product.storage },
+    { title: 'Allergens', value: props.product.allergens },
+    { title: 'MOQ', value: props.product.moq },
+]);
+
+const hasTechnicalContent = computed(() =>
+    Boolean(
+        technicalDetails.value.some((detail) => detail.value) ||
+        props.product.technical_data_sheet_url ||
+        props.product.pieces_per_pack_url,
+    ),
+);
+
 const exploreSection = useTemplateRef('exploreSection');
 
 function scrollToExplore(): void {
     exploreSection.value?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function openCatalogueRequestModal(): void {
+    window.dispatchEvent(new Event('open-catalogue-request-modal'));
 }
 
 const openSpec = ref<number | null>(null);
@@ -96,8 +119,9 @@ const features = [
 ];
 
 const markets = [
+    { icon: Ship, title: 'Importers' },
     { icon: Users, title: 'Distributors' },
-    { icon: Gift, title: 'Gift Retail' },
+    { icon: Gift, title: 'Retail & Gift' },
     { icon: Coffee, title: 'Coffee Shops' },
     { icon: ConciergeBell, title: 'Hotels' },
 ];
@@ -223,11 +247,11 @@ function toggleFaq(id: number): void {
                     @click="scrollToExplore"
                 >
                     <span
-                        class="rotate-180 text-[10px] font-semibold tracking-[0.3em] text-[#b99a45] uppercase [writing-mode:vertical-rl]"
+                        class="rotate-180 text-[10px] font-semibold tracking-[0.3em] text-primeGold uppercase [writing-mode:vertical-rl]"
                     >
                         Scroll to explore
                     </span>
-                    <ArrowDown class="size-4 animate-bounce text-[#b99a45]" />
+                    <ArrowDown class="size-4 animate-bounce text-primeGold" />
                 </button>
             </div>
 
@@ -252,13 +276,18 @@ function toggleFaq(id: number): void {
 
             <div class="order-3 lg:pl-6 xl:pl-14">
                 <h1
-                    class="font-serif text-5xl leading-tight sm:text-6xl xl:text-7xl"
+                    class="font-serif text-3xl leading-tight lg:text-4xl 2xl:text-5xl"
                 >
-                    <span :style="{ color: product.title_part1_color }">
+                    <span
+                        class="block whitespace-nowrap"
+                        :style="{ color: product.title_part1_color }"
+                    >
                         {{ product.title_part1 }}
                     </span>
-                    <br />
-                    <span :style="{ color: product.title_part2_color }">
+                    <span
+                        class="block whitespace-nowrap"
+                        :style="{ color: product.title_part2_color }"
+                    >
                         {{ product.title_part2 }}
                     </span>
                 </h1>
@@ -285,21 +314,94 @@ function toggleFaq(id: number): void {
                 </p>
 
                 <div class="mt-10 flex flex-wrap gap-4">
-                    <Link
-                        :href="requestCatalog()"
+                    <button
+                        type="button"
                         class="inline-flex items-center gap-2 rounded-none bg-[#0f1c3f] px-6 py-3 text-sm font-medium tracking-wide text-white transition hover:bg-[#0f1c3f]/90"
+                        @click="openCatalogueRequestModal"
                     >
                         <BookOpen class="size-4" />
                         Request Catalog
-                    </Link>
-                    <Link
-                        :href="contact()"
+                    </button>
+                    <button
+                        type="button"
                         class="inline-flex items-center gap-2 rounded-none border border-[#0f1c3f] px-6 py-3 text-sm font-medium tracking-wide text-[#0f1c3f] transition hover:bg-[#0f1c3f]/5"
+                        @click="openCatalogueRequestModal"
                     >
                         <Users class="size-4" />
-                        Become a Distributor
-                    </Link>
+                        Request Catalog
+                    </button>
                 </div>
+
+                <div
+                    v-if="product.experience_items.length > 0"
+                    class="mt-8 grid max-w-sm grid-cols-2 gap-x-6 gap-y-5"
+                >
+                    <RevealOnScroll
+                        v-for="(item, index) in product.experience_items"
+                        :key="item.id"
+                        :delay="index * 100"
+                    >
+                        <div
+                            class="flex h-full flex-col items-center gap-3 border-t border-[#d4af37]/35 pt-4 text-center"
+                        >
+                            <LazyImage
+                                :src="item.icon_url"
+                                alt=""
+                                class="size-9 object-contain"
+                            />
+                            <p
+                                class="text-xs font-semibold tracking-[0.12em] text-[#0f1c3f] uppercase"
+                            >
+                                {{ item.title }}
+                            </p>
+                        </div>
+                    </RevealOnScroll>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section
+        v-if="hasTechnicalContent"
+        class="mx-auto max-w-6xl px-6 pb-16 lg:px-10"
+    >
+        <div class="grid gap-6 border-y border-[#e7e1d4] py-7">
+            <div class="grid grid-cols-2 gap-y-6 sm:grid-cols-3 lg:grid-cols-6">
+                <div
+                    v-for="detail in technicalDetails"
+                    :key="detail.title"
+                    class="border-[#e7e1d4] px-4 text-center lg:border-r lg:last:border-r-0"
+                >
+                    <p
+                        class="text-[10px] font-semibold tracking-[0.16em] text-[#9a9386] uppercase"
+                    >
+                        {{ detail.title }}
+                    </p>
+                    <p class="mt-2 text-sm font-medium text-[#0f1c3f]">
+                        {{ detail.value || '—' }}
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap justify-center gap-3 mt-4">
+                <a
+                    v-if="product.technical_data_sheet_url"
+                    :href="product.technical_data_sheet_url"
+                    download
+                    class="inline-flex items-center gap-2 rounded-none border border-[#0f1c3f] px-5 py-2.5 text-xs font-semibold tracking-wide text-[#0f1c3f] uppercase transition hover:bg-[#0f1c3f]/5"
+                >
+                    <Download class="size-4" />
+                    View technical data sheet
+                </a>
+                <a
+                    v-if="product.pieces_per_pack_url"
+                    :href="product.pieces_per_pack_url"
+                    download
+                    class="inline-flex items-center gap-2 rounded-none bg-[#0f1c3f] px-5 py-2.5 text-xs font-semibold tracking-wide text-lightGold uppercase transition hover:bg-[#0f1c3f]/90"
+                >
+                    <Download class="size-4" />
+                    View full pieces/pack
+                </a>
             </div>
         </div>
     </section>
@@ -319,7 +421,7 @@ function toggleFaq(id: number): void {
                 >
                     <component
                         :is="feature.icon"
-                        class="size-9 text-[#b99a45]"
+                        class="size-9 text-primeGold"
                         :stroke-width="1.25"
                     />
                     <p
@@ -348,7 +450,7 @@ function toggleFaq(id: number): void {
         </RevealOnScroll>
 
         <div
-            class="mt-14 grid grid-cols-2 gap-y-12 sm:grid-cols-4 sm:divide-x sm:divide-[#e7e1d4]"
+            class="mt-14 grid grid-cols-2 gap-y-12 sm:grid-cols-3 lg:grid-cols-5 lg:divide-x lg:divide-[#e7e1d4]"
         >
             <RevealOnScroll
                 v-for="(market, index) in markets"
@@ -358,7 +460,7 @@ function toggleFaq(id: number): void {
                 <div class="flex flex-col items-center gap-4 px-4 text-center">
                     <component
                         :is="market.icon"
-                        class="size-9 text-[#b99a45]"
+                        class="size-9 text-primeGold"
                         :stroke-width="1.25"
                     />
                     <p
@@ -370,6 +472,8 @@ function toggleFaq(id: number): void {
             </RevealOnScroll>
         </div>
     </section>
+
+    <ProductCollection :products="otherProducts" />
 
     <section
         v-if="product.specifications.length > 0"
@@ -397,12 +501,12 @@ function toggleFaq(id: number): void {
                                 />
                             </span>
                             <span
-                                class="flex-1 text-sm font-semibold tracking-[0.15em] text-[#0f1c3f] uppercase transition-colors group-hover:text-[#b99a45]"
+                                class="flex-1 text-sm font-semibold tracking-[0.15em] text-[#0f1c3f] uppercase transition-colors group-hover:text-primeGold"
                             >
                                 {{ spec.question }}
                             </span>
                             <Plus
-                                class="size-5 shrink-0 text-[#b99a45] transition-transform duration-300"
+                                class="size-5 shrink-0 text-primeGold transition-transform duration-300"
                                 :class="openSpec === spec.id && 'rotate-45'"
                                 :stroke-width="2"
                             />
@@ -440,157 +544,128 @@ function toggleFaq(id: number): void {
         </div>
     </section>
 
-    <section
-        v-if="product.experience_items.length > 0"
-        class="mx-auto max-w-6xl px-6 pb-28 lg:px-10"
-    >
-        <RevealOnScroll v-if="product.experience_title">
-            <div class="text-center">
-                <h2 class="font-serif text-3xl text-[#0f1c3f] sm:text-4xl">
-                    {{ product.experience_title }}
-                </h2>
-                <div class="mt-5 flex items-center justify-center gap-4">
-                    <span class="h-px w-12 bg-[#d4af37]/40" />
-                    <Diamond class="size-2.5 text-[#d4af37]" />
-                    <span class="h-px w-12 bg-[#d4af37]/40" />
-                </div>
-            </div>
-        </RevealOnScroll>
-
-        <div
-            class="grid gap-6 sm:grid-cols-3"
-            :class="product.experience_title ? 'mt-14' : ''"
-        >
-            <RevealOnScroll
-                v-for="(item, index) in product.experience_items"
-                :key="item.id"
-                :delay="index * 130"
-            >
-                <div
-                    class="flex h-full flex-col items-center gap-4 rounded-lg bg-[#f7f3e8]/70 px-6 py-10 text-center transition-transform duration-300 hover:scale-[1.03]"
-                >
-                    <LazyImage
-                        :src="item.icon_url"
-                        alt=""
-                        class="size-14 object-contain"
-                    />
-                    <p
-                        class="font-serif text-base font-semibold tracking-wide text-[#0f1c3f] uppercase"
-                    >
-                        {{ item.title }}
-                    </p>
-                    <p class="text-sm text-[#6b6558]">
-                        {{ item.description }}
-                    </p>
-                </div>
-            </RevealOnScroll>
-        </div>
-    </section>
-
-    <section class="mx-auto max-w-4xl px-6 pb-28 lg:px-10">
-        <RevealOnScroll>
-            <div class="text-center">
-                <h2 class="font-serif text-3xl text-[#0f1c3f] sm:text-4xl">
-                    <span class="text-[#d4af37]">—</span>
-                    Why Choose Sevara
-                    <span class="text-[#d4af37]">—</span>
-                </h2>
-            </div>
-        </RevealOnScroll>
-
-        <RevealOnScroll :delay="100">
-            <div
-                class="mt-10 overflow-x-auto rounded-lg border border-[#e7e1d4]"
-            >
-                <table class="w-full min-w-120 border-collapse text-left">
-                    <thead>
-                        <tr class="bg-[#0f1c3f]">
-                            <th
-                                class="px-6 py-4 text-xs font-semibold tracking-[0.2em] text-white uppercase"
-                            >
-                                Features
-                            </th>
-                            <th
-                                class="px-6 py-4 text-center text-xs font-semibold tracking-[0.2em] text-[#d4af37] uppercase"
-                            >
-                                Sevara
-                            </th>
-                            <th
-                                class="px-6 py-4 text-center text-xs font-semibold tracking-[0.2em] text-white uppercase"
-                            >
-                                Typical Products
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-[#e7e1d4]">
-                        <tr
-                            v-for="feature in whyChooseFeatures"
-                            :key="feature"
-                            class="odd:bg-[#f7f3e8]/40"
+    <section class="container mx-auto px-6 pb-28 font-serif lg:px-10">
+        <div class="grid gap-16 lg:grid-cols-2 lg:gap-12">
+            <div>
+                <RevealOnScroll>
+                    <div class="text-center">
+                        <h2
+                            class="font-serif text-3xl text-[#0f1c3f] sm:text-4xl"
                         >
-                            <td class="px-6 py-4 text-sm text-[#0f1c3f]">
-                                {{ feature }}
-                            </td>
-                            <td class="px-6 py-4 text-center">
-                                <Check class="mx-auto size-4 text-[#b99a45]" />
-                            </td>
-                            <td class="px-6 py-4 text-center text-[#a89f8d]">
-                                —
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </RevealOnScroll>
+                            <span class="text-[#d4af37]">—</span>
+                            Why Choose Sevara
+                            <span class="text-[#d4af37]">—</span>
+                        </h2>
+                    </div>
+                </RevealOnScroll>
 
-        <RevealOnScroll :delay="150">
-            <div class="mt-20 text-center">
-                <h2 class="font-serif text-3xl text-[#0f1c3f] sm:text-4xl">
-                    <span class="text-[#d4af37]">—</span>
-                    Frequently Asked Questions
-                    <span class="text-[#d4af37]">—</span>
-                </h2>
-            </div>
-        </RevealOnScroll>
-
-        <RevealOnScroll :delay="200">
-            <div
-                class="mt-10 divide-y divide-[#e7e1d4] border-y border-[#e7e1d4]"
-            >
-                <div v-for="faq in faqs" :key="faq.id">
-                    <button
-                        type="button"
-                        class="group flex w-full cursor-pointer items-center justify-between gap-5 py-5 text-left"
-                        :aria-expanded="openFaq === faq.id"
-                        @click="toggleFaq(faq.id)"
-                    >
-                        <span
-                            class="text-sm font-medium text-[#0f1c3f] transition-colors group-hover:text-[#b99a45]"
-                        >
-                            {{ faq.question }}
-                        </span>
-                        <ChevronDown
-                            class="size-4 shrink-0 text-[#b99a45] transition-transform duration-300"
-                            :class="openFaq === faq.id && 'rotate-180'"
-                        />
-                    </button>
+                <RevealOnScroll :delay="100">
                     <div
-                        class="grid transition-[grid-template-rows] duration-300 ease-out"
-                        :class="
-                            openFaq === faq.id
-                                ? 'grid-rows-[1fr]'
-                                : 'grid-rows-[0fr]'
-                        "
+                        class="mt-10 overflow-x-auto rounded-lg border border-[#e7e1d4]"
                     >
-                        <div class="overflow-hidden">
-                            <p class="pb-5 text-sm text-[#6b6558]">
-                                {{ faq.answer }}
-                            </p>
+                        <table
+                            class="w-full min-w-120 border-collapse text-left"
+                        >
+                            <thead>
+                                <tr class="bg-[#0f1c3f]">
+                                    <th
+                                        class="px-6 py-4 text-xs font-semibold tracking-[0.2em] text-white uppercase"
+                                    >
+                                        Features
+                                    </th>
+                                    <th
+                                        class="px-6 py-4 text-center text-xs font-semibold tracking-[0.2em] text-[#d4af37] uppercase"
+                                    >
+                                        Sevara
+                                    </th>
+                                    <th
+                                        class="px-6 py-4 text-center text-xs font-semibold tracking-[0.2em] text-white uppercase"
+                                    >
+                                        Typical Products
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-[#e7e1d4]">
+                                <tr
+                                    v-for="feature in whyChooseFeatures"
+                                    :key="feature"
+                                    class="odd:bg-[#f7f3e8]/40"
+                                >
+                                    <td
+                                        class="px-6 py-4 text-sm text-[#0f1c3f]"
+                                    >
+                                        {{ feature }}
+                                    </td>
+                                    <td class="px-6 py-4 text-center">
+                                        <Check
+                                            class="mx-auto size-4 text-primeGold"
+                                        />
+                                    </td>
+                                    <td
+                                        class="px-6 py-4 text-center text-[#a89f8d]"
+                                    >
+                                        —
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </RevealOnScroll>
+            </div>
+
+            <div>
+                <RevealOnScroll :delay="150">
+                    <div class="text-center">
+                        <h2
+                            class="font-serif text-3xl text-[#0f1c3f] sm:text-4xl"
+                        >
+                            <span class="text-[#d4af37]">—</span>
+                            Frequently Asked Questions
+                            <span class="text-[#d4af37]">—</span>
+                        </h2>
+                    </div>
+                </RevealOnScroll>
+
+                <RevealOnScroll :delay="200">
+                    <div
+                        class="mt-10 divide-y divide-[#e7e1d4] border-y border-[#e7e1d4]"
+                    >
+                        <div v-for="faq in faqs" :key="faq.id">
+                            <button
+                                type="button"
+                                class="group flex w-full cursor-pointer items-center justify-between gap-5 py-5 text-left"
+                                :aria-expanded="openFaq === faq.id"
+                                @click="toggleFaq(faq.id)"
+                            >
+                                <span
+                                    class="text-sm font-medium text-[#0f1c3f] transition-colors group-hover:text-primeGold"
+                                >
+                                    {{ faq.question }}
+                                </span>
+                                <ChevronDown
+                                    class="size-4 shrink-0 text-primeGold transition-transform duration-300"
+                                    :class="openFaq === faq.id && 'rotate-180'"
+                                />
+                            </button>
+                            <div
+                                class="grid transition-[grid-template-rows] duration-300 ease-out"
+                                :class="
+                                    openFaq === faq.id
+                                        ? 'grid-rows-[1fr]'
+                                        : 'grid-rows-[0fr]'
+                                "
+                            >
+                                <div class="overflow-hidden">
+                                    <p class="pb-5 text-sm text-[#6b6558]">
+                                        {{ faq.answer }}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>
+                </RevealOnScroll>
             </div>
-        </RevealOnScroll>
+        </div>
     </section>
 </template>
 
