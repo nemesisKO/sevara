@@ -44,6 +44,24 @@
         <meta name="theme-color" content="#0f1c3f">
         <meta property="og:locale" content="{{ config('seo.locale') }}">
 
+        <!-- Google Tag Manager -->
+        <script>
+            (function(w, d, s, l, i) {
+                w[l] = w[l] || [];
+                w[l].push({
+                    'gtm.start': new Date().getTime(),
+                    event: 'gtm.js'
+                });
+                var f = d.getElementsByTagName(s)[0],
+                    j = d.createElement(s),
+                    dl = l != 'dataLayer' ? '&l=' + l : '';
+                j.async = true;
+                j.src = 'https://www.googletagmanager.com/gtm.js?id=' + i + dl;
+                f.parentNode.insertBefore(j, f);
+            })(window, document, 'script', 'dataLayer', 'GTM-PVPX3LCL');
+        </script>
+        <!-- End Google Tag Manager -->
+
         @fonts
 
         @vite(['resources/css/app.css', 'resources/js/app.ts', "resources/js/pages/{$page['component']}.vue"])
@@ -74,6 +92,17 @@
         </x-inertia::head>
     </head>
     <body class="font-sans antialiased">
+        <!-- Google Tag Manager (noscript) -->
+        <noscript>
+            <iframe
+                src="https://www.googletagmanager.com/ns.html?id=GTM-PVPX3LCL"
+                height="0"
+                width="0"
+                style="display:none;visibility:hidden"
+            ></iframe>
+        </noscript>
+        <!-- End Google Tag Manager (noscript) -->
+
         <x-inertia::app />
     </body>
 </html>
