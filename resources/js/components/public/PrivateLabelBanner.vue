@@ -1,55 +1,53 @@
 <script setup lang="ts">
 import { Link } from '@inertiajs/vue3';
+import { Diamond } from '@lucide/vue';
 import { privateLabel } from '@/routes';
 </script>
 
 <template>
-    <section
-        class="relative h-40 overflow-hidden bg-[#081019] sm:h-48 lg:h-[205px]"
-        style="
-            background-image:
-                linear-gradient(
-                    to right,
-                    rgba(8, 16, 25, 0.92) 0%,
-                    rgba(8, 16, 25, 0.78) 36%,
-                    rgba(8, 16, 25, 0.34) 62%,
-                    rgba(25, 29, 35, 0.18) 100%
-                ),
-                url('/images/private-label-banner-blended.png'),
-                linear-gradient(to right, #081019 0%, #081019 52%, #191d23 100%);
-            background-position: center, center, center;
-            background-repeat: no-repeat, no-repeat, no-repeat;
-            background-size:
-                100% 100%,
-                auto 100%,
-                100% 100%;
-        "
-    >
-        <div
-            class="pointer-events-none absolute top-0 bottom-0 left-0 w-24 bg-[url('/images/pattern-ornament.webp')] bg-cover bg-left opacity-20 sm:w-28 lg:w-32"
-        />
-
-        <div
-            class="absolute top-[19%] left-[12%] flex max-w-[72%] flex-col items-start sm:max-w-[44%]"
+    <section aria-label="Explore private label">
+        <Link
+            :href="privateLabel()"
+            class="group relative block min-h-60 overflow-hidden bg-[#061721] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d4af37] lg:aspect-[20/3] lg:min-h-0"
         >
-            <h2
-                class="font-serif text-lg leading-[1.35] text-[#ddcfb0] sm:text-2xl lg:text-3xl xl:text-[1.75rem]"
+            <img
+                src="/images/private-banner-final.webp"
+                alt=""
+                class="absolute inset-0 h-full w-full object-cover object-[70%_center] lg:object-center"
+                loading="lazy"
+                decoding="async"
+            />
+            <span
+                aria-hidden="true"
+                class="absolute inset-0 bg-gradient-to-r from-[#061721] via-[#061721]/85 to-transparent lg:via-[#061721]/35"
+            />
+            <div
+                class="relative flex min-h-60 w-[72%] flex-col justify-center py-7 pl-[7%] text-[#e7bd76] sm:w-[60%] sm:pl-[12%] lg:absolute lg:inset-y-0 lg:left-[15%] lg:min-h-0 lg:w-[38%] lg:p-0"
             >
-                Intense dark chocolate<br class="hidden xl:block" />
-                crafted for modern retail.
-            </h2>
-            <div class="mt-2 flex items-center gap-2 sm:mt-3">
-                <span class="h-px w-8 bg-[#d4af37]/55 sm:w-12" />
-                <span class="size-1.5 rotate-45 bg-[#d4af37]" />
-                <span class="h-px w-8 bg-[#d4af37]/55 sm:w-12" />
+                <h2
+                    class="font-serif text-[clamp(1.5rem,2.2vw,2.5rem)] leading-tight"
+                >
+                    Intense chocolate date
+                </h2>
+                <p
+                    class="mt-1 text-sm tracking-[0.16em] text-[#d7c7a6] sm:text-base"
+                >
+                    for modern retail
+                </p>
+                <div
+                    aria-hidden="true"
+                    class="mt-3 flex items-center gap-2 text-[#b99a45]"
+                >
+                    <span class="h-px w-10 bg-current/60" />
+                    <Diamond class="size-2.5" />
+                    <span class="h-px w-10 bg-current/60" />
+                </div>
+                <span
+                    class="mt-4 inline-flex self-start rounded-sm bg-[#e7bd76] px-4 py-2.5 text-[0.65rem] font-semibold tracking-[0.12em] text-[#0f1c3f] uppercase shadow-sm transition-colors group-hover:bg-[#f7d295] sm:text-xs"
+                >
+                    Explore Private Label
+                </span>
             </div>
-
-            <Link
-                :href="privateLabel()"
-                class="mt-3 inline-flex items-center bg-[#e7bd76] px-3 py-1.5 text-[0.6rem] font-semibold tracking-[0.13em] text-[#0f1c3f] uppercase transition hover:bg-[#f7d295] sm:px-4 sm:py-2 sm:text-xs"
-            >
-                Explore Private Label
-            </Link>
-        </div>
+        </Link>
     </section>
 </template>

@@ -12,6 +12,7 @@ import {
     Gift,
     Globe,
     Plus,
+    Package,
     Ship,
     ShoppingBag,
     Tag,
@@ -20,13 +21,17 @@ import {
 import { computed, ref, useTemplateRef } from 'vue';
 import JsonLd from '@/components/JsonLd.vue';
 import LazyImage from '@/components/LazyImage.vue';
+import PrivateLabelBanner from '@/components/public/PrivateLabelBanner.vue';
 import ProductCollection from '@/components/public/ProductCollection.vue';
 import RevealOnScroll from '@/components/public/RevealOnScroll.vue';
+import SampleRequestModal from '@/components/public/SampleRequestModal.vue';
 import type { Product } from '@/types';
 
 const props = defineProps<{
     product: Product;
     otherProducts: Product[];
+    sampleVolumes: string[];
+    shippingTerms: string[];
 }>();
 
 const page = usePage();
@@ -74,6 +79,7 @@ const structuredData = computed(() => {
 });
 
 const activeIndex = ref(0);
+const isSampleRequestOpen = ref(false);
 
 const activeImage = computed(
     () => props.product.images[activeIndex.value] ?? props.product.images[0],
@@ -317,20 +323,27 @@ function toggleFaq(id: number): void {
                     <button
                         type="button"
                         class="inline-flex items-center gap-2 rounded-none bg-[#0f1c3f] px-6 py-3 text-sm font-medium tracking-wide text-white transition hover:bg-[#0f1c3f]/90"
-                        @click="openCatalogueRequestModal"
+                        @click="isSampleRequestOpen = true"
                     >
-                        <BookOpen class="size-4" />
-                        Request Catalog
+                        <Package class="size-4" />
+                        Request Sample
                     </button>
                     <button
                         type="button"
                         class="inline-flex items-center gap-2 rounded-none border border-[#0f1c3f] px-6 py-3 text-sm font-medium tracking-wide text-[#0f1c3f] transition hover:bg-[#0f1c3f]/5"
                         @click="openCatalogueRequestModal"
                     >
-                        <Users class="size-4" />
+                        <BookOpen class="size-4" />
                         Request Catalog
                     </button>
                 </div>
+
+                <SampleRequestModal
+                    v-model:open="isSampleRequestOpen"
+                    :product="product"
+                    :sample-volumes="sampleVolumes"
+                    :shipping-terms="shippingTerms"
+                />
 
                 <div
                     v-if="product.experience_items.length > 0"
@@ -383,7 +396,7 @@ function toggleFaq(id: number): void {
                 </div>
             </div>
 
-            <div class="flex flex-wrap justify-center gap-3 mt-4">
+            <div class="mt-4 flex flex-wrap justify-center gap-3">
                 <a
                     v-if="product.technical_data_sheet_url"
                     :href="product.technical_data_sheet_url"
@@ -434,6 +447,8 @@ function toggleFaq(id: number): void {
             </RevealOnScroll>
         </div>
     </section>
+
+    <PrivateLabelBanner class="pb-24" />
 
     <section class="mx-auto max-w-6xl px-6 pb-28 lg:px-4">
         <RevealOnScroll>

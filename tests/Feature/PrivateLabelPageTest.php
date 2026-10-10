@@ -43,7 +43,70 @@ test('the private label page shows the managed content', function () {
         ->where('markets.5', 'Bahrain')
         ->where('markets.6', 'Iran')
         ->where('markets.9', 'Pakistan')
+        ->where('initialIntent', null)
+        ->where('sourcePage', null)
     );
+});
+
+test('the private label page remembers which site page led to it', function () {
+    $product = Product::factory()->create();
+    $productUrl = route('products.show', $product);
+
+    $this->withHeader('Referer', $productUrl)
+        ->get(route('private-label'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('PrivateLabel')
+            ->where('sourcePage', parse_url($productUrl, PHP_URL_PATH))
+        );
+});
+
+test('the private label page ignores an external referring site', function () {
+    $this->withHeader('Referer', 'https://search.example/results')
+        ->get(route('private-label'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('PrivateLabel')
+            ->where('sourcePage', null)
+        );
+});
+
+test('the private label page opens the general export enquiry requested by the about page', function () {
+    $response = $this->get(route('private-label', ['intent' => 'general_export_enquiry']));
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->component('PrivateLabel')
+        ->where('initialIntent', 'general_export_enquiry')
+    );
+});
+
+test('visitors can view packaging formats on their own page', function () {
+    PackagingFormat::factory()->create(['name' => 'Large Gift Box', 'order' => 2]);
+    PackagingFormat::factory()->create(['name' => 'Retail Pouch', 'order' => 1]);
+    PackagingFormat::factory()->other()->create(['name' => 'Window Box', 'order' => 3]);
+
+    $response = $this->get(route('private-label.formats'));
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->component('PackagingFormats')
+        ->has('featuredFormats', 2)
+        ->where('featuredFormats.0.name', 'Retail Pouch')
+        ->where('featuredFormats.1.name', 'Large Gift Box')
+        ->has('otherFormats', 1)
+        ->where('otherFormats.0.name', 'Window Box')
+    );
+});
+
+test('the packaging formats page is available before formats are added', function () {
+    $this->get(route('private-label.formats'))
+        ->assertOk()
+        ->assertInertia(fn ($page) => $page
+            ->component('PackagingFormats')
+            ->has('featuredFormats', 0)
+            ->has('otherFormats', 0)
+        );
 });
 
 test('a sample request only requires contact and product details', function () {
@@ -87,6 +150,7 @@ test('a visitor can send a private label inquiry', function () {
         'email' => 'amina@example.com',
         'phone' => '+966 50 123 4567',
         'intent' => 'private_label',
+        'source_page' => '/products/pistachio-chocolate-dates',
         'company_name' => 'Yusuf Foods',
         'country' => 'Saudi Arabia',
         'product_name' => 'Pistachio Chocolate Dates',
@@ -102,11 +166,24 @@ test('a visitor can send a private label inquiry', function () {
         ->and($inquiry->email)->toBe('amina@example.com')
         ->and($inquiry->phone)->toBe('+966 50 123 4567')
         ->and($inquiry->intent)->toBe('private_label')
+        ->and($inquiry->source_page)->toBe('/products/pistachio-chocolate-dates')
         ->and($inquiry->company_name)->toBe('Yusuf Foods')
         ->and($inquiry->country)->toBe('Saudi Arabia')
         ->and($inquiry->product_name)->toBe('Pistachio Chocolate Dates')
         ->and($inquiry->estimated_quantity)->toBe('10,000 units')
         ->and($inquiry->read_at)->toBeNull();
+});
+
+test('an inquiry rejects a source outside this site', function () {
+    $response = $this->post(route('private-label.inquiries.store'), [
+        'full_name' => 'Amina Yusuf',
+        'email' => 'amina@example.com',
+        'intent' => 'general_export_enquiry',
+        'source_page' => 'https://another-site.example/page',
+    ]);
+
+    $response->assertSessionHasErrors('source_page');
+    expect(PrivateLabelInquiry::count())->toBe(0);
 });
 
 test('an inquiry may be sent without a message', function () {

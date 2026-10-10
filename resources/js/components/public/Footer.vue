@@ -4,6 +4,7 @@ import { Mail, MapPin, Phone, Send } from '@lucide/vue';
 import { computed } from 'vue';
 import NewsletterSubscriptionController from '@/actions/App/Http/Controllers/NewsletterSubscriptionController';
 import LazyImage from '@/components/LazyImage.vue';
+import SocialIcon from '@/components/public/SocialIcon.vue';
 import { about, contact, home, privateLabel } from '@/routes';
 import { index as blogIndex } from '@/routes/blog';
 import { index as productsIndex } from '@/routes/products';
@@ -11,6 +12,9 @@ import { index as productsIndex } from '@/routes/products';
 const page = usePage();
 
 const logoUrl = computed(() => page.props.settings.logo_url);
+const socialLinks = computed(() => page.props.settings.social_links);
+
+const exportEnquiryHref = `${contact.url({ query: { intent: 'general_export_enquiry' } })}#contact-inquiry-form`;
 
 const navItems = [
     { title: 'Products', href: productsIndex() },
@@ -105,96 +109,20 @@ const currentYear = new Date().getFullYear();
                         </p>
                     </Form>
 
-                    <div class="mt-6 flex items-center gap-3">
+                    <div
+                        v-if="socialLinks.length"
+                        class="mt-6 flex flex-wrap items-center gap-3"
+                    >
                         <a
-                            href="#"
-                            aria-label="Instagram"
+                            v-for="(link, index) in socialLinks"
+                            :key="`${link.icon}-${index}`"
+                            :href="link.url"
+                            :aria-label="link.label"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             class="flex size-9 items-center justify-center rounded-full border border-white/20 text-[#aab0c2] transition hover:border-[#d4af37] hover:text-[#d4af37]"
                         >
-                            <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="size-4"
-                            >
-                                <rect
-                                    x="3"
-                                    y="3"
-                                    width="18"
-                                    height="18"
-                                    rx="5"
-                                />
-                                <circle cx="12" cy="12" r="4" />
-                                <circle
-                                    cx="17.2"
-                                    cy="6.8"
-                                    r="0.6"
-                                    fill="currentColor"
-                                    stroke="none"
-                                />
-                            </svg>
-                        </a>
-                        <a
-                            href="#"
-                            aria-label="LinkedIn"
-                            class="flex size-9 items-center justify-center rounded-full border border-white/20 text-[#aab0c2] transition hover:border-[#d4af37] hover:text-[#d4af37]"
-                        >
-                            <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="size-4"
-                            >
-                                <rect
-                                    x="3"
-                                    y="3"
-                                    width="18"
-                                    height="18"
-                                    rx="2"
-                                />
-                                <line x1="7" y1="10.5" x2="7" y2="17" />
-                                <circle
-                                    cx="7"
-                                    cy="6.8"
-                                    r="0.6"
-                                    fill="currentColor"
-                                    stroke="none"
-                                />
-                                <path d="M11 17v-4.2a2.3 2.3 0 0 1 4.6 0V17" />
-                                <line x1="11" y1="10.5" x2="11" y2="17" />
-                            </svg>
-                        </a>
-                        <a
-                            href="#"
-                            aria-label="Facebook"
-                            class="flex size-9 items-center justify-center rounded-full border border-white/20 text-[#aab0c2] transition hover:border-[#d4af37] hover:text-[#d4af37]"
-                        >
-                            <svg
-                                viewBox="0 0 24 24"
-                                fill="none"
-                                stroke="currentColor"
-                                stroke-width="1.5"
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="size-4"
-                            >
-                                <rect
-                                    x="3"
-                                    y="3"
-                                    width="18"
-                                    height="18"
-                                    rx="5"
-                                />
-                                <path
-                                    d="M14 20v-6h2l.3-3H14V9.3A1.3 1.3 0 0 1 15.3 8H16V5.3A16 16 0 0 0 14.2 5 3.2 3.2 0 0 0 11 8.4V11H9v3h2v6"
-                                />
-                            </svg>
+                            <SocialIcon :icon="link.icon" />
                         </a>
                     </div>
                 </div>
@@ -267,7 +195,7 @@ const currentYear = new Date().getFullYear();
                     </ul>
 
                     <Link
-                        :href="contact()"
+                        :href="exportEnquiryHref"
                         class="mt-6 inline-flex items-center bg-primeGold px-6 py-3 text-sm font-medium tracking-wide text-[#0f1c3f] transition hover:bg-[#c9a233]"
                     >
                         Contact Export Team

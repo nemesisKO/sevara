@@ -11,15 +11,24 @@ use Illuminate\Support\Carbon;
  * @property int $id
  * @property string|null $catalogue_path
  * @property string|null $logo_path
+ * @property array<int, array{label: string, icon: string, url: string}>|null $social_links
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property-read string|null $catalogue_url
  * @property-read string|null $logo_url
  */
-#[Fillable(['catalogue_path', 'logo_path'])]
+#[Fillable(['catalogue_path', 'logo_path', 'social_links'])]
 class Setting extends Model
 {
     protected $appends = ['catalogue_url', 'logo_url'];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return ['social_links' => 'array'];
+    }
 
     /**
      * Get the single settings row, creating it if it doesn't exist yet.

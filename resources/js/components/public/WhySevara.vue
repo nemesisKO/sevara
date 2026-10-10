@@ -18,6 +18,8 @@ import LazyImage from '@/components/LazyImage.vue';
 import RevealOnScroll from '@/components/public/RevealOnScroll.vue';
 import { contact } from '@/routes';
 
+const exportEnquiryHref = `${contact.url({ query: { intent: 'general_export_enquiry' } })}#contact-inquiry-form`;
+
 const features = [
     { icon: Nut, title: 'Premium Ingredients' },
     { icon: Gift, title: 'Elegant Packaging' },
@@ -143,7 +145,7 @@ onBeforeUnmount(() => {
                     </div>
 
                     <Link
-                        :href="contact()"
+                        :href="exportEnquiryHref"
                         class="mt-8 inline-flex items-center gap-2 bg-[#0f1c3f] px-6 py-3 text-xs font-semibold tracking-[0.15em] text-white uppercase transition hover:bg-[#0f1c3f]/90"
                     >
                         Contact Export Team

@@ -9,6 +9,7 @@ import {
     MailPlus,
     Newspaper,
     Package,
+    PackageCheck,
     Settings,
     Sparkles,
     Tag,
@@ -36,6 +37,7 @@ import { index as subscribersIndex } from '@/routes/admin/newsletter-subscribers
 import { index as privateLabelIndex } from '@/routes/admin/private-label';
 import { index as inquiriesIndex } from '@/routes/admin/private-label/inquiries';
 import { index as productsIndex } from '@/routes/admin/products';
+import { index as sampleRequestsIndex } from '@/routes/admin/sample-requests';
 import { edit as settingsEdit } from '@/routes/admin/settings';
 import { index as slidesIndex } from '@/routes/admin/slides';
 import type { NavItem } from '@/types';
@@ -66,6 +68,11 @@ const mainNavItems = computed<NavItem[]>(() => {
             title: 'Products',
             href: productsIndex(),
             icon: Package,
+        });
+        items.push({
+            title: 'Sample Requests',
+            href: sampleRequestsIndex(),
+            icon: PackageCheck,
         });
         items.push({
             title: 'Private Label',

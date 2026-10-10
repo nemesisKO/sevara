@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductExperienceItemController;
 use App\Http\Controllers\Admin\ProductImageController;
 use App\Http\Controllers\Admin\ProductSpecificationController;
+use App\Http\Controllers\Admin\SampleRequestController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\SlideController;
 use Illuminate\Support\Facades\Route;
@@ -21,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('settings', [SettingController::class, 'edit'])->name('settings.edit');
     Route::put('settings', [SettingController::class, 'update'])->name('settings.update');
+    Route::put('settings/social-links', [SettingController::class, 'updateSocialLinks'])->name('settings.social-links.update');
 
     Route::resource('slides', SlideController::class)->only(['index', 'store', 'update', 'destroy']);
 
@@ -29,6 +31,10 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::patch('brands/{brand}/move-down', [BrandController::class, 'moveDown'])->name('brands.move-down');
 
     Route::resource('products', ProductController::class)->only(['index', 'create', 'store', 'edit', 'update', 'destroy']);
+
+    Route::get('sample-requests', [SampleRequestController::class, 'index'])->name('sample-requests.index');
+    Route::patch('sample-requests/{sampleRequest}/read', [SampleRequestController::class, 'markAsRead'])->name('sample-requests.read');
+    Route::delete('sample-requests/{sampleRequest}', [SampleRequestController::class, 'destroy'])->name('sample-requests.destroy');
 
     Route::post('products/{product}/images', [ProductImageController::class, 'store'])->name('products.images.store');
     Route::delete('products/{product}/images/{image}', [ProductImageController::class, 'destroy'])->name('products.images.destroy');

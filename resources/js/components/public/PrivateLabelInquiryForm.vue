@@ -9,16 +9,25 @@ import {
     Package,
     Users,
 } from '@lucide/vue';
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+import {
+    computed,
+    nextTick,
+    onBeforeUnmount,
+    onMounted,
+    ref,
+    watch,
+} from 'vue';
 import PrivateLabelInquiryController from '@/actions/App/Http/Controllers/PrivateLabelInquiryController';
 import CountryMarketInput from '@/components/public/CountryMarketInput.vue';
 import type { InquiryProduct, PackagingFormat } from '@/types';
 
-withDefaults(
+const props = withDefaults(
     defineProps<{
         markets: string[];
         formats: PackagingFormat[];
         products: InquiryProduct[];
+        initialIntent?: string | null;
+        sourcePage?: string | null;
         sectionId?: string;
         heading?: string;
         description?: string;
@@ -26,6 +35,7 @@ withDefaults(
     }>(),
     {
         sectionId: 'private-label-inquiry',
+        initialIntent: null,
         heading: 'Tell Us About Your Private Label Project',
         description:
             'Share your market, packaging needs and target quantity. Our export team will review and contact you.',
@@ -38,7 +48,20 @@ const mandala = "url('/images/mandala.png') center / contain no-repeat";
 const fieldClasses =
     'w-full border border-white/15 bg-white/5 px-4 py-3 text-sm text-white transition placeholder:text-[#8e97b0] focus:border-[#d4af37] focus:outline-none';
 
-const selectedIntent = ref('');
+const selectedIntent = ref(props.initialIntent ?? '');
+
+function selectIntent(intent: string): void {
+    selectedIntent.value = intent;
+}
+
+defineExpose({ selectIntent });
+
+watch(
+    () => props.initialIntent,
+    (intent) => {
+        selectedIntent.value = intent ?? '';
+    },
+);
 
 const inquiryIntents = [
     {
@@ -121,17 +144,15 @@ function focusIntentForm(element: Element): void {
     }
 
     window.requestAnimationFrame(() => {
-        const formTitle = intentStepContainer.value?.querySelector<HTMLElement>(
-            '[data-intent-form-title]',
-        );
+        const form = document.getElementById(`${props.sectionId}-form`);
 
-        if (!formTitle) {
+        if (!form) {
             return;
         }
 
         const targetTop = Math.max(
             0,
-            window.scrollY + formTitle.getBoundingClientRect().top - 112,
+            window.scrollY + form.getBoundingClientRect().top - 96,
         );
 
         if (Math.abs(window.scrollY - targetTop) > 12) {
@@ -181,12 +202,19 @@ onBeforeUnmount(() => {
                 </p>
 
                 <Form
+                    :id="`${sectionId}-form`"
                     v-bind="PrivateLabelInquiryController.store.form()"
                     reset-on-success
                     :options="{ preserveScroll: true }"
-                    class="mx-auto mt-10 grid max-w-2xl gap-5 sm:grid-cols-2"
+                    class="mx-auto mt-10 grid max-w-2xl scroll-mt-24 gap-5 sm:grid-cols-2"
                     v-slot="{ errors, processing, wasSuccessful, clearErrors }"
                 >
+                    <input
+                        v-if="sourcePage"
+                        type="hidden"
+                        name="source_page"
+                        :value="sourcePage"
+                    />
                     <div
                         v-if="wasSuccessful"
                         class="flex min-h-80 animate-in flex-col items-center justify-center border border-emerald-300/30 bg-emerald-400/10 px-6 py-10 text-center text-emerald-100 duration-500 fade-in-0 zoom-in-95 sm:col-span-2"
@@ -206,6 +234,134 @@ onBeforeUnmount(() => {
                             Thank you. Our team will contact you shortly.
                         </p>
                     </div>
+
+                    <nav
+                        v-if="!wasSuccessful"
+                        aria-label="Enquiry steps"
+                        class="sm:col-span-2"
+                    >
+                        <ol class="grid grid-cols-2 gap-2 sm:gap-3">
+                            <li>
+                                <button
+                                    type="button"
+                                    :disabled="!selectedIntent"
+                                    :aria-current="
+                                        selectedIntent ? undefined : 'step'
+                                    "
+                                    :class="[
+                                        'flex h-full w-full items-start gap-3 border p-3 text-left transition sm:p-4',
+                                        selectedIntent
+                                            ? 'cursor-pointer border-white/20 bg-white/[0.03] enabled:hover:border-[#d4af37] enabled:hover:bg-white/[0.06]'
+                                            : 'cursor-default border-[#d4af37] bg-[#d4af37]/10',
+                                    ]"
+                                    @click="
+                                        selectedIntent = '';
+                                        clearErrors();
+                                    "
+                                >
+                                    <CheckCircle2
+                                        v-if="selectedIntent"
+                                        aria-hidden="true"
+                                        class="size-7 shrink-0 text-[#d4af37]"
+                                    />
+                                    <span
+                                        v-else
+                                        aria-hidden="true"
+                                        class="flex size-7 shrink-0 items-center justify-center rounded-full bg-[#d4af37] text-xs font-bold text-[#0f1c3f]"
+                                    >
+                                        1
+                                    </span>
+                                    <span class="min-w-0 flex-1">
+                                        <span
+                                            class="block text-[10px] font-semibold tracking-[0.12em] text-[#9aa5c4] uppercase"
+                                        >
+                                            Step 1 of 2
+                                        </span>
+                                        <span
+                                            class="mt-0.5 block text-sm font-semibold text-white"
+                                        >
+                                            Choose enquiry
+                                        </span>
+                                        <span
+                                            v-if="selectedIntent"
+                                            class="mt-1 block text-xs leading-5 text-[#e3c474]"
+                                        >
+                                            {{ selectedIntentDetails?.title }}
+                                            <span
+                                                class="mt-1 inline-flex items-center gap-1 font-semibold text-white underline underline-offset-2"
+                                            >
+                                                <ArrowLeft
+                                                    aria-hidden="true"
+                                                    class="size-3"
+                                                />
+                                                Change enquiry type
+                                            </span>
+                                        </span>
+                                        <span
+                                            v-else
+                                            class="mt-1 block text-xs text-[#e3c474]"
+                                        >
+                                            Current step
+                                        </span>
+                                    </span>
+                                </button>
+                            </li>
+                            <li
+                                :aria-current="
+                                    selectedIntent ? 'step' : undefined
+                                "
+                                :class="[
+                                    'flex items-start gap-3 border p-3 sm:p-4',
+                                    selectedIntent
+                                        ? 'border-[#d4af37] bg-[#d4af37]/10'
+                                        : 'border-white/15 bg-white/[0.03]',
+                                ]"
+                            >
+                                <span
+                                    aria-hidden="true"
+                                    :class="[
+                                        'flex size-7 shrink-0 items-center justify-center rounded-full text-xs font-bold',
+                                        selectedIntent
+                                            ? 'bg-[#d4af37] text-[#0f1c3f]'
+                                            : 'border border-white/30 text-[#9aa5c4]',
+                                    ]"
+                                >
+                                    2
+                                </span>
+                                <span class="min-w-0">
+                                    <span
+                                        class="block text-[10px] font-semibold tracking-[0.12em] text-[#9aa5c4] uppercase"
+                                    >
+                                        Step 2 of 2
+                                    </span>
+                                    <span
+                                        :class="[
+                                            'mt-0.5 block text-sm font-semibold',
+                                            selectedIntent
+                                                ? 'text-white'
+                                                : 'text-[#9aa5c4]',
+                                        ]"
+                                    >
+                                        Your details
+                                    </span>
+                                    <span
+                                        :class="[
+                                            'mt-1 block text-xs',
+                                            selectedIntent
+                                                ? 'text-[#e3c474]'
+                                                : 'text-[#9aa5c4]',
+                                        ]"
+                                    >
+                                        {{
+                                            selectedIntent
+                                                ? 'Current step'
+                                                : 'Up next'
+                                        }}
+                                    </span>
+                                </span>
+                            </li>
+                        </ol>
+                    </nav>
 
                     <div
                         v-if="!wasSuccessful"
@@ -288,21 +444,7 @@ onBeforeUnmount(() => {
                                 data-intent-panel
                                 class="absolute inset-x-0 top-0 grid gap-4 sm:grid-cols-2"
                             >
-                                <div
-                                    data-intent-form-title
-                                    class="text-center sm:col-span-2"
-                                >
-                                    <button
-                                        type="button"
-                                        class="mx-auto mb-4 inline-flex cursor-pointer items-center gap-1.5 text-xs font-semibold tracking-[0.14em] text-[#d4af37] uppercase transition hover:text-white"
-                                        @click="
-                                            selectedIntent = '';
-                                            clearErrors();
-                                        "
-                                    >
-                                        <ArrowLeft class="size-3.5" />
-                                        Change enquiry
-                                    </button>
+                                <div class="text-center sm:col-span-2">
                                     <p
                                         class="text-xs font-semibold tracking-[0.2em] text-[#d4af37] uppercase"
                                     >

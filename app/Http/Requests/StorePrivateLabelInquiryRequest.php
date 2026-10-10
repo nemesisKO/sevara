@@ -35,6 +35,7 @@ class StorePrivateLabelInquiryRequest extends FormRequest
             'email' => ['required', 'email', 'max:255'],
             'phone' => ['nullable', 'string', 'max:50'],
             'intent' => ['required', 'string', Rule::in(PrivateLabelInquiry::INTENTS)],
+            'source_page' => ['nullable', 'string', 'max:255', 'regex:/^\/(?!\/)[^\r\n?#]*$/'],
             'company_name' => [Rule::requiredIf($isProjectInquiry), 'nullable', 'string', 'max:255'],
             'country' => [Rule::requiredIf($isProjectInquiry), 'nullable', 'string', Rule::in(PrivateLabelInquiry::MARKETS)],
             'product_format' => [Rule::requiredIf($isProjectInquiry), 'nullable', 'string', 'max:255'],

@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { Link } from '@inertiajs/vue3';
 import { ChevronLeft, ChevronRight, Package } from '@lucide/vue';
 import { computed, onBeforeUnmount, onMounted, ref, useTemplateRef } from 'vue';
 import LazyImage from '@/components/LazyImage.vue';
 import RevealOnScroll from '@/components/public/RevealOnScroll.vue';
+import { formats as packagingFormats } from '@/routes/private-label';
 import type { PackagingFormat } from '@/types';
 
 const { featuredFormats, otherFormats } = defineProps<{
@@ -72,7 +74,6 @@ onBeforeUnmount(() => {
 
 <template>
     <section
-        v-if="totalFormats > 0"
         class="bg-[#f7f3e8]/60 py-20"
         aria-labelledby="packaging-formats-heading"
     >
@@ -85,19 +86,27 @@ onBeforeUnmount(() => {
                     >
                         Choose Your Packaging Format
                     </h2>
-                    <div
-                        class="mt-4 flex flex-col items-center justify-center gap-3 sm:flex-row"
+                    <Link
+                        id="private-label-link"
+                        :href="packagingFormats()"
+                        class="group mx-auto mt-4 flex w-fit flex-col items-center justify-center gap-3 rounded-md px-4 py-2 transition hover:bg-white/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primeGold sm:flex-row"
                     >
                         <p class="text-primeBlue">
                             Flexible formats for retail, gifting, hospitality
                             and distribution.
                         </p>
                         <span
+                            v-if="totalFormats > 0"
                             class="rounded-full border border-primeGold/50 px-4 py-1 text-xs font-semibold tracking-[0.15em] text-primeGold uppercase"
                         >
-                            {{ totalFormats }} format options
+                            +{{ totalFormats }} format options
                         </span>
-                    </div>
+                        <span
+                            class="text-sm font-semibold text-primeGold group-hover:text-primeBlue"
+                        >
+                            View all formats &rarr;
+                        </span>
+                    </Link>
                 </div>
             </RevealOnScroll>
 
@@ -169,6 +178,10 @@ onBeforeUnmount(() => {
                     <ChevronRight class="size-5" />
                 </button>
             </div>
+
+            <p v-else class="mt-12 text-center text-sm text-primeBlue/70">
+                Packaging formats are coming soon.
+            </p>
 
             <div
                 v-if="pageCount > 1"

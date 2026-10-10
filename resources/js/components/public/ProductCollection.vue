@@ -131,10 +131,10 @@ onBeforeUnmount(() => {
                         </p>
 
                         <Link
-                            :href="contact()"
+                           :href="showProduct({ product: product.slug })"
                             class="mt-auto w-full bg-[#0f1c3f] px-6 py-3 text-xs font-semibold tracking-[0.15em] text-white uppercase transition hover:bg-[#0f1c3f]/90"
                         >
-                            Request Sample
+                            More Details
                         </Link>
                     </div>
                 </article>

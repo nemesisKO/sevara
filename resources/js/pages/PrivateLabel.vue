@@ -33,6 +33,8 @@ defineProps<{
     featuredFormats: PackagingFormat[];
     otherFormats: PackagingFormat[];
     markets: string[];
+    initialIntent: string | null;
+    sourcePage: string | null;
     products: InquiryProduct[];
 }>();
 
@@ -88,7 +90,7 @@ function scrollToInquiry(): void {
                     Private Label
                 </p>
                 <h1
-                    class="mt-3 font-serif text-5xl leading-tight text-primeGold sm:text-6xl "
+                    class="mt-3 font-serif text-5xl leading-tight text-primeGold sm:text-6xl"
                 >
                     Chocolate Dates
                 </h1>
@@ -182,6 +184,8 @@ function scrollToInquiry(): void {
     <PrivateLabelInquiryForm
         :markets="markets"
         :formats="[...featuredFormats, ...otherFormats]"
+        :initial-intent="initialIntent"
+        :source-page="sourcePage"
         :products="products"
     />
 
@@ -304,7 +308,7 @@ function scrollToInquiry(): void {
         </div>
     </section>
 
-    <section class="relative overflow-hidden bg-primeBlue py-16">
+    <section class="relative overflow-hidden bg-primeBlue/95 py-16">
         <div class="pointer-events-none absolute inset-0 overflow-hidden">
             <div
                 class="absolute -top-20 -left-32 size-96 -rotate-12 opacity-[0.07]"

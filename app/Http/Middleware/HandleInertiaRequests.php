@@ -37,6 +37,8 @@ class HandleInertiaRequests extends Middleware
      */
     public function share(Request $request): array
     {
+        $setting = Setting::current();
+
         return [
             ...parent::share($request),
             'name' => config('app.name'),
@@ -44,8 +46,9 @@ class HandleInertiaRequests extends Middleware
                 'user' => $request->user(),
             ],
             'settings' => [
-                'catalogue_url' => Setting::current()->catalogue_url,
-                'logo_url' => Setting::current()->logo_url,
+                'catalogue_url' => $setting->catalogue_url,
+                'logo_url' => $setting->logo_url,
+                'social_links' => $setting->social_links ?? [],
             ],
             'seo' => [
                 'url' => config('seo.url'),

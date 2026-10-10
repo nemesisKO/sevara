@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\UpdateSettingRequest;
+use App\Http\Requests\Admin\UpdateSocialLinksRequest;
 use App\Models\Setting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
@@ -43,6 +44,17 @@ class SettingController extends Controller
         $setting->update($updates);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Settings updated.']);
+
+        return to_route('admin.settings.edit');
+    }
+
+    public function updateSocialLinks(UpdateSocialLinksRequest $request): RedirectResponse
+    {
+        Setting::current()->update([
+            'social_links' => $request->validated('social_links'),
+        ]);
+
+        Inertia::flash('toast', ['type' => 'success', 'message' => 'Social links updated.']);
 
         return to_route('admin.settings.edit');
     }

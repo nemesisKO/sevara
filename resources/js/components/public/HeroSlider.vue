@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ChevronLeft, ChevronRight } from '@lucide/vue';
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { slideTextStyle } from '@/lib/slideTextStyle';
 import type { Slide } from '@/types';
 
 const { slides } = defineProps<{
@@ -85,7 +86,7 @@ onBeforeUnmount(() => {
 <template>
     <section
         v-if="slides.length > 0"
-        class="relative aspect-[16/9] w-full overflow-hidden bg-[#0f1c3f] sm:aspect-[21/9]"
+        class="[container-type:inline-size] relative aspect-[4/5] w-full overflow-hidden bg-[#0f1c3f] sm:aspect-[21/9]"
         @mouseenter="stopAutoplay"
         @mouseleave="startAutoplay"
     >
@@ -103,12 +104,32 @@ onBeforeUnmount(() => {
                     : index !== activeIndex && 'z-0 opacity-0',
             ]"
         >
-            <img
-                :src="slide.image_url"
-                alt=""
-                class="h-full w-full object-cover transition-transform duration-2400 ease-out motion-reduce:transition-none"
-                :class="index === activeIndex ? 'scale-100' : 'scale-105'"
-            />
+            <picture class="block h-full w-full">
+                <source
+                    :srcset="slide.mobile_image_url"
+                    media="(max-width: 639px)"
+                />
+                <img
+                    :src="slide.image_url"
+                    alt=""
+                    class="h-full w-full object-cover transition-transform duration-2400 ease-out motion-reduce:transition-none"
+                    :class="index === activeIndex ? 'scale-100' : 'scale-105'"
+                />
+            </picture>
+            <h2
+                v-if="slide.title"
+                class="absolute z-10 max-w-[76%] overflow-hidden leading-tight break-words whitespace-pre-line drop-shadow-lg"
+                :style="slideTextStyle(slide.title_style, 'title')"
+            >
+                {{ slide.title }}
+            </h2>
+            <p
+                v-if="slide.description"
+                class="absolute z-10 max-w-[76%] overflow-hidden leading-snug break-words whitespace-pre-line drop-shadow-lg"
+                :style="slideTextStyle(slide.description_style, 'description')"
+            >
+                {{ slide.description }}
+            </p>
         </a>
 
         <div

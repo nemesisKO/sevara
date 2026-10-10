@@ -36,6 +36,7 @@ export type PrivateLabelInquiry = {
     email: string;
     phone: string | null;
     intent: string | null;
+    source_page: string | null;
     country: string;
     product_format: string;
     product_name: string | null;

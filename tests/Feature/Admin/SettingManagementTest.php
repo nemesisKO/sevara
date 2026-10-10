@@ -22,13 +22,71 @@ test('regular users cannot access the admin settings page', function () {
 
 test('admins can view the settings page', function () {
     $admin = User::factory()->create(['role' => UserRole::Admin]);
+    Setting::current()->update(['social_links' => [
+        ['label' => 'Instagram', 'icon' => 'instagram', 'url' => 'https://instagram.com/sevara'],
+    ]]);
 
     $response = $this->actingAs($admin)->get(route('admin.settings.edit'));
 
     $response->assertOk()->assertInertia(fn ($page) => $page
         ->component('admin/Settings/Index')
+        ->where('setting.social_links.0.icon', 'instagram')
         ->missing('packagingFormats')
     );
+});
+
+test('admins can add edit reorder and remove footer social links', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+    $instagram = ['label' => 'Instagram', 'icon' => 'instagram', 'url' => 'https://instagram.com/sevara'];
+    $linkedin = ['label' => 'LinkedIn', 'icon' => 'linkedin', 'url' => 'https://linkedin.com/company/sevara'];
+
+    $this->actingAs($admin)->put(route('admin.settings.social-links.update'), [
+        'social_links' => [$instagram, $linkedin],
+    ])->assertRedirect(route('admin.settings.edit'));
+
+    expect(Setting::current()->fresh()->social_links)->toBe([$instagram, $linkedin]);
+
+    $this->actingAs($admin)->put(route('admin.settings.social-links.update'), [
+        'social_links' => [
+            ['label' => 'Our YouTube', 'icon' => 'youtube', 'url' => 'https://youtube.com/@sevara'],
+            $instagram,
+        ],
+    ])->assertRedirect(route('admin.settings.edit'));
+
+    expect(Setting::current()->fresh()->social_links)->toBe([
+        ['label' => 'Our YouTube', 'icon' => 'youtube', 'url' => 'https://youtube.com/@sevara'],
+        $instagram,
+    ]);
+
+    $this->actingAs($admin)->put(route('admin.settings.social-links.update'), [
+        'social_links' => [],
+    ])->assertRedirect(route('admin.settings.edit'));
+
+    expect(Setting::current()->fresh()->social_links)->toBe([]);
+});
+
+test('social links require a supported icon and an http or https URL', function () {
+    $admin = User::factory()->create(['role' => UserRole::Admin]);
+
+    $this->actingAs($admin)->put(route('admin.settings.social-links.update'), [
+        'social_links' => [
+            ['label' => 'Unsafe', 'icon' => 'custom-svg', 'url' => 'javascript:alert(1)'],
+        ],
+    ])->assertSessionHasErrors(['social_links.0.icon', 'social_links.0.url']);
+
+    expect(Setting::current()->fresh()->social_links)->toBeNull();
+});
+
+test('regular users cannot update footer social links', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->put(route('admin.settings.social-links.update'), [
+        'social_links' => [
+            ['label' => 'Instagram', 'icon' => 'instagram', 'url' => 'https://instagram.com/sevara'],
+        ],
+    ])->assertForbidden();
+
+    expect(Setting::current()->fresh()->social_links)->toBeNull();
 });
 
 test('admins can upload a website logo', function () {
@@ -125,11 +183,15 @@ test('the logo url is shared with every page', function () {
     Storage::fake('public');
     Setting::current()->update([
         'logo_path' => UploadedFile::fake()->image('logo.png')->store('branding', 'public'),
+        'social_links' => [
+            ['label' => 'Instagram', 'icon' => 'instagram', 'url' => 'https://instagram.com/sevara'],
+        ],
     ]);
 
     $response = $this->get('/');
 
     $response->assertInertia(fn ($page) => $page
         ->where('settings.logo_url', Setting::current()->logo_url)
-        ->where('settings.catalogue_url', Setting::current()->catalogue_url));
+        ->where('settings.catalogue_url', Setting::current()->catalogue_url)
+        ->where('settings.social_links.0.url', 'https://instagram.com/sevara'));
 });

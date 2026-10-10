@@ -23,6 +23,7 @@ import { index as productsIndex } from '@/routes/products';
 const mandala = "url('/images/mandala.png') center / contain no-repeat";
 
 const page = usePage();
+const partnerWithSevaraHref = `${privateLabel.url({ query: { intent: 'general_export_enquiry' } })}#private-label-inquiry-form`;
 
 const seo = computed(() => page.props.seo);
 
@@ -149,7 +150,7 @@ const reliabilityPoints = [
         </div>
 
         <div
-            class="relative mx-auto max-w-7xl px-6 py-14 lg:px-10 lg:py-32 xl:py-40"
+            class="relative mx-auto max-w-7xl px-6 py-10 lg:px-10 lg:py-20 xl:py-24"
         >
             <div class="max-w-lg">
                 <p
@@ -192,9 +193,9 @@ const reliabilityPoints = [
         </div>
     </section>
 
-    <section class="bg-[#fdfbf6] py-12 lg:py-16">
+    <section class="bg-[#fdfbf6] py-10 lg:py-12">
         <div
-            class="mx-auto grid max-w-6xl items-center gap-12 px-6 lg:grid-cols-2 lg:gap-16 lg:px-10"
+            class="mx-auto grid max-w-7xl items-center gap-12 px-6 lg:grid-cols-2 lg:gap-16 lg:px-10"
         >
             <RevealOnScroll>
                 <p
@@ -224,7 +225,7 @@ const reliabilityPoints = [
 
             <RevealOnScroll :delay="150">
                 <div
-                    class="aspect-3/2 overflow-hidden rounded-sm border border-[#e7e1d4]"
+                    class="mx-auto aspect-3/2 w-[85%] max-w-md overflow-hidden rounded-sm border border-[#e7e1d4] sm:w-full"
                 >
                     <LazyImage
                         src="/images/philosophy-chocolate-date.webp"
@@ -236,9 +237,9 @@ const reliabilityPoints = [
         </div>
     </section>
 
-    <section class="bg-[#f7f3e8]/70 py-12 lg:py-16">
+    <section class="bg-[#f7f3e8]/70 py-10 lg:py-12">
         <div
-            class="mx-auto grid max-w-6xl gap-12 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-14 lg:px-10"
+            class="mx-auto grid max-w-7xl gap-12 px-6 lg:grid-cols-[0.85fr_1.15fr] lg:items-center lg:gap-14 lg:px-10"
         >
             <RevealOnScroll>
                 <p
@@ -299,7 +300,7 @@ const reliabilityPoints = [
         </div>
     </section>
 
-    <section class="bg-[#fdfbf6] py-20 ">
+    <section class="bg-[#fdfbf6] py-12 lg:py-16">
         <div class="mx-auto max-w-6xl px-6 lg:px-10">
             <RevealOnScroll>
                 <p
@@ -350,7 +351,7 @@ const reliabilityPoints = [
     </section>
 
     <section
-        class="relative overflow-hidden bg-primeBlue py-20 lg:py-28 xl:py-36"
+        class="relative overflow-hidden bg-primeBlue py-12 lg:py-16 xl:py-20"
     >
         <div class="pointer-events-none absolute inset-0 overflow-hidden">
             <div
@@ -363,7 +364,7 @@ const reliabilityPoints = [
             />
         </div>
 
-        <div class="relative z-10 w-full px-6 lg:pl-16 xl:pl-24 2xl:pl-32">
+        <div class="relative z-10 w-full px-6 lg:pl-32 xl:pl-48 2xl:pl-64">
             <RevealOnScroll>
                 <div class="lg:max-w-lg">
                     <h2
@@ -381,7 +382,7 @@ const reliabilityPoints = [
                     </div>
 
                     <Link
-                        :href="privateLabel()"
+                        :href="partnerWithSevaraHref"
                         class="mt-8 inline-flex items-center gap-2 border border-[#d4af37]/60 px-7 py-3.5 text-xs font-semibold tracking-[0.15em] text-[#e9d9ae] uppercase transition hover:bg-[#d4af37]/10"
                     >
                         Partner with Sevara
@@ -405,7 +406,7 @@ const reliabilityPoints = [
         </div>
     </section>
 
-    <section class="bg-[#fdfbf6] py-20">
+    <section class="bg-[#fdfbf6] py-12 lg:py-16">
         <div class="mx-auto max-w-6xl px-6 lg:px-10">
             <RevealOnScroll>
                 <p
@@ -443,10 +444,8 @@ const reliabilityPoints = [
     </section>
 
     <!-- #f9f5ec is the previous bg-[#f7f3e8]/70 flattened onto the page, so the photo can fade into it. -->
-    <section
-        class="relative overflow-hidden bg-[#f9f5ec] py-12 lg:py-12 xl:py-14"
-    >
-        <div class="relative z-10 w-full px-6 lg:pl-16 xl:pl-24 2xl:pl-32">
+    <section class="relative overflow-hidden bg-[#f9f5ec] py-10 lg:py-12">
+        <div class="relative z-10 mx-auto max-w-7xl px-6 lg:px-10">
             <RevealOnScroll>
                 <div class="lg:max-w-lg">
                     <p
@@ -499,7 +498,7 @@ const reliabilityPoints = [
         </div>
     </section>
 
-    <section class="relative overflow-hidden bg-[#fdfbf6] py-20 lg:py-24">
+    <section class="relative overflow-hidden bg-[#fdfbf6] py-12 lg:py-16">
         <div
             class="pointer-events-none absolute -top-20 -left-40 size-120 -rotate-12 opacity-[0.05] grayscale"
             :style="{ background: mandala }"
@@ -526,7 +525,7 @@ const reliabilityPoints = [
                         </div>
 
                         <p
-                            class="mt-7 text-center leading-relaxed text-[#6b6558] font-serif"
+                            class="mt-7 text-center font-serif leading-relaxed text-[#6b6558]"
                         >
                             We believe a premium product is built through taste,
                             packaging, consistency and trust. Our role is to
@@ -546,7 +545,7 @@ const reliabilityPoints = [
         </div>
     </section>
 
-    <section class="relative mb-16 overflow-hidden bg-[#fdfbf6] py-16">
+    <section class="relative mb-8 overflow-hidden bg-[#fdfbf6] py-10 lg:py-12">
         <div class="pointer-events-none absolute inset-0 overflow-hidden">
             <div
                 class="absolute -top-20 -left-32 size-96 -rotate-12 opacity-[0.04]"

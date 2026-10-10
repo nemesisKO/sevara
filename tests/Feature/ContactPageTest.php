@@ -6,6 +6,10 @@ use App\Models\Product;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 
+beforeEach(function (): void {
+    config()->set('services.n8n.auth_header_value', null);
+});
+
 test('the contact page renders with the inquiry form options', function () {
     PackagingFormat::factory()->create(['name' => '250g Retail Pouch', 'order' => 2]);
     PackagingFormat::factory()->other()->create(['name' => 'Window Box', 'order' => 5]);
@@ -28,6 +32,17 @@ test('the contact page renders with the inquiry form options', function () {
         ->where('markets.5', 'Bahrain')
         ->where('markets.6', 'Iran')
         ->where('markets.9', 'Pakistan')
+        ->where('initialIntent', null)
+    );
+});
+
+test('the home export contact link opens the general export enquiry on contact', function () {
+    $response = $this->get(route('contact', ['intent' => 'general_export_enquiry']));
+
+    $response->assertOk();
+    $response->assertInertia(fn ($page) => $page
+        ->component('Contact')
+        ->where('initialIntent', 'general_export_enquiry')
     );
 });
 
@@ -60,7 +75,7 @@ test('a visitor can send an inquiry from the contact page', function () {
 
     Http::assertSent(function (Request $request) use ($inquiry): bool {
         return $request->url() === 'https://n8n.test/webhook/sevara-lead'
-            && $request->header('X-Api-Key')[0] === 'test-api-key'
+            && $request->hasHeader('X-Sevara-Webhook')
             && $request->data() === [
                 'submission_id' => $inquiry->id,
                 'form_type' => 'distribution_partnership',
@@ -77,11 +92,27 @@ test('a visitor can send an inquiry from the contact page', function () {
     });
 });
 
+test('a general export enquiry from the contact page only needs contact details', function () {
+    $response = $this->from(route('contact'))->post(route('private-label.inquiries.store'), [
+        'full_name' => 'Amina Yusuf',
+        'email' => 'amina@example.com',
+        'intent' => 'general_export_enquiry',
+        'message' => 'We would like to discuss an export opportunity.',
+    ]);
+
+    $response->assertRedirect(route('contact'));
+
+    expect(PrivateLabelInquiry::sole())
+        ->intent->toBe('general_export_enquiry')
+        ->country->toBeNull()
+        ->product_name->toBeNull();
+});
+
 test('an invalid inquiry from the contact page returns to the contact page', function () {
     $response = $this->from(route('contact'))->post(route('private-label.inquiries.store'), []);
 
     $response->assertRedirect(route('contact'));
-    $response->assertSessionHasErrors(['full_name', 'email', 'intent', 'country']);
+    $response->assertSessionHasErrors(['full_name', 'email', 'intent', 'product_name']);
     expect(PrivateLabelInquiry::count())->toBe(0);
 });
 

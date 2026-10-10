@@ -18,6 +18,7 @@ createInertiaApp({
             case name === 'Contact':
             case name === 'BrandNetwork':
             case name === 'PrivateLabel':
+            case name === 'PackagingFormats':
             case name === 'Product':
             case name === 'Products':
             case name.startsWith('Blog/'):

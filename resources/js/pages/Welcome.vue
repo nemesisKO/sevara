@@ -61,8 +61,8 @@ const structuredData = computed(() => ({
     <HeroSlider :slides="slides" />
     <WhySevara />
     <ProductCollection :products="products" />
-    <PrivateLabelBanner />
+    <PrivateLabelBanner id="p-label-banner" />
     <OurJourney />
-     <OurBrandNetwork :brands="brands" />
+    <OurBrandNetwork :brands="brands" />
     <BlogSection :blogs="blogs" />
 </template>

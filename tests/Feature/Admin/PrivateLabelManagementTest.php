@@ -291,6 +291,7 @@ test('admins can read the inquiries sent from the public form', function () {
     PrivateLabelInquiry::factory()->create([
         'full_name' => 'Amina Yusuf',
         'email' => 'amina@example.com',
+        'source_page' => '/about',
     ]);
 
     $response = $this->actingAs($admin)->get(route('admin.private-label.inquiries.index'));
@@ -301,6 +302,7 @@ test('admins can read the inquiries sent from the public form', function () {
         ->has('inquiries', 1)
         ->where('inquiries.0.full_name', 'Amina Yusuf')
         ->where('inquiries.0.email', 'amina@example.com')
+        ->where('inquiries.0.source_page', '/about')
     );
 });
 

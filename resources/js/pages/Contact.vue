@@ -9,19 +9,19 @@ import {
     PenTool,
     Phone,
 } from '@lucide/vue';
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import JsonLd from '@/components/JsonLd.vue';
 import LazyImage from '@/components/LazyImage.vue';
 import PrivateLabelInquiryForm from '@/components/public/PrivateLabelInquiryForm.vue';
 import RevealOnScroll from '@/components/public/RevealOnScroll.vue';
 import { privateLabel } from '@/routes';
-import { request as requestCatalog } from '@/routes/catalog';
 import type { InquiryProduct, PackagingFormat } from '@/types';
 
 defineProps<{
     markets: string[];
     formats: PackagingFormat[];
     products: InquiryProduct[];
+    initialIntent: string | null;
 }>();
 
 const mandala = "url('/images/mandala.png') center / contain no-repeat";
@@ -118,10 +118,19 @@ const nextSteps = [
     },
 ];
 
+const inquiryForm = ref<InstanceType<typeof PrivateLabelInquiryForm> | null>(
+    null,
+);
+
 function scrollToInquiry(): void {
+    inquiryForm.value?.selectIntent('general_export_enquiry');
     document
-        .getElementById('contact-inquiry')
+        .getElementById('contact-inquiry-form')
         ?.scrollIntoView({ behavior: 'smooth' });
+}
+
+function openCatalogueRequestModal(): void {
+    window.dispatchEvent(new Event('open-catalogue-request-modal'));
 }
 </script>
 
@@ -256,9 +265,11 @@ function scrollToInquiry(): void {
     </section>
 
     <PrivateLabelInquiryForm
+        ref="inquiryForm"
         :markets="markets"
         :formats="formats"
         :products="products"
+        :initial-intent="initialIntent"
         section-id="contact-inquiry"
         heading="Tell Us About Your Project"
         description="Share your market, packaging needs and target quantity. Our export team will review and contact you."
@@ -335,7 +346,7 @@ function scrollToInquiry(): void {
         </div>
     </section>
 
-    <section class="relative overflow-hidden bg-[#0f1c3f] py-16">
+    <section class="relative overflow-hidden bg-[#0f1c3f]/95 py-16">
         <div class="pointer-events-none absolute inset-0 overflow-hidden">
             <div
                 class="absolute -top-20 -left-32 size-96 -rotate-12 opacity-[0.07]"
@@ -355,13 +366,14 @@ function scrollToInquiry(): void {
             </h2>
 
             <div class="flex flex-wrap justify-center gap-4">
-                <Link
-                    :href="requestCatalog()"
-                    class="inline-flex items-center gap-2 border border-[#d4af37]/60 bg-[#d4af37]/10 px-6 py-3.5 text-xs font-semibold tracking-[0.15em] text-[#e9d9ae] uppercase transition hover:bg-[#d4af37]/20"
+                <button
+                    type="button"
+                    class="inline-flex cursor-pointer items-center gap-2 border border-[#d4af37]/60 bg-[#d4af37]/10 px-6 py-3.5 text-xs font-semibold tracking-[0.15em] text-[#e9d9ae] uppercase transition hover:bg-[#d4af37]/20"
+                    @click="openCatalogueRequestModal"
                 >
                     <BookOpen class="size-4" />
                     Request Catalog
-                </Link>
+                </button>
                 <Link
                     :href="privateLabel()"
                     class="inline-flex items-center gap-2 border border-[#d4af37]/60 px-6 py-3.5 text-xs font-semibold tracking-[0.15em] text-[#e9d9ae] uppercase transition hover:bg-[#d4af37]/10"

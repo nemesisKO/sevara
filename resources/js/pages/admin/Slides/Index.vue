@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { Form, Head } from '@inertiajs/vue3';
 import { Trash2 } from '@lucide/vue';
+import { ref } from 'vue';
 import SlideController from '@/actions/App/Http/Controllers/Admin/SlideController';
+import SlideAppearanceFields from '@/components/admin/SlideAppearanceFields.vue';
 import Heading from '@/components/Heading.vue';
 import InputError from '@/components/InputError.vue';
-import LazyImage from '@/components/LazyImage.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -26,6 +27,8 @@ defineOptions({
     },
 });
 
+const createFormKey = ref(0);
+
 function confirmDelete(event: MouseEvent): void {
     if (!confirm('Delete this slide?')) {
         event.preventDefault();
@@ -40,28 +43,22 @@ function confirmDelete(event: MouseEvent): void {
         <Heading
             variant="small"
             title="Slider"
-            description="Add, edit, or remove homepage hero slides and their call-to-action buttons"
+            description="Customize homepage images, text, and call-to-action buttons."
         />
 
         <Form
             :options="{ preserveScroll: true }"
             v-bind="SlideController.store.form()"
             reset-on-success
-            class="flex max-w-2xl flex-col gap-5 rounded-xl border bg-card p-6"
+            class="flex max-w-4xl flex-col gap-6 rounded-xl border bg-card p-6"
             v-slot="{ errors, processing }"
+            @success="createFormKey++"
         >
-            <div class="grid gap-2">
-                <Label for="image">Image</Label>
-                <input
-                    id="image"
-                    type="file"
-                    name="image"
-                    accept="image/*"
-                    required
-                    class="h-10 w-full rounded-md border border-input bg-transparent text-sm file:mr-3 file:h-10 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground"
-                />
-                <InputError :message="errors.image" />
-            </div>
+            <SlideAppearanceFields
+                :key="createFormKey"
+                id-prefix="new-slide"
+                :errors="errors"
+            />
 
             <div class="grid gap-2">
                 <Label for="link">Slide link</Label>
@@ -125,24 +122,24 @@ function confirmDelete(event: MouseEvent): void {
             No slides yet. Add one above to populate the homepage slider.
         </div>
 
-        <div v-else class="grid gap-5 sm:grid-cols-2">
+        <div v-else class="grid max-w-4xl gap-5">
             <div
                 v-for="slide in slides"
                 :key="slide.id"
                 class="overflow-hidden rounded-xl border bg-card"
             >
-                <LazyImage
-                    :src="slide.image_url"
-                    alt=""
-                    class="aspect-video w-full object-cover"
-                />
-                <div class="space-y-4 p-4">
+                <div class="space-y-4 p-6">
                     <Form
                         :options="{ preserveScroll: true }"
                         v-bind="SlideController.update.form(slide.id)"
                         v-slot="{ errors, processing }"
-                        class="grid gap-3"
+                        class="grid gap-5"
                     >
+                        <SlideAppearanceFields
+                            :slide="slide"
+                            :errors="errors"
+                            :id-prefix="`slide-${slide.id}`"
+                        />
                         <div class="grid gap-1.5">
                             <Label :for="`link-${slide.id}`">Slide link</Label>
                             <Input
@@ -216,7 +213,7 @@ function confirmDelete(event: MouseEvent): void {
                             </div>
                         </div>
                         <Button type="submit" :disabled="processing"
-                            >Save buttons</Button
+                            >Save slide</Button
                         >
                     </Form>
                     <div class="flex items-center justify-between gap-2">

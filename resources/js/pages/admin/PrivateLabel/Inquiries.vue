@@ -150,6 +150,16 @@ function formatIntent(intent: string | null): string {
                             {{ formatIntent(inquiry.intent) }}
                         </dd>
                     </div>
+                    <div>
+                        <dt
+                            class="text-xs font-medium tracking-wide text-neutral-500 uppercase"
+                        >
+                            Arrived from
+                        </dt>
+                        <dd class="mt-1 text-sm break-all text-neutral-900">
+                            {{ inquiry.source_page ?? 'Not recorded' }}
+                        </dd>
+                    </div>
                     <div v-if="inquiry.company_name">
                         <dt
                             class="text-xs font-medium tracking-wide text-neutral-500 uppercase"

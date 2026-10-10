@@ -27,7 +27,7 @@ class PrivateLabelSeeder extends Seeder
             ['Brief', 'Share your concept, target market and requirements.'],
             ['Sample', 'We develop samples and finalize flavors and packaging.'],
             ['Packaging', 'Custom packaging designed to represent your brand.'],
-            ['Production & Export', 'We produce, pack and export to your market with care.'],
+            ['Production & Export', 'We cordinate production, pack and export to your market with care.'],
         ]);
 
         $this->seedItems(PrivateLabelSection::Feature, [

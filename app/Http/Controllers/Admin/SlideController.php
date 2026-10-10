@@ -23,8 +23,9 @@ class SlideController extends Controller
     public function store(StoreSlideRequest $request): RedirectResponse
     {
         Slide::create([
+            ...$request->safe()->except(['image', 'mobile_image']),
             'image_path' => $request->file('image')->store('slides', 'public'),
-            ...$request->safe()->except('image'),
+            'mobile_image_path' => $request->file('mobile_image')?->store('slides', 'public'),
         ]);
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Slide added.']);
@@ -34,7 +35,27 @@ class SlideController extends Controller
 
     public function update(UpdateSlideRequest $request, Slide $slide): RedirectResponse
     {
-        $slide->update($request->validated());
+        $data = $request->safe()->except(['image', 'mobile_image']);
+
+        if ($request->hasFile('image')) {
+            $oldImagePath = $slide->image_path;
+            $data['image_path'] = $request->file('image')->store('slides', 'public');
+        }
+
+        if ($request->hasFile('mobile_image')) {
+            $oldMobileImagePath = $slide->mobile_image_path;
+            $data['mobile_image_path'] = $request->file('mobile_image')->store('slides', 'public');
+        }
+
+        $slide->update($data);
+
+        if (isset($oldImagePath)) {
+            Storage::disk('public')->delete($oldImagePath);
+        }
+
+        if (isset($oldMobileImagePath)) {
+            Storage::disk('public')->delete($oldMobileImagePath);
+        }
 
         Inertia::flash('toast', ['type' => 'success', 'message' => 'Slide updated.']);
 
@@ -44,6 +65,10 @@ class SlideController extends Controller
     public function destroy(Slide $slide): RedirectResponse
     {
         Storage::disk('public')->delete($slide->image_path);
+
+        if ($slide->mobile_image_path) {
+            Storage::disk('public')->delete($slide->mobile_image_path);
+        }
 
         $slide->delete();
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\SampleRequest;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -29,6 +30,8 @@ class ProductController extends Controller
 
         return Inertia::render('Product', [
             'product' => $product->load(['images', 'specifications', 'experienceItems']),
+            'sampleVolumes' => SampleRequest::VOLUMES,
+            'shippingTerms' => SampleRequest::SHIPPING_TERMS,
             'otherProducts' => $otherProducts->isNotEmpty()
                 ? $otherProducts
                 : Product::with([

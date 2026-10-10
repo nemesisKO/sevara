@@ -5,7 +5,8 @@ use App\Models\ProductImage;
 use App\Models\Slide;
 
 test('the home page displays slides', function () {
-    Slide::factory()->count(2)->create();
+    $slide = Slide::factory()->create(['title' => 'A fresh headline']);
+    Slide::factory()->create();
 
     $response = $this->get(route('home'));
 
@@ -13,6 +14,8 @@ test('the home page displays slides', function () {
     $response->assertInertia(fn ($page) => $page
         ->component('Welcome')
         ->has('slides', 2)
+        ->where('slides.0.title', 'A fresh headline')
+        ->where('slides.0.mobile_image_url', '/storage/'.$slide->image_path)
     );
 });
 

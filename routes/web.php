@@ -9,16 +9,21 @@ use App\Http\Controllers\NewsletterSubscriptionController;
 use App\Http\Controllers\PrivateLabelController;
 use App\Http\Controllers\PrivateLabelInquiryController;
 use App\Http\Controllers\ProductController;
+use App\Http\Controllers\SampleRequestController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('brand-network', [BrandNetworkController::class, 'index'])->name('brand-network');
 Route::get('products', [ProductController::class, 'index'])->name('products.index');
 Route::get('products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
+Route::post('products/{product:slug}/sample-requests', SampleRequestController::class)
+    ->middleware('throttle:5,1')
+    ->name('products.sample-requests.store');
 Route::get('blog', [BlogController::class, 'index'])->name('blog.index');
 Route::get('blog/{blog:slug}', [BlogController::class, 'show'])->name('blog.show');
 
 Route::get('private-label', [PrivateLabelController::class, 'index'])->name('private-label');
+Route::get('private-label/formats', [PrivateLabelController::class, 'formats'])->name('private-label.formats');
 Route::post('private-label/inquiries', [PrivateLabelInquiryController::class, 'store'])->name('private-label.inquiries.store');
 
 Route::inertia('about', 'About')->name('about');

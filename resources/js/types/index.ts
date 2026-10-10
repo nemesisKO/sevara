@@ -5,6 +5,7 @@ export * from './navigation';
 export * from './newsletter';
 export * from './private-label';
 export * from './product';
+export * from './sample-request';
 export * from './setting';
 export * from './slide';
 export * from './ui';

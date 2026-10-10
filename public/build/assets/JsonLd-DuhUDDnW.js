@@ -1,1 +1,0 @@
-import{_t as e,ot as t,q as n,r}from"./dist-DFf6bLdG.js";var i=t({name:`JsonLd`,props:{data:{type:Object,required:!0},headKey:{type:String,default:`json-ld`}},setup(t){let i=n(()=>JSON.stringify(t.data).replace(/</g,`\\u003c`));return()=>e(r,null,{default:()=>[e(`script`,{type:`application/ld+json`,"head-key":t.headKey},i.value)]})}});export{i as t};
