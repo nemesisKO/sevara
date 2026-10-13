@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Form, Head, Link } from '@inertiajs/vue3';
-import { MailOpen, Trash2 } from '@lucide/vue';
+import { Copy, MailOpen, Trash2 } from '@lucide/vue';
+import { ref } from 'vue';
 import PrivateLabelInquiryController from '@/actions/App/Http/Controllers/Admin/PrivateLabelInquiryController';
 import Heading from '@/components/Heading.vue';
 import { Button, buttonVariants } from '@/components/ui/button';
@@ -11,6 +12,23 @@ import type { PrivateLabelInquiry } from '@/types';
 defineProps<{
     inquiries: PrivateLabelInquiry[];
 }>();
+
+const copiedInquiryId = ref<number | null>(null);
+const copyErrorInquiryId = ref<number | null>(null);
+
+async function copyProjectLink(inquiry: PrivateLabelInquiry): Promise<void> {
+    if (!inquiry.project_url) {
+        return;
+    }
+
+    try {
+        await navigator.clipboard.writeText(inquiry.project_url);
+        copiedInquiryId.value = inquiry.id;
+        copyErrorInquiryId.value = null;
+    } catch {
+        copyErrorInquiryId.value = inquiry.id;
+    }
+}
 
 defineOptions({
     layout: {
@@ -135,6 +153,74 @@ function formatIntent(intent: string | null): string {
                             </Button>
                         </Form>
                     </div>
+                </div>
+
+                <div
+                    v-if="inquiry.intent === 'private_label'"
+                    class="mt-5 border-t border-neutral-200 pt-5"
+                >
+                    <p
+                        v-if="inquiry.project_exists"
+                        class="text-sm font-medium text-green-700"
+                    >
+                        Project form completed
+                    </p>
+                    <template v-else-if="inquiry.project_url">
+                        <label
+                            class="block text-xs font-medium text-neutral-600"
+                            :for="`project-link-${inquiry.id}`"
+                        >
+                            Personal project form link
+                        </label>
+                        <div class="mt-2 flex flex-wrap gap-2">
+                            <input
+                                :id="`project-link-${inquiry.id}`"
+                                :value="inquiry.project_url"
+                                readonly
+                                class="min-w-0 flex-1 rounded-md border border-neutral-300 px-3 py-2 text-sm"
+                                @focus="
+                                    ($event.target as HTMLInputElement).select()
+                                "
+                            />
+                            <Button
+                                type="button"
+                                variant="outline"
+                                size="sm"
+                                @click="copyProjectLink(inquiry)"
+                            >
+                                <Copy />
+                                {{
+                                    copiedInquiryId === inquiry.id
+                                        ? 'Copied'
+                                        : 'Copy link'
+                                }}
+                            </Button>
+                        </div>
+                        <p
+                            v-if="copyErrorInquiryId === inquiry.id"
+                            class="mt-2 text-xs text-neutral-600"
+                        >
+                            Select the link above to copy it manually.
+                        </p>
+                    </template>
+                    <Form
+                        v-else
+                        v-bind="
+                            PrivateLabelInquiryController.createProjectLink.form(
+                                inquiry.id,
+                            )
+                        "
+                        v-slot="{ processing }"
+                    >
+                        <Button
+                            type="submit"
+                            variant="outline"
+                            size="sm"
+                            :disabled="processing"
+                        >
+                            Generate personal form link
+                        </Button>
+                    </Form>
                 </div>
 
                 <dl

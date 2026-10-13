@@ -43,8 +43,28 @@ export type PrivateLabelInquiry = {
     estimated_quantity: string;
     message: string | null;
     read_at: string | null;
+    project_url: string | null;
+    project_exists: boolean;
     created_at: string;
     updated_at: string;
+};
+
+export type PrivateLabelProjectFile = {
+    name: string;
+    path: string;
+    size: number;
+};
+
+export type PrivateLabelProject = {
+    id: number;
+    reference: string;
+    full_name: string;
+    company_name: string;
+    email: string;
+    details: Record<string, unknown>;
+    files: Record<string, PrivateLabelProjectFile[]> | null;
+    consented_at: string;
+    created_at: string;
 };
 
 export type PrivateLabelAdminSection = {

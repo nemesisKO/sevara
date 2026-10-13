@@ -306,6 +306,40 @@ test('admins can read the inquiries sent from the public form', function () {
     );
 });
 
+test('only admins can generate a stable personal form link for a private label inquiry', function () {
+    $inquiry = PrivateLabelInquiry::factory()->create(['intent' => 'private_label']);
+    $linkRoute = route('admin.private-label.inquiries.project-link', $inquiry);
+
+    $this->post($linkRoute)->assertRedirect(route('login'));
+    $this->actingAs(User::factory()->create())->post($linkRoute)->assertForbidden();
+    expect($inquiry->refresh()->project_access_token)->toBeNull();
+
+    $this->actingAs(User::factory()->create(['role' => UserRole::Admin]))
+        ->post($linkRoute)->assertRedirect(route('admin.private-label.inquiries.index'));
+
+    $token = $inquiry->refresh()->project_access_token;
+    expect($token)->toHaveLength(48);
+
+    $this->post($linkRoute)->assertRedirect(route('admin.private-label.inquiries.index'));
+    expect($inquiry->refresh()->project_access_token)->toBe($token);
+
+    $this->get(route('admin.private-label.inquiries.index'))
+        ->assertInertia(fn ($page) => $page
+            ->where('inquiries.0.project_url', route('kaveh', $token))
+            ->where('inquiries.0.project_exists', false)
+        );
+});
+
+test('a personal project link cannot be generated for another inquiry type', function () {
+    $inquiry = PrivateLabelInquiry::factory()->create(['intent' => 'sample_request']);
+
+    $this->actingAs(User::factory()->create(['role' => UserRole::Admin]))
+        ->post(route('admin.private-label.inquiries.project-link', $inquiry))
+        ->assertNotFound();
+
+    expect($inquiry->refresh()->project_access_token)->toBeNull();
+});
+
 test('regular users cannot read the inquiries', function () {
     $user = User::factory()->create();
 

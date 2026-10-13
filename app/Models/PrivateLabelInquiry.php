@@ -6,6 +6,7 @@ use Database\Factories\PrivateLabelInquiryFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
 
 /**
@@ -22,14 +23,25 @@ use Illuminate\Support\Carbon;
  * @property string|null $estimated_quantity
  * @property string|null $message
  * @property Carbon|null $read_at
+ * @property string|null $project_access_token
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  */
-#[Fillable(['full_name', 'company_name', 'email', 'phone', 'intent', 'source_page', 'country', 'product_format', 'product_name', 'estimated_quantity', 'message', 'read_at'])]
+#[Fillable(['full_name', 'company_name', 'email', 'phone', 'intent', 'source_page', 'country', 'product_format', 'product_name', 'estimated_quantity', 'message', 'read_at', 'project_access_token'])]
 class PrivateLabelInquiry extends Model
 {
     /** @use HasFactory<PrivateLabelInquiryFactory> */
     use HasFactory;
+
+    protected $hidden = ['project_access_token'];
+
+    /**
+     * @return HasOne<PrivateLabelProject, $this>
+     */
+    public function project(): HasOne
+    {
+        return $this->hasOne(PrivateLabelProject::class);
+    }
 
     /**
      * The purposes visitors can select before completing an inquiry.

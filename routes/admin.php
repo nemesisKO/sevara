@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\PackagingFormatController;
 use App\Http\Controllers\Admin\PrivateLabelController;
 use App\Http\Controllers\Admin\PrivateLabelInquiryController;
 use App\Http\Controllers\Admin\PrivateLabelItemController;
+use App\Http\Controllers\Admin\PrivateLabelProjectController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductExperienceItemController;
 use App\Http\Controllers\Admin\ProductImageController;
@@ -85,6 +86,9 @@ Route::middleware(['auth', 'verified', 'admin'])->prefix('admin')->name('admin.'
     Route::patch('packaging-formats/{packagingFormat}/move-down', [PackagingFormatController::class, 'moveDown'])->name('packaging-formats.move-down');
 
     Route::get('private-label/inquiries', [PrivateLabelInquiryController::class, 'index'])->name('private-label.inquiries.index');
+    Route::post('private-label/inquiries/{inquiry}/project-link', [PrivateLabelInquiryController::class, 'createProjectLink'])->name('private-label.inquiries.project-link');
+    Route::get('private-label/projects', [PrivateLabelProjectController::class, 'index'])->name('private-label.projects.index');
+    Route::get('private-label/projects/{project}/files/{group}/{index}', [PrivateLabelProjectController::class, 'download'])->name('private-label.projects.files.download');
     Route::patch('private-label/inquiries/{inquiry}/read', [PrivateLabelInquiryController::class, 'markAsRead'])->name('private-label.inquiries.read');
     Route::delete('private-label/inquiries/{inquiry}', [PrivateLabelInquiryController::class, 'destroy'])->name('private-label.inquiries.destroy');
 });

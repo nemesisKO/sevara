@@ -2,6 +2,7 @@
 import { Link, usePage } from '@inertiajs/vue3';
 import {
     BookOpen,
+    ClipboardList,
     FolderGit2,
     Images,
     Inbox,
@@ -36,6 +37,7 @@ import { index as brandsIndex } from '@/routes/admin/brands';
 import { index as subscribersIndex } from '@/routes/admin/newsletter-subscribers';
 import { index as privateLabelIndex } from '@/routes/admin/private-label';
 import { index as inquiriesIndex } from '@/routes/admin/private-label/inquiries';
+import { index as projectsIndex } from '@/routes/admin/private-label/projects';
 import { index as productsIndex } from '@/routes/admin/products';
 import { index as sampleRequestsIndex } from '@/routes/admin/sample-requests';
 import { edit as settingsEdit } from '@/routes/admin/settings';
@@ -83,6 +85,11 @@ const mainNavItems = computed<NavItem[]>(() => {
             title: 'Inquiries',
             href: inquiriesIndex(),
             icon: Inbox,
+        });
+        items.push({
+            title: 'Private Label Projects',
+            href: projectsIndex(),
+            icon: ClipboardList,
         });
         items.push({
             title: 'Newsletter subscribers',
