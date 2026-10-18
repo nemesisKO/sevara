@@ -27,8 +27,8 @@ Route::get('private-label', [PrivateLabelController::class, 'index'])->name('pri
 Route::get('private-label/formats', [PrivateLabelController::class, 'formats'])->name('private-label.formats');
 Route::post('private-label/inquiries', [PrivateLabelInquiryController::class, 'store'])->name('private-label.inquiries.store');
 
-Route::get('kaveh/{token}', [PrivateLabelProjectController::class, 'create'])->name('kaveh');
-Route::post('kaveh/{token}/projects', [PrivateLabelProjectController::class, 'store'])
+Route::get('private/{token}', [PrivateLabelProjectController::class, 'create'])->name('kaveh');
+Route::post('private/{token}/projects', [PrivateLabelProjectController::class, 'store'])
     ->middleware('throttle:5,1')
     ->name('kaveh.projects.store');
 

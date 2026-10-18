@@ -55,6 +55,10 @@ test('only a generated personal link opens the prefilled project page', function
     $inquiry = projectInquiry();
 
     $this->get('/kaveh')->assertNotFound();
+    $this->get('/kaveh/'.$inquiry->project_access_token)->assertNotFound();
+    $this->get('/private')->assertNotFound();
+    expect(parse_url(route('kaveh', $inquiry->project_access_token), PHP_URL_PATH))
+        ->toBe('/private/'.$inquiry->project_access_token);
     $this->get(route('kaveh', 'invalid-token'))->assertNotFound();
     $this->get(route('kaveh', $inquiry->project_access_token))
         ->assertOk()

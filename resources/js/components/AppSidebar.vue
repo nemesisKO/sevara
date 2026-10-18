@@ -71,26 +71,14 @@ const mainNavItems = computed<NavItem[]>(() => {
             href: productsIndex(),
             icon: Package,
         });
+
         items.push({
-            title: 'Sample Requests',
-            href: sampleRequestsIndex(),
-            icon: PackageCheck,
-        });
-        items.push({
-            title: 'Private Label',
+            title: 'Private Label Content',
             href: privateLabelIndex(),
             icon: Sparkles,
         });
-        items.push({
-            title: 'Inquiries',
-            href: inquiriesIndex(),
-            icon: Inbox,
-        });
-        items.push({
-            title: 'Private Label Projects',
-            href: projectsIndex(),
-            icon: ClipboardList,
-        });
+
+
         items.push({
             title: 'Newsletter subscribers',
             href: subscribersIndex(),
@@ -105,6 +93,22 @@ const mainNavItems = computed<NavItem[]>(() => {
             title: 'Blog categories',
             href: blogCategoriesIndex(),
             icon: Tags,
+        });
+
+         items.push({
+            title: 'Sample Requests',
+            href: sampleRequestsIndex(),
+            icon: PackageCheck,
+        });
+        items.push({
+            title: 'Inquiries',
+            href: inquiriesIndex(),
+            icon: Inbox,
+        });
+         items.push({
+            title: 'Private Label Projects',
+            href: projectsIndex(),
+            icon: ClipboardList,
         });
         items.push({
             title: 'Settings',

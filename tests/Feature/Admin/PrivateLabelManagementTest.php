@@ -308,6 +308,7 @@ test('admins can read the inquiries sent from the public form', function () {
 
 test('only admins can generate a stable personal form link for a private label inquiry', function () {
     $inquiry = PrivateLabelInquiry::factory()->create(['intent' => 'private_label']);
+    $otherInquiry = PrivateLabelInquiry::factory()->create(['intent' => 'private_label']);
     $linkRoute = route('admin.private-label.inquiries.project-link', $inquiry);
 
     $this->post($linkRoute)->assertRedirect(route('login'));
@@ -323,9 +324,14 @@ test('only admins can generate a stable personal form link for a private label i
     $this->post($linkRoute)->assertRedirect(route('admin.private-label.inquiries.index'));
     expect($inquiry->refresh()->project_access_token)->toBe($token);
 
+    $this->post(route('admin.private-label.inquiries.project-link', $otherInquiry))
+        ->assertRedirect(route('admin.private-label.inquiries.index'));
+    expect($otherInquiry->refresh()->project_access_token)->not->toBe($token);
+
     $this->get(route('admin.private-label.inquiries.index'))
         ->assertInertia(fn ($page) => $page
-            ->where('inquiries.0.project_url', route('kaveh', $token))
+            ->where('inquiries.0.project_url', route('kaveh', $otherInquiry->project_access_token))
+            ->where('inquiries.1.project_url', route('kaveh', $token))
             ->where('inquiries.0.project_exists', false)
         );
 });

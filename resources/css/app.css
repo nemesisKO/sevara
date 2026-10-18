@@ -199,6 +199,40 @@
     --sidebar: hsl(240 5.9% 10%);
 }
 
+.admin-panel {
+    --background: hsl(220 15% 96%);
+    --foreground: hsl(220 10% 17%);
+    --card: hsl(0 0% 100%);
+    --card-foreground: hsl(220 10% 17%);
+    --popover: hsl(0 0% 100%);
+    --popover-foreground: hsl(220 10% 17%);
+    --primary: hsl(220 9% 25%);
+    --primary-foreground: hsl(0 0% 100%);
+    --secondary: hsl(220 10% 92%);
+    --secondary-foreground: hsl(220 10% 17%);
+    --muted: hsl(220 10% 93%);
+    --muted-foreground: hsl(220 7% 42%);
+    --accent: hsl(220 10% 93%);
+    --accent-foreground: hsl(220 10% 17%);
+    --border: hsl(220 10% 86%);
+    --input: hsl(220 10% 86%);
+    --ring: hsl(220 9% 35%);
+    --sidebar-background: hsl(220 8% 31%);
+    --sidebar-foreground: hsl(220 15% 96%);
+    --sidebar-primary: hsl(0 0% 100%);
+    --sidebar-primary-foreground: hsl(220 8% 31%);
+    --sidebar-accent: hsl(220 8% 39%);
+    --sidebar-accent-foreground: hsl(0 0% 100%);
+    --sidebar-border: hsl(220 7% 42%);
+    --sidebar-ring: hsl(220 15% 75%);
+    color: var(--foreground);
+    color-scheme: light;
+}
+
+.admin-panel [data-slot='sidebar-inset'] > header {
+    background-color: hsl(0 0% 100% / 85%);
+}
+
 @layer base {
     * {
         @apply border-border outline-ring/50;

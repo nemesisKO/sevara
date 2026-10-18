@@ -36,7 +36,7 @@ function confirmDeleteItem(event: MouseEvent): void {
 <template>
     <Head title="Private Label" />
 
-    <div class="flex max-w-4xl flex-col space-y-10 bg-white px-6 py-8 lg:px-10">
+    <div class="flex max-w-4xl flex-col space-y-10 px-6 py-8 lg:px-10">
         <div class="flex flex-wrap items-center justify-between gap-4">
             <Heading
                 variant="small"

@@ -58,7 +58,7 @@ function confirmDeleteExperienceItem(event: MouseEvent): void {
 <template>
     <Head :title="`Edit ${product.title_part1} ${product.title_part2}`" />
 
-    <div class="flex max-w-4xl flex-col space-y-10 bg-white px-6 py-8 lg:px-10">
+    <div class="flex max-w-4xl flex-col space-y-10 px-6 py-8 lg:px-10">
         <div class="flex items-center justify-between gap-4">
             <Heading
                 variant="small"

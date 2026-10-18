@@ -21,10 +21,35 @@ async function copyProjectLink(inquiry: PrivateLabelInquiry): Promise<void> {
         return;
     }
 
+    copiedInquiryId.value = null;
+    copyErrorInquiryId.value = null;
+
+    const linkInput = document.getElementById(
+        `project-link-${inquiry.id}`,
+    ) as HTMLInputElement | null;
+
+    if (linkInput) {
+        linkInput.focus();
+        linkInput.select();
+
+        let copiedFromInput = false;
+
+        try {
+            copiedFromInput = document.execCommand('copy');
+        } catch {
+            copiedFromInput = false;
+        }
+
+        if (copiedFromInput) {
+            copiedInquiryId.value = inquiry.id;
+
+            return;
+        }
+    }
+
     try {
         await navigator.clipboard.writeText(inquiry.project_url);
         copiedInquiryId.value = inquiry.id;
-        copyErrorInquiryId.value = null;
     } catch {
         copyErrorInquiryId.value = inquiry.id;
     }
@@ -60,7 +85,7 @@ function formatIntent(intent: string | null): string {
 <template>
     <Head title="Private Label Inquiries" />
 
-    <div class="flex max-w-4xl flex-col space-y-8 bg-white px-6 py-8 lg:px-10">
+    <div class="flex max-w-4xl flex-col space-y-8 px-6 py-8 lg:px-10">
         <Heading
             variant="small"
             title="Private label inquiries"
@@ -191,14 +216,22 @@ function formatIntent(intent: string | null): string {
                                 <Copy />
                                 {{
                                     copiedInquiryId === inquiry.id
-                                        ? 'Copied'
+                                        ? 'Copied!'
                                         : 'Copy link'
                                 }}
                             </Button>
                         </div>
                         <p
+                            v-if="copiedInquiryId === inquiry.id"
+                            class="mt-2 text-xs text-green-700"
+                            role="status"
+                        >
+                            Link copied to clipboard.
+                        </p>
+                        <p
                             v-if="copyErrorInquiryId === inquiry.id"
                             class="mt-2 text-xs text-neutral-600"
+                            role="alert"
                         >
                             Select the link above to copy it manually.
                         </p>

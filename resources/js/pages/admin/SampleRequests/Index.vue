@@ -39,7 +39,7 @@ function formatDate(value: string): string {
 </script>
 
 <template>
-    <div class="flex max-w-5xl flex-col gap-8 bg-white px-6 py-8 lg:px-10">
+    <div class="flex max-w-5xl flex-col gap-8 px-6 py-8 lg:px-10">
         <Head title="Sample Requests" />
         <div class="flex flex-wrap items-end justify-between gap-4">
             <Heading

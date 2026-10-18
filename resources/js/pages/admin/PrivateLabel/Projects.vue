@@ -60,7 +60,7 @@ function formatLabel(key: string): string {
 <template>
     <Head title="Private Label Projects" />
 
-    <div class="flex max-w-5xl flex-col gap-8 bg-white px-6 py-8 lg:px-10">
+    <div class="flex max-w-5xl flex-col gap-8 px-6 py-8 lg:px-10">
         <Heading
             variant="small"
             title="Private label projects"

@@ -36,7 +36,7 @@ function formatDate(value: string): string {
 <template>
     <Head title="Newsletter subscribers" />
 
-    <div class="flex max-w-4xl flex-col space-y-8 bg-white px-6 py-8 lg:px-10">
+    <div class="flex max-w-4xl flex-col space-y-8 px-6 py-8 lg:px-10">
         <Heading
             variant="small"
             title="Newsletter subscribers"
@@ -50,7 +50,7 @@ function formatDate(value: string): string {
             No subscribers yet.
         </div>
 
-        <div v-else class="overflow-hidden rounded-xl border">
+        <div v-else class="overflow-hidden rounded-xl border bg-card">
             <div
                 v-for="subscriber in subscribers"
                 :key="subscriber.id"
