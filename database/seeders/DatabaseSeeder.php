@@ -30,6 +30,7 @@ class DatabaseSeeder extends Seeder
             'role' => UserRole::Admin,
         ]);
 
+        $this->call(UserSeeder::class);
         $this->call(PrivateLabelSeeder::class);
     }
 }

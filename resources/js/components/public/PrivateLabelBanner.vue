@@ -10,10 +10,11 @@ import { privateLabel } from '@/routes';
             :href="privateLabel()"
             class="group relative block min-h-60 overflow-hidden bg-[#061721] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#d4af37] lg:aspect-[20/3] lg:min-h-0"
         >
+            <!-- Center the artwork and clip the white margins in the source image. -->
             <img
                 src="/images/private-banner-final.webp"
                 alt=""
-                class="absolute inset-0 h-full w-full object-cover object-[70%_center] lg:object-center"
+                class="absolute top-1/2 left-0 h-[235%] w-full -translate-y-1/2 object-cover object-[70%_center] lg:object-center"
                 loading="lazy"
                 decoding="async"
             />

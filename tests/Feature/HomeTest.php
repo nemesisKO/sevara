@@ -4,6 +4,15 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Slide;
 
+test('the home page private label banner has its full WebP artwork', function () {
+    $image = getimagesize(public_path('images/private-banner-final.webp'));
+
+    expect($image)->toBeArray()
+        ->and($image[0])->toBe(2172)
+        ->and($image[1])->toBe(724)
+        ->and($image['mime'])->toBe('image/webp');
+});
+
 test('the home page displays slides', function () {
     $slide = Slide::factory()->create(['title' => 'A fresh headline']);
     Slide::factory()->create();
