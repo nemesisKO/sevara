@@ -215,21 +215,10 @@ function isActive(paths: string[]): boolean {
             class="relative mx-auto flex w-full flex-wrap items-center justify-between gap-y-2 px-2 py-3 md:px-6 lg:px-16 xl:px-20 2xl:px-24"
         >
             <Link :href="home()" class="flex items-center">
-                <LazyImage
-                    v-if="logoUrl"
-                    loading="eager"
-                    :src="logoUrl"
-                    alt="Sevara"
-                    class="h-9 max-w-40 object-contain transition duration-300"
-                    :class="usesWhiteHeroNavigation && 'brightness-0 invert'"
-                />
                 <span
-                    v-else
                     class="font-serif text-2xl font-semibold tracking-widest transition-colors duration-300"
                     :class="
-                        usesWhiteHeroNavigation
-                            ? 'text-white'
-                            : 'text-[#0f1c3f]'
+                        usesWhiteHeroNavigation ? 'text-white' : 'text-black'
                     "
                 >
                     SEVARA
